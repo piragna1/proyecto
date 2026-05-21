@@ -13,6 +13,8 @@ import { PaginaPeluquerosAdministrador } from './pages/pagina-peluqueros-adminis
 import { PaginaAdministradoresAdministrador } from './pages/pagina-administradores-administrador/pagina-administradores-administrador';
 import { PaginaTurnosAdministrador } from './pages/pagina-turnos-administrador/pagina-turnos-administrador';
 import { PaginaServiciosAdministrador } from './pages/pagina-servicios-administrador/pagina-servicios-administrador';
+import { PaginaAltaPeluquero } from './pages/pagina-alta-peluquero/pagina-alta-peluquero';
+import { PaginaAltaAdministrador } from './pages/pagina-alta-administrador/pagina-alta-administrador';
 
 export const routes: Routes = [
     {
@@ -56,6 +58,12 @@ export const routes: Routes = [
     },
     {
         path: 'servicios-admin', component: PaginaServiciosAdministrador
+    },
+    {
+        path: 'alta-peluquero', component: PaginaAltaPeluquero
+    },
+    {
+        path: 'alta-administrador', component: PaginaAltaAdministrador
     },
     {
         path: '**', redirectTo: ''
