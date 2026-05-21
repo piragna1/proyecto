@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-componente-peluqueros-administrador',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './componente-peluqueros-administrador.html',
   styleUrl: './componente-peluqueros-administrador.css',
 })
-export class ComponentePeluquerosAdministrador {}
+export class ComponentePeluquerosAdministrador { }
