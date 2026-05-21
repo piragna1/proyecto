@@ -17,6 +17,7 @@ import { PaginaAltaPeluquero } from './pages/pagina-alta-peluquero/pagina-alta-p
 import { PaginaAltaAdministrador } from './pages/pagina-alta-administrador/pagina-alta-administrador';
 import { PaginaAltaServicio } from './pages/pagina-alta-servicio/pagina-alta-servicio';
 import { PaginaInicialPeluquero } from './pages/pagina-inicial-peluquero/pagina-inicial-peluquero';
+import { PaginaClientesPeluquero } from './pages/pagina-clientes-peluquero/pagina-clientes-peluquero';
 
 export const routes: Routes = [
     {
@@ -72,6 +73,9 @@ export const routes: Routes = [
     },
     {
         path: 'home-peluquero', component: PaginaInicialPeluquero
+    },
+    {
+        path: 'clientes-peluquero', component: PaginaClientesPeluquero
     },
     {
         path: '**', redirectTo: ''
