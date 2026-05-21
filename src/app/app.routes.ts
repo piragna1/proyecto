@@ -9,6 +9,8 @@ import { PaginaMisTurnos } from './pages/pagina-mis-turnos/pagina-mis-turnos';
 import { PaginaInicialAdministrador } from './pages/pagina-inicial-administrador/pagina-inicial-administrador';
 import { PaginaUsuariosAdministrador } from './pages/pagina-usuarios-administrador/pagina-usuarios-administrador';
 import { PaginaClientesAdministrador } from './pages/pagina-clientes-administrador/pagina-clientes-administrador';
+import { PaginaPeluquerosAdministrador } from './pages/pagina-peluqueros-administrador/pagina-peluqueros-administrador';
+import { PaginaAdministradoresAdministrador } from './pages/pagina-administradores-administrador/pagina-administradores-administrador';
 
 export const routes: Routes = [
     {
@@ -40,6 +42,12 @@ export const routes: Routes = [
     },
     {
         path: 'clientes-admin', component: PaginaClientesAdministrador
+    },
+    {
+        path: 'peluqueros-admin', component: PaginaPeluquerosAdministrador
+    },
+    {
+        path: 'administradores-admin', component: PaginaAdministradoresAdministrador
     },
     {
         path: '**', redirectTo: ''
