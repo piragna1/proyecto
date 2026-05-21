@@ -12,6 +12,7 @@ import { PaginaClientesAdministrador } from './pages/pagina-clientes-administrad
 import { PaginaPeluquerosAdministrador } from './pages/pagina-peluqueros-administrador/pagina-peluqueros-administrador';
 import { PaginaAdministradoresAdministrador } from './pages/pagina-administradores-administrador/pagina-administradores-administrador';
 import { PaginaTurnosAdministrador } from './pages/pagina-turnos-administrador/pagina-turnos-administrador';
+import { PaginaServiciosAdministrador } from './pages/pagina-servicios-administrador/pagina-servicios-administrador';
 
 export const routes: Routes = [
     {
@@ -52,6 +53,9 @@ export const routes: Routes = [
     },
     {
         path: 'turnos-admin', component: PaginaTurnosAdministrador
+    },
+    {
+        path: 'servicios-admin', component: PaginaServiciosAdministrador
     },
     {
         path: '**', redirectTo: ''
