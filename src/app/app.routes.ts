@@ -6,6 +6,7 @@ import { PaginaAdmin } from './pages/pagina-admin/pagina-admin';
 import { PaginaHome } from './pages/pagina-home/pagina-home';
 import { PaginaNuevoTurno } from './pages/pagina-nuevo-turno/pagina-nuevo-turno';
 import { PaginaMisTurnos } from './pages/pagina-mis-turnos/pagina-mis-turnos';
+import { PaginaInicialAdministrador } from './pages/pagina-inicial-administrador/pagina-inicial-administrador';
 
 export const routes: Routes = [
     {
@@ -28,6 +29,9 @@ export const routes: Routes = [
     },
     {
         path: 'mis-turnos', component: PaginaMisTurnos
+    },
+    {
+        path: 'home-admin', component: PaginaInicialAdministrador
     },
     {
         path: '**', redirectTo: ''
