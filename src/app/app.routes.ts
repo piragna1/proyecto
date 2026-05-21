@@ -7,6 +7,7 @@ import { PaginaHome } from './pages/pagina-home/pagina-home';
 import { PaginaNuevoTurno } from './pages/pagina-nuevo-turno/pagina-nuevo-turno';
 import { PaginaMisTurnos } from './pages/pagina-mis-turnos/pagina-mis-turnos';
 import { PaginaInicialAdministrador } from './pages/pagina-inicial-administrador/pagina-inicial-administrador';
+import { PaginaUsuariosAdministrador } from './pages/pagina-usuarios-administrador/pagina-usuarios-administrador';
 
 export const routes: Routes = [
     {
@@ -32,6 +33,9 @@ export const routes: Routes = [
     },
     {
         path: 'home-admin', component: PaginaInicialAdministrador
+    },
+    {
+        path: 'usuarios-admin', component: PaginaUsuariosAdministrador
     },
     {
         path: '**', redirectTo: ''
