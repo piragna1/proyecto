@@ -8,6 +8,7 @@ import { PaginaNuevoTurno } from './pages/pagina-nuevo-turno/pagina-nuevo-turno'
 import { PaginaMisTurnos } from './pages/pagina-mis-turnos/pagina-mis-turnos';
 import { PaginaInicialAdministrador } from './pages/pagina-inicial-administrador/pagina-inicial-administrador';
 import { PaginaUsuariosAdministrador } from './pages/pagina-usuarios-administrador/pagina-usuarios-administrador';
+import { PaginaClientesAdministrador } from './pages/pagina-clientes-administrador/pagina-clientes-administrador';
 
 export const routes: Routes = [
     {
@@ -36,6 +37,9 @@ export const routes: Routes = [
     },
     {
         path: 'usuarios-admin', component: PaginaUsuariosAdministrador
+    },
+    {
+        path: 'clientes-admin', component: PaginaClientesAdministrador
     },
     {
         path: '**', redirectTo: ''
