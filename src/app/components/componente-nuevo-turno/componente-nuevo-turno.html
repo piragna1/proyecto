@@ -1,4 +1,5 @@
 <section>
+    <a [routerLink]="'/home'">Volver</a>
     <h2>Nuevo turno: </h2>
     <form action="">
         <select name="servicio" id="servicio">
@@ -13,5 +14,6 @@
         </select>
         <label for="horario">Horario: </label>
         <input type="datetime-local" name="horario" id="horario">
+        <button>Solicitar turno</button>
     </form>
 </section>
