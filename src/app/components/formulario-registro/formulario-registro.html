@@ -1,14 +1,14 @@
 <section>
-    <form action="">
-        <label for="nombre">Nombre:</label>
-        <input type="text" name="nombre" id="nombre">
-        <label for="email">Email: </label>
-        <input type="email" name="email" id="email">
-        <label for="telefono">Telefono:</label>
-        <input type="tel" name="telefono" id="telefono">
-        <label for="password">Clave: </label>
-        <input type="password" name="password" id="password">
-        <button>LogIn</button>
-        <p>Ya tienes una cuenta? <a [routerLink]="'/login'">Ingresa!</a></p>
-    </form>
+  <form [formGroup]="formulario" (ngSubmit)="generarUsuario()">
+    <label for="nombre">Nombre:</label>
+    <input type="text" name="nombre" id="nombre" formControlName="nombre" />
+    <label for="email">Email: </label>
+    <input type="email" name="email" id="email" formControlName="email" />
+    <label for="telefono">Telefono:</label>
+    <input type="tel" name="telefono" id="telefono" formControlName="telefono" />
+    <label for="password">Clave: </label>
+    <input type="password" name="password" id="password" formControlName="clave" />
+    <button type="submit">LogIn</button>
+    <p>Ya tienes una cuenta? <a [routerLink]="'/login'">Ingresa!</a></p>
+  </form>
 </section>
