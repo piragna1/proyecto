@@ -1,10 +1,10 @@
 <section>
-    <form action="">
-        <label for="email">Email: </label>
-        <input type="email" name="email" id="email">
-        <label for="password">Clave: </label>
-        <input type="password" name="password" id="password">
-        <button>LogIn</button>
-        <p>No tienes una cuenta? <a [routerLink]="'/registro'">Registrate!</a></p>
-    </form>
+  <form action="" [formGroup]="formulario" (ngSubmit)="iniciarSesion()">
+    <label for="email">Email: </label>
+    <input type="email" name="email" id="email" formControlName="email" />
+    <label for="clave">Clave: </label>
+    <input type="password" name="clave" id="clave" formControlName="clave" />
+    <button type="submit">LogIn</button>
+    <p>No tienes una cuenta? <a [routerLink]="'/registro'">Registrate!</a></p>
+  </form>
 </section>
