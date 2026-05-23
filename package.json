@@ -17,6 +17,9 @@
     "@angular/forms": "^21.2.0",
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
+    "cors": "^2.8.6",
+    "epxress": "^0.0.1-security",
+    "mysql2": "^3.22.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
