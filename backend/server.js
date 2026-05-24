@@ -47,6 +47,16 @@ app.post("/login", (req, res) => {
     )
 });
 
+app.post("/servicios", (req, res) => {
+    const { tipo, duracionMinutos, precio } = req.body;
+    db.query("insert into servicios (tipo, duracionMinutos, precio) values (?,?,?)", [tipo, duracionMinutos, precio],
+        (err, result) => {
+            if (err) return res.json(err);
+            return res.json(result);
+        }
+    )
+})
+
 app.listen(3000, () => {
     console.log("Servidor en http://localhost:3000");
 
