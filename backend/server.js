@@ -57,6 +57,13 @@ app.post("/servicios", (req, res) => {
     )
 })
 
+app.get("/servicios", (req, res) => {
+    db.query("select * from servicios", (err, result) => {
+        if (err) res.status(500).send(err);
+        else res.json(result);
+    })
+})
+
 app.listen(3000, () => {
     console.log("Servidor en http://localhost:3000");
 
