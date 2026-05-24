@@ -23,7 +23,7 @@ export class ServicioService {
     return this.http.post<Servicio>(this.url, servicio);
   }
 
-  getServicio(): Observable<Servicio[]> {
+  getServicios(): Observable<Servicio[]> {
     return this.http.get<Servicio[]>(this.url);
   }
 }
