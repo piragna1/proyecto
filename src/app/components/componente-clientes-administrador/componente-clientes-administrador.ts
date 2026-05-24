@@ -11,16 +11,18 @@ import { UsuarioService } from '../../usuario/services/usuario-service';
 })
 export class ComponenteClientesAdministrador implements OnInit {
   us: UsuarioService = inject(UsuarioService);
-  usuarios: Usuario[] = [];
+  usuarios = this.us.getUsuariosSignal();
   constructor() {}
   ngOnInit(): void {
     this.us.getUsuarios().subscribe({
       next: (usuarios) => {
-        this.usuarios = usuarios;
-        console.log('usuarios:', this.usuarios);
+        console.log(usuarios);
+        usuarios.forEach((u) => {
+          this.us.setUserSignal(u);
+        });
       },
-      error: (err) => {
-        console.log(err);
+      error: (e) => {
+        console.log(e);
       },
     });
   }
