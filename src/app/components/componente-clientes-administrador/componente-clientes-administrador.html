@@ -7,7 +7,7 @@
       <th>Telefono</th>
     </thead>
     <tbody>
-      @for (item of usuarios; track $index) {
+      @for (item of usuarios(); track $index) {
         <tr>
           <td>{{ item.nombre }}</td>
           <td>{{ item.email }}</td>
