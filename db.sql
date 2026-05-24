@@ -15,7 +15,7 @@ drop table if exists servicios;
 create table if not exists servicios(
 	id int auto_increment primary key,
     tipo varchar(50) not null unique,
-    duracion int not null,
+    duracionMinutos int not null,
     precio float not null
 );
 drop table if exists turnos;
