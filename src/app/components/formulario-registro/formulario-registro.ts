@@ -27,6 +27,7 @@ export class FormularioRegistro {
     this.us.postUsuario(this.formulario.getRawValue()).subscribe({
       next: (value) => {
         console.log('El usuario', value, ' ha sido generado.');
+        this.us.setUserSignal(value);
       },
       error: (err) => {
         console.log(err);
