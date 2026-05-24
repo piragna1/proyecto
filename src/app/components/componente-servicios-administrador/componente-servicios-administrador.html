@@ -1,20 +1,22 @@
 <section>
-    <a [routerLink]="'/home-admin'">Volver</a>
-    <table>
-        <thead>
-            <th>Tipo</th>
-            <th>Duracion</th>
-            <th>Precio</th>
-        </thead>
-        <tbody>
-            <tr>
-                <td>t</td>
-                <td>d</td>
-                <td>p</td>
-                <td><button>Editar</button></td>
-                <td><button>Eliminar</button></td>
-            </tr>
-        </tbody>
-        <a [routerLink]="'/alta-servicio'">Agregar servicio</a>
-    </table>
+  <a [routerLink]="'/home-admin'">Volver</a>
+  <table>
+    <thead>
+      <th>Tipo</th>
+      <th>Duracion</th>
+      <th>Precio</th>
+    </thead>
+    <tbody>
+      @for (item of servicios(); track $index) {
+        <tr>
+          <td>{{ item.tipo }}</td>
+          <td>{{ item.duracionMinutos }}</td>
+          <td>{{ item.precio }}</td>
+          <td><button>Editar</button></td>
+          <td><button>Eliminar</button></td>
+        </tr>
+      }
+    </tbody>
+    <a [routerLink]="'/alta-servicio'">Agregar servicio</a>
+  </table>
 </section>
