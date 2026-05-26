@@ -47,11 +47,19 @@ export class ComponenteNuevoTurno implements OnInit {
     const fechaHoraInicio = new Date(this.formulario.controls.fechaHoraInicio.value!);
     const fechaHoraFin = new Date(
       fechaHoraInicio.getTime() + servicio.duracionMinutos * 60000,
-    ).toString();
+    );
+    const opciones: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    };
     const t: Turno = {
       usuario: usuario,
-      fechaHoraInicio: fechaHoraInicio.toString(),
-      fechaHoraFin,
+      fechaHoraInicio: fechaHoraInicio.toLocaleString('es-AR', opciones),
+      fechaHoraFin: fechaHoraFin.toLocaleString('es-AR', opciones),
       servicio,
     };
     console.log(t);
