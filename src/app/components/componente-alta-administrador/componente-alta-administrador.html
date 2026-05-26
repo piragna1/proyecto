@@ -1,10 +1,12 @@
 <section>
     <a [routerLink]="'/administradores-admin'">Volver</a>
-    <form action="">
-        <label for="usuario">Usuario: </label>
-        <input type="text" name="usuario" id="usuario">
+    <form [formGroup]="formulario" (ngSubmit)="generarAdministrador()">
+        <label for="email">Email: </label>
+        <input type="email" name="email" id="email" formControlName="email">
+        <label for="telefono">Telefono: </label>
+        <input type="tel" name="telefono" id="telefono" formControlName="telefono">
         <label for="clave">Clave:</label>
-        <input type="password" name="clave" id="clave">
-        <button>Generar administrador</button>
+        <input type="password" name="clave" id="clave" formControlName="clave">
+        <button type="submit">Generar administrador</button>
     </form>
 </section>
