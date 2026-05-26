@@ -9,7 +9,8 @@ create table if not exists usuarios(
     telefono varchar(14) not null unique,
     clave varchar(255) not null,
     rol varchar(25) not null,
-    superadmin boolean not null
+    superadmin boolean not null,
+    direccion varchar(100)
 );
 drop table if exists servicios;
 create table if not exists servicios(
