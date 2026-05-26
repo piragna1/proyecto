@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 export class ServicioService {
   url: string = 'http://localhost:3000/servicios';
   servicios = signal<Servicio[]>([]);
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
   getServiciosSignal() {
     return this.servicios;
   }
@@ -25,5 +25,9 @@ export class ServicioService {
 
   getServicios(): Observable<Servicio[]> {
     return this.http.get<Servicio[]>(this.url);
+  }
+
+  getServicioById(id: string): Observable<Servicio> {
+    return this.http.get<Servicio>(this.url + '/' + id);
   }
 }
