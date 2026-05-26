@@ -7,11 +7,13 @@
             <th>Precio</th>
         </thead>
         <tbody>
+            @for (item of servicios(); track $index) {
             <tr>
-                <td>t</td>
-                <td>d</td>
-                <td>p</td>
+                <td>{{item.tipo}}</td>
+                <td>{{item.duracionMinutos}} minutos</td>
+                <td>${{item.precio}}</td>
             </tr>
+            }
         </tbody>
     </table>
 </section>
