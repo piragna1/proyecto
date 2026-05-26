@@ -7,11 +7,13 @@
             <th>Telefono</th>
         </thead>
         <tbody>
+            @for (item of clientes(); track $index) {
             <tr>
-                <td>n</td>
-                <td>e</td>
-                <td>t</td>
+                <td>{{item.nombre}}</td>
+                <td>{{item.email}}</td>
+                <td>{{item.telefono}}</td>
             </tr>
+            }
         </tbody>
     </table>
 </section>
