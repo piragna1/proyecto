@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 export class TurnoService {
   url: string = 'http://localhost:3000/turnos';
   turnos = signal<Turno[]>([]);
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
   getTurnosSignal() {
     return this.turnos;
   }
@@ -19,7 +19,18 @@ export class TurnoService {
       return [...actuales, turno];
     });
   }
+  removerTurno(id: string) {
+    this.turnos.update((actuales) => {
+      return actuales.filter((t) => t.id !== id);
+    });
+  }
   postTurno(turno: Turno): Observable<Turno> {
     return this.http.post<Turno>(this.url, turno);
+  }
+  getTurnos(): Observable<any[]> {
+    return this.http.get<any[]>(this.url);
+  }
+  deleteTurno(id: string): Observable<Turno> {
+    return this.http.delete<Turno>(this.url + '/' + id);
   }
 }
