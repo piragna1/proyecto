@@ -6,4 +6,5 @@ export interface Usuario {
   clave: string;
   rol: string;
   superadmin: boolean;
+  direccion?: string;
 }
