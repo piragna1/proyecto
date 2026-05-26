@@ -7,13 +7,16 @@
             <th>Horario</th>
         </thead>
         <tbody>
+            @for (item of turnos(); track $index) {
             <tr>
-                <td>c</td>
-                <td>s</td>
-                <td>h</td>
+                <td>{{item.usuario?.nombre}}-{{item.usuario?.telefono}}</td>
+                <td>{{item.servicio.tipo}}-${{item.servicio.precio}}</td>
+                <td>De: {{item.fechaHoraInicio}}
+                    A: {{item.fechaHoraFin}}</td>
                 <td><button>Editar</button></td>
                 <td><button>Eliminar</button></td>
             </tr>
+            }
         </tbody>
     </table>
 </section>
