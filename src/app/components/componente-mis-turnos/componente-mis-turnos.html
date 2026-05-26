@@ -2,11 +2,14 @@
     <a [routerLink]="'/home'">Volver</a>
     <h2>Mis turnos: </h2>
     <div class="card-container">
+        @for (item of turnos(); track $index) {
         <div class="card">
-            <h3>tipo servicio</h3>
-            <h4>horario</h4>
-            <h5>precio</h5>
-            <button>Cancelar</button>
+            <h3>{{item.servicio.tipo}}</h3>
+            <p>De: {{item.fechaHoraInicio}}
+                A: {{item.fechaHoraFin}}</p>
+            <h5>${{item.servicio.precio}}</h5>
+            <button (click)="cancelarTurno(item.id)">Cancelar</button>
         </div>
+        }
     </div>
 </section>
