@@ -1,9 +1,9 @@
 <section>
-    <form action="">
-        <label for="usuario">Usuario: </label>
-        <input type="text" name="usuario" id="usuario">
+    <form [formGroup]="formulario">
+        <label for="email">Email: </label>
+        <input type="email" name="email" id="email" formControlName="email">
         <label for="password">Clave: </label>
-        <input type="password" name="password" id="password">
-        <button type="button">LogIn</button>
+        <input type="password" name="password" id="password" formControlName="password">
+        <button type="button" [routerLink]="'/home-admin'" (click)="onLogin()">LogIn</button>
     </form>
 </section>
