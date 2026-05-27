@@ -20,70 +20,75 @@ import { PaginaInicialPeluquero } from './pages/pagina-inicial-peluquero/pagina-
 import { PaginaClientesPeluquero } from './pages/pagina-clientes-peluquero/pagina-clientes-peluquero';
 import { PaginaTurnosPeluquero } from './pages/pagina-turnos-peluquero/pagina-turnos-peluquero';
 import { PaginaServiciosPeluquero } from './pages/pagina-servicios-peluquero/pagina-servicios-peluquero';
+import { authGuard } from './guards/authGuard';
+import { guestGuard } from './guards/guestGuard';
+import { adminGuard } from './guards/adminGuard';
+import { superAdminGuard } from './guards/superAdminGuard';
+import { peluqueroGuard } from './guards/peluqueroGuard';
 
 export const routes: Routes = [
     {
-        path: '', component: PaginaInicial
+        path: '', component: PaginaInicial, canActivate: [guestGuard]
     },
     {
-        path: 'login', component: PaginaLogin
+        path: 'login', component: PaginaLogin, canActivate: [guestGuard]
     },
     {
-        path: 'registro', component: PaginaRegistro
+        path: 'registro', component: PaginaRegistro, canActivate: [guestGuard]
     },
     {
-        path: 'admin', component: PaginaAdmin
+        path: 'admin', component: PaginaAdmin, canActivate: [guestGuard]
     },
     {
-        path: 'home', component: PaginaHome
+        path: 'home', component: PaginaHome, canActivate: [authGuard]
     },
     {
-        path: 'nuevo-turno', component: PaginaNuevoTurno
+        path: 'nuevo-turno', component: PaginaNuevoTurno, canActivate: [authGuard]
     },
     {
-        path: 'mis-turnos', component: PaginaMisTurnos
+        path: 'mis-turnos', component: PaginaMisTurnos, canActivate: [authGuard]
     },
     {
-        path: 'home-admin', component: PaginaInicialAdministrador
+        path: 'home-admin', component: PaginaInicialAdministrador, canActivate: [adminGuard]
     },
     {
-        path: 'usuarios-admin', component: PaginaUsuariosAdministrador
+        path: 'usuarios-admin', component: PaginaUsuariosAdministrador, canActivate: [adminGuard]
     },
     {
-        path: 'clientes-admin', component: PaginaClientesAdministrador
+        path: 'clientes-admin', component: PaginaClientesAdministrador, canActivate: [adminGuard]
     },
     {
-        path: 'peluqueros-admin', component: PaginaPeluquerosAdministrador
+        path: 'peluqueros-admin', component: PaginaPeluquerosAdministrador, canActivate: [adminGuard]
     },
     {
-        path: 'administradores-admin', component: PaginaAdministradoresAdministrador
+        path: 'administradores-admin', component: PaginaAdministradoresAdministrador, canActivate: [adminGuard]
     },
     {
-        path: 'turnos-admin', component: PaginaTurnosAdministrador
+        path: 'turnos-admin', component: PaginaTurnosAdministrador, canActivate: [adminGuard]
     },
     {
-        path: 'servicios-admin', component: PaginaServiciosAdministrador
+        path: 'servicios-admin', component: PaginaServiciosAdministrador, canActivate: [adminGuard]
     },
     {
-        path: 'alta-peluquero', component: PaginaAltaPeluquero
+        path: 'alta-peluquero', component: PaginaAltaPeluquero, canActivate: [adminGuard]
     },
     {
-        path: 'alta-administrador', component: PaginaAltaAdministrador
+        path: 'alta-administrador', component: PaginaAltaAdministrador, canActivate: [superAdminGuard]
     },
     {
-        path: 'alta-servicio', component: PaginaAltaServicio
+        path: 'alta-servicio', component: PaginaAltaServicio, canActivate: [adminGuard]
     },
     {
-        path: 'home-peluquero', component: PaginaInicialPeluquero
+        path: 'home-peluquero', component: PaginaInicialPeluquero, canActivate: [peluqueroGuard]
     },
     {
-        path: 'clientes-peluquero', component: PaginaClientesPeluquero
+        path: 'clientes-peluquero', component: PaginaClientesPeluquero, canActivate: [peluqueroGuard]
     },
     {
-        path: 'turnos-peluquero', component: PaginaTurnosPeluquero
+        path: 'turnos-peluquero', component: PaginaTurnosPeluquero, canActivate: [peluqueroGuard]
     },
     {
-        path: 'servicios-peluquero', component: PaginaServiciosPeluquero
+        path: 'servicios-peluquero', component: PaginaServiciosPeluquero, canActivate: [peluqueroGuard]
     },
     {
         path: '**', redirectTo: ''
