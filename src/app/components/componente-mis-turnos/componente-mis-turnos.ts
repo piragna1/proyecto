@@ -35,6 +35,9 @@ export class ComponenteMisTurnos implements OnInit {
                     usuario: usuario
                   };
                   console.log('turno recuperado:', turno)
+                  //Corroborar que el id del usuario coincida con el del usuario logueado.
+                  const usuarioLogueado = JSON.parse(localStorage.getItem('usuario') || '{}');
+                  if (usuarioLogueado.id !== usuario.id) return;
                   this.ts.setTurnosSignal(turno);
                 }, error: (err) => {
                   console.log(err);
