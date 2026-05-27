@@ -2,6 +2,6 @@
     <ul>
         <li><a [routerLink]="'/home'">Inicio</a></li>
         <li><a [routerLink]="'/mis-turnos'">Mis Turnos</a></li>
-        <li><a [routerLink]="''">LogOut</a></li>
+        <li><a [routerLink]="''" (click)="onLogOut()">LogOut</a></li>
     </ul>
 </nav>
