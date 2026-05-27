@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { LoginService } from '../../login/services/login-service';
+import { AuthService } from '../../auth/services/auth-service';
 
 @Component({
   selector: 'app-formulario-login',
@@ -11,6 +12,7 @@ import { LoginService } from '../../login/services/login-service';
 })
 export class FormularioLogin {
   fb: FormBuilder = inject(FormBuilder);
+  as: AuthService = inject(AuthService);
   formulario = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     clave: ['', [Validators.required]],
@@ -24,6 +26,7 @@ export class FormularioLogin {
       next: (val) => {
         console.log('usuario logueado:', val);
         localStorage.setItem('usuario', JSON.stringify(val.usuario));
+        this.as.logIn();
         this.r.navigateByUrl('/home');
       },
       error: (e) => {
