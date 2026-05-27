@@ -44,6 +44,8 @@ export class ComponenteNuevoTurno implements OnInit {
     console.log('servicio:', servicio);
     const usuarioRaw = localStorage.getItem('usuario');
     const usuario: Usuario | null = usuarioRaw ? JSON.parse(usuarioRaw) : null;
+    //No permitir a usuarios que no sean clientes sacar turno.
+    if (usuario?.rol !== 'cliente') return;
     const fechaHoraInicio = new Date(this.formulario.controls.fechaHoraInicio.value!);
     const fechaHoraFin = new Date(
       fechaHoraInicio.getTime() + servicio.duracionMinutos * 60000,
