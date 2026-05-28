@@ -24,8 +24,12 @@ export class FormularioLogin {
     const { email, clave } = this.formulario.value;
     this.ls.login(email, clave).subscribe({
       next: (val) => {
+        if (val.rol !== 'cliente') {
+          console.log('Usuario no autorizado:', val);
+          return;
+        }
         console.log('usuario logueado:', val);
-        localStorage.setItem('usuario', JSON.stringify(val.usuario));
+        localStorage.setItem('usuario', JSON.stringify(val));
         this.as.logIn();
         this.r.navigateByUrl('/home');
       },
