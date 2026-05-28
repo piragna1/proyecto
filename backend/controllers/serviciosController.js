@@ -27,4 +27,31 @@ export function obtenerServicioPorId(db) {
             else res.json(result[0]);
         });
     };
-}
+};
+
+export function actualizarServicio(db) {
+    return (req, res) => {
+        const { id } = req.params;
+        const { tipo, duracionMinutos, precio } = req.body;
+        db.query('update servicios set tipo = ?, duracion_minutos = ?, precio = ? where id = ?',
+            [tipo, duracionMinutos, precio, id],
+            (err, result) => {
+                if (err) res.status(500).send(err);
+                else res.json(result[0]);
+            }
+        );
+    };
+};
+
+export function eliminarServicio(db) {
+    return (req, res) => {
+        const { id } = req.params;
+        db.query('delete from servicios where id = ?',
+            [id],
+            (err, result) => {
+                if (err) res.status(500).send(err);
+                else return res.json(result[0]);
+            }
+        );
+    };
+};
