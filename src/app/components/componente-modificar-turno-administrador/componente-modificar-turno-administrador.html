@@ -1,0 +1,15 @@
+<section>
+    <a [routerLink]="'/turnos-admin'">Volver</a>
+    <h2>Modificar turno:</h2>
+    <form (ngSubmit)="modificarTurno()" [formGroup]="formulario">
+        <select name="servicio" id="servicio" formControlName="servicio">
+            <option value="" disabled selected>Servicio</option>
+            @for (item of servicios(); track $index) {
+            <option [ngValue]="item">{{ item.tipo }} - {{ item.duracionMinutos }} minutos</option>
+            }
+        </select>
+        <label for="horario">Horario: </label>
+        <input type="datetime-local" name="horario" id="horario" formControlName="fechaHoraInicio" />
+        <button type="submit">Modificar</button>
+    </form>
+</section>
