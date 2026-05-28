@@ -1,0 +1,12 @@
+<section>
+    <a [routerLink]="'/servicios-admin'">Volver</a>
+    <form action="" [formGroup]="formulario" (ngSubmit)="editarServicio()">
+        <label for="tipo">Tipo: </label>
+        <input type="text" name="tipo" id="tipo" formControlName="tipo" />
+        <label for="duracion">Duracion (en minutos):</label>
+        <input type="number" name="duracion" id="duracion" formControlName="duracionMinutos" />
+        <label for="precio">Precio:</label>
+        <input type="number" name="precio" id="precio" formControlName="precio" />
+        <button type="submit">Generar servicio</button>
+    </form>
+</section>
