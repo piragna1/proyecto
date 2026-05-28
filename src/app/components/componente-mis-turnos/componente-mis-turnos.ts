@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { TurnoService } from '../../turno/services/turno-service';
 import { Turno } from '../../turno/interface/turno.interface';
 import { ServicioService } from '../../servicio/services/servicio-service';
@@ -15,8 +15,10 @@ export class ComponenteMisTurnos implements OnInit {
   ts: TurnoService = inject(TurnoService);
   ss: ServicioService = inject(ServicioService);
   us: UsuarioService = inject(UsuarioService);
+  r: Router = inject(Router);
   turnos = this.ts.getTurnosSignal();
   ngOnInit(): void {
+    this.ts.limpiarTurnosSignal();
     this.ts.getTurnos().subscribe({
       next: (turnos) => {
         console.log(turnos);
@@ -29,8 +31,8 @@ export class ComponenteMisTurnos implements OnInit {
                   console.log(usuario);
                   const turno: Turno = {
                     id: t.id,
-                    fechaHoraFin: t.fecha_hora_fin,
-                    fechaHoraInicio: t.fecha_hora_inicio,
+                    fechaHoraFin: new Date(t.fecha_hora_fin).toLocaleString('es'),
+                    fechaHoraInicio: new Date(t.fecha_hora_inicio).toLocaleString('es'),
                     servicio: servicio,
                     usuario: usuario
                   };
