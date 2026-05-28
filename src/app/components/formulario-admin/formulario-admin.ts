@@ -6,7 +6,7 @@ import { Router, RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-formulario-admin',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './formulario-admin.html',
   styleUrl: './formulario-admin.css',
 })
@@ -16,7 +16,7 @@ export class FormularioAdmin {
   ls: LoginService = inject(LoginService);
   formulario = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required]]
+    clave: ['', [Validators.required]]
   });
   r: Router = inject(Router);
   onLogin() {
@@ -25,8 +25,8 @@ export class FormularioAdmin {
     if (this.formulario.invalid) return;
     console.log('bbb');
 
-    const { email, password } = this.formulario.value;
-    this.ls.loginAdmin(email, password).subscribe({
+    const { email, clave } = this.formulario.value;
+    this.ls.loginAdmin(email, clave).subscribe({
       next: (response) => {
         console.log('Login exitoso:', response);
         if (response.rol !== 'administrador') {
