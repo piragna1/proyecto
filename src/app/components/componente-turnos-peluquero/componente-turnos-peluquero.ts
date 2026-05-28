@@ -29,8 +29,8 @@ export class ComponenteTurnosPeluquero {
                   console.log(u);
                   const turno: Turno = {
                     usuario: u,
-                    fechaHoraInicio: element.fecha_hora_inicio,
-                    fechaHoraFin: element.fecha_hora_fin,
+                    fechaHoraInicio: new Date(element.fecha_hora_inicio).toLocaleString('es'),
+                    fechaHoraFin: new Date(element.fecha_hora_fin).toLocaleString('es'),
                     servicio: s
                   };
                   console.log('turno recuperado: ', turno);
