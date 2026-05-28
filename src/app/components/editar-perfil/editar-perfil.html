@@ -1,0 +1,14 @@
+<section>
+    <a [routerLink]="'/home'">Volver</a>
+    <form [formGroup]="formulario" (ngSubmit)="actualizarUsuario()">
+        <label for="nombre">Nombre:</label>
+        <input type="text" name="nombre" id="nombre" formControlName="nombre" />
+        <label for="email">Email: </label>
+        <input type="email" name="email" id="email" formControlName="email" />
+        <label for="telefono">Telefono:</label>
+        <input type="tel" name="telefono" id="telefono" formControlName="telefono" />
+        <label for="password">Clave: </label>
+        <input type="password" name="password" id="password" formControlName="clave" />
+        <button type="submit">Editar perfil</button>
+    </form>
+</section>
