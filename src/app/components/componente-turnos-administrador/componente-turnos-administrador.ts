@@ -28,9 +28,10 @@ export class ComponenteTurnosAdministrador implements OnInit {
                 next: (u) => {
                   console.log(u);
                   const turno: Turno = {
+                    id: element.id,
                     usuario: u,
-                    fechaHoraInicio: element.fecha_hora_inicio,
-                    fechaHoraFin: element.fecha_hora_fin,
+                    fechaHoraInicio: new Date(element.fecha_hora_inicio).toLocaleString('es'),
+                    fechaHoraFin: new Date(element.fecha_hora_fin).toLocaleString('es'),
                     servicio: s
                   };
                   console.log('turno recuperado: ', turno);
@@ -49,5 +50,17 @@ export class ComponenteTurnosAdministrador implements OnInit {
         console.log(err);
       }
     });
+  };
+
+  eliminarTurno(id: string | null) {
+    this.ts.deleteTurno(id).subscribe({
+      next: (t) => {
+        console.log('turno eliminado:', t);
+        this.ts.removerTurno(id);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    })
   }
-}
+};
