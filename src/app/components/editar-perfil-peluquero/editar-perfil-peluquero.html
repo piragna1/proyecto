@@ -1,0 +1,16 @@
+<section>
+    <a [routerLink]="'/home-peluquero'">Volver</a>
+    <form [formGroup]="formulario" (ngSubmit)="editarPeluquero()">
+        <label for="nombre">Nombre: </label>
+        <input type="text" name="nombre" id="nombre" formControlName="nombre">
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" formControlName="email">
+        <label for="telefono">Telefono:</label>
+        <input type="tel" name="telefono" id="telefono" formControlName="telefono">
+        <label for="telefono">Clave:</label>
+        <input type="password" name="clave" id="clave" formControlName="clave">
+        <label for="direccion">Direccion:</label>
+        <input type="text" name="direccion" id="direccion" formControlName="direccion">
+        <button type="submit">Editar perfil</button>
+    </form>
+</section>
