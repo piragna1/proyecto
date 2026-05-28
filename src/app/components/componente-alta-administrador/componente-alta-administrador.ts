@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { Usuario } from '../../usuario/interface/usuario.interface';
 import { UsuarioService } from '../../usuario/services/usuario-service';
 
@@ -18,6 +18,7 @@ export class ComponenteAltaAdministrador {
     clave: ['', [Validators.required, Validators.minLength(8)]]
   });
   us: UsuarioService = inject(UsuarioService);
+  r: Router = inject(Router);
   generarAdministrador() {
     if (this.formulario.invalid) return;
     console.log(this.formulario.getRawValue());
@@ -32,7 +33,7 @@ export class ComponenteAltaAdministrador {
     this.us.postUsuario(a).subscribe({
       next: (a) => {
         console.log('admin generado:', a);
-        this.us.setAdministradoresSignal(a);
+        this.r.navigateByUrl('/administradores-admin');
       },
       error: (err) => {
         console.log(err);
