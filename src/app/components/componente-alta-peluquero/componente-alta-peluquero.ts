@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { UsuarioService } from '../../usuario/services/usuario-service';
 import { Usuario } from '../../usuario/interface/usuario.interface';
 import { errorContext } from 'rxjs/internal/util/errorContext';
@@ -21,6 +21,7 @@ export class ComponenteAltaPeluquero {
     direccion: ['', [Validators.required, Validators.minLength(8)]]
   });
   us: UsuarioService = inject(UsuarioService);
+  r: Router = inject(Router);
   constructor() { };
   generarPeluquero() {
     if (this.formulario.invalid) return;
@@ -37,6 +38,7 @@ export class ComponenteAltaPeluquero {
     this.us.postUsuario(peluquero).subscribe({
       next: (p) => {
         console.log('peluquero generado:', p);
+        this.r.navigateByUrl('/peluqueros-admin');
       },
       error: (err) => {
         console.log(err);
