@@ -12,6 +12,7 @@ export class ComponentePeluquerosAdministrador implements OnInit {
   us: UsuarioService = inject(UsuarioService);
   peluqueros = this.us.getPeluquerosSignal();
   ngOnInit(): void {
+    this.us.limpiarPeluquerosSignal();
     this.us.getUsuarios().subscribe({
       next: (usuarios) => {
         console.log(usuarios);
@@ -22,6 +23,18 @@ export class ComponentePeluquerosAdministrador implements OnInit {
         });
       },
       error: (err) => { console.log(err); }
+    })
+  };
+  eliminarPeluquero(id: string | undefined) {
+    this.us.deleteUsuario(id).subscribe({
+      next: (value) => {
+        console.log('peluquero eliminado:', value);
+        this.us.removerPeluquero(id!);
+      },
+      error: (err) => {
+        console.log(err);
+
+      }
     })
   }
 }
