@@ -8,13 +8,13 @@
     </thead>
     <tbody>
       @for (item of servicios(); track $index) {
-        <tr>
-          <td>{{ item.tipo }}</td>
-          <td>{{ item.duracionMinutos }}</td>
-          <td>{{ item.precio }}</td>
-          <td><button>Editar</button></td>
-          <td><button>Eliminar</button></td>
-        </tr>
+      <tr>
+        <td>{{ item.tipo }}</td>
+        <td>{{ item.duracionMinutos }}</td>
+        <td>{{ item.precio }}</td>
+        <td><button [routerLink]="['/editar-servicio-administrador', item.id]">Editar</button></td>
+        <td><button (click)="eliminarServicio(item.id)">Eliminar</button></td>
+      </tr>
       }
     </tbody>
     <a [routerLink]="'/alta-servicio'">Agregar servicio</a>
