@@ -25,6 +25,16 @@ import { guestGuard } from './guards/guestGuard';
 import { adminGuard } from './guards/adminGuard';
 import { superAdminGuard } from './guards/superAdminGuard';
 import { peluqueroGuard } from './guards/peluqueroGuard';
+import { PaginaPeluquero } from './pages/pagina-peluquero/pagina-peluquero';
+import { PaginaEditarPerfil } from './pages/pagina-editar-perfil/pagina-editar-perfil';
+import { PaginaEditarPerfilAdministrador } from './pages/pagina-editar-perfil-administrador/pagina-editar-perfil-administrador';
+import { PaginaEditarPerfilPeluquero } from './pages/pagina-editar-perfil-peluquero/pagina-editar-perfil-peluquero';
+import { PaginaModificarTurnoUsuario } from './pages/pagina-modificar-turno-usuario/pagina-modificar-turno-usuario';
+import { PaginaModificarTurnoAdministrador } from './pages/pagina-modificar-turno-administrador/pagina-modificar-turno-administrador';
+import { PaginaEditarClienteAdministrador } from './pages/pagina-editar-cliente-administrador/pagina-editar-cliente-administrador';
+import { PaginaEditarPeluqueroAdministrador } from './pages/pagina-editar-peluquero-administrador/pagina-editar-peluquero-administrador';
+import { PaginaEditarAdministradorAdministrador } from './pages/pagina-editar-administrador-administrador/pagina-editar-administrador-administrador';
+import { PaginaEditarServicioAdministrador } from './pages/pagina-editar-servicio-administrador/pagina-editar-servicio-administrador';
 
 export const routes: Routes = [
     {
@@ -40,6 +50,9 @@ export const routes: Routes = [
         path: 'admin', component: PaginaAdmin, canActivate: [guestGuard]
     },
     {
+        path: 'peluquero', component: PaginaPeluquero, canActivate: [guestGuard]
+    },
+    {
         path: 'home', component: PaginaHome, canActivate: [authGuard]
     },
     {
@@ -47,6 +60,12 @@ export const routes: Routes = [
     },
     {
         path: 'mis-turnos', component: PaginaMisTurnos, canActivate: [authGuard]
+    },
+    {
+        path: 'editar-perfil/:id', component: PaginaEditarPerfil, canActivate: [authGuard]
+    },
+    {
+        path: 'modificar-turno-usuario/:id', component: PaginaModificarTurnoUsuario, canActivate: [authGuard]
     },
     {
         path: 'home-admin', component: PaginaInicialAdministrador, canActivate: [adminGuard]
@@ -76,7 +95,25 @@ export const routes: Routes = [
         path: 'alta-administrador', component: PaginaAltaAdministrador, canActivate: [superAdminGuard]
     },
     {
+        path: 'editar-administrador/:id', component: PaginaEditarAdministradorAdministrador, canActivate: [superAdminGuard]
+    },
+    {
         path: 'alta-servicio', component: PaginaAltaServicio, canActivate: [adminGuard]
+    },
+    {
+        path: 'editar-perfil-administrador/:id', component: PaginaEditarPerfilAdministrador, canActivate: [adminGuard]
+    },
+    {
+        path: 'modificar-turno-administrador/:id', component: PaginaModificarTurnoAdministrador, canActivate: [adminGuard]
+    },
+    {
+        path: 'editar-cliente-administrador/:id', component: PaginaEditarClienteAdministrador, canActivate: [adminGuard]
+    },
+    {
+        path: 'editar-peluquero-administrador/:id', component: PaginaEditarPeluqueroAdministrador, canActivate: [adminGuard]
+    },
+    {
+        path: 'editar-servicio-administrador/:id', component: PaginaEditarServicioAdministrador, canActivate: [adminGuard]
     },
     {
         path: 'home-peluquero', component: PaginaInicialPeluquero, canActivate: [peluqueroGuard]
@@ -89,6 +126,9 @@ export const routes: Routes = [
     },
     {
         path: 'servicios-peluquero', component: PaginaServiciosPeluquero, canActivate: [peluqueroGuard]
+    },
+    {
+        path: 'editar-perfil-peluquero/:id', component: PaginaEditarPerfilPeluquero, canActivate: [peluqueroGuard]
     },
     {
         path: '**', redirectTo: ''
