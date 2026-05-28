@@ -11,18 +11,35 @@ import { ServicioService } from '../../servicio/services/servicio-service';
 export class ComponenteServiciosAdministrador implements OnInit {
   ss: ServicioService = inject(ServicioService);
   servicios = this.ss.getServiciosSignal();
-  constructor() {}
+  constructor() { }
   ngOnInit(): void {
+    this.ss.limpiarServiciosSignal();
     this.ss.getServicios().subscribe({
       next: (servicios) => {
         console.log(servicios);
-        servicios.forEach((s) => {
-          this.ss.setServiciosSignal(s);
+        servicios.forEach((s: any) => {
+          this.ss.setServiciosSignal({
+            id: s.id,
+            tipo: s.tipo,
+            duracionMinutos: s.duracion_minutos,
+            precio: s.precio
+          });
         });
       },
       error: (e) => {
         console.log(e);
       },
     });
+  };
+  eliminarServicio(id: string | undefined) {
+    this.ss.deleteServicio(id).subscribe({
+      next: (value) => {
+        console.log('servicio eliminado: ', value);
+        this.ss.removerServicio(id!);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    })
   }
-}
+};
