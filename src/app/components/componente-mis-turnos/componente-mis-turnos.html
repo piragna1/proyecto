@@ -8,6 +8,7 @@
             <p>De: {{item.fechaHoraInicio}}
                 A: {{item.fechaHoraFin}}</p>
             <h5>${{item.servicio.precio}}</h5>
+            <button [routerLink]="['/modificar-turno-usuario',item.id]">Modificar</button>
             <button (click)="cancelarTurno(item.id)">Cancelar</button>
         </div>
         }
