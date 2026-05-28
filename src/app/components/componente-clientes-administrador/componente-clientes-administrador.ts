@@ -27,5 +27,15 @@ export class ComponenteClientesAdministrador implements OnInit {
         console.log(e);
       },
     });
-  }
-}
+  };
+  eliminarUsuario(id: string | undefined) {
+    this.us.deleteUsuario(id).subscribe({
+      next: (value) => {
+        console.log('usuario eliminado:', value);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+  };
+};
