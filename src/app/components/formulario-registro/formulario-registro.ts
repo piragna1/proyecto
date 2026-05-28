@@ -5,7 +5,7 @@ import { UsuarioService } from '../../usuario/services/usuario-service';
 
 @Component({
   selector: 'app-formulario-registro',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './formulario-registro.html',
   styleUrl: './formulario-registro.css',
 })
