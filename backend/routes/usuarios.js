@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { insertarUsuario, obtenerUsuarioPorId, obtenerUsuarios } from '../controllers/usuariosController.js';
+import { actualizarUsuario, eliminarUsuario, insertarUsuario, obtenerUsuarioPorId, obtenerUsuarios } from '../controllers/usuariosController.js';
 export default function (db) {
     const router = Router();
 
@@ -8,6 +8,10 @@ export default function (db) {
     router.get("/:id", obtenerUsuarioPorId(db));
 
     router.post('/', insertarUsuario(db));
+
+    router.put('/:id', actualizarUsuario(db));
+
+    router.delete('/:id', eliminarUsuario(db));
+
     return router;
 }
-
