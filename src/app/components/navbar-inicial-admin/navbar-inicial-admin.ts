@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { AuthService } from '../../auth/services/auth-service';
 
 @Component({
@@ -10,8 +10,15 @@ import { AuthService } from '../../auth/services/auth-service';
 })
 export class NavbarInicialAdmin {
   as: AuthService = inject(AuthService);
+  r: Router = inject(Router);
   onLogout() {
     localStorage.removeItem('usuario');
     this.as.logOut();
   };
+  onEditarPefilAdmin() {
+    const usuarioData = localStorage.getItem('usuario');
+    if (!usuarioData) return;
+    const usuario = JSON.parse(usuarioData);
+    this.r.navigateByUrl(`/editar-perfil-administrador/${usuario.id}`);
+  }
 }
