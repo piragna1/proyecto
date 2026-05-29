@@ -11,7 +11,7 @@ export class LoginService {
   login(email: string | undefined, clave: string | undefined): Observable<any> {
     return this.http.post(this.apiUrl, { email, clave });
   }
-  loginAdmin(email: string | undefined, password: string | undefined): Observable<any> {
-    return this.http.post(`${this.apiUrl}/admin`, { email, password });
+  loginAdmin(email: string | undefined, clave: string | undefined): Observable<any> {
+    return this.http.post(`${this.apiUrl}/admin`, { email, clave });
   }
 }
