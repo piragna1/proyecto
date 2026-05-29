@@ -10,16 +10,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
+const db = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: '',
     database: 'turnera'
-});
-
-db.connect(err => {
-    if (err) throw err;
-    console.log('Conectado a MYSQL');
 });
 
 app.use('/login', loginRoutes(db));
