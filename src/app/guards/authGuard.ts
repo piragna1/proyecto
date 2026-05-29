@@ -6,7 +6,7 @@ export function authGuard() {
     console.log('authGuard ejecutado');
     const authService = inject(AuthService);
     const router: Router = inject(Router);
-    if (authService.estoyLogeado && localStorage.getItem('usuario')) {
+    if (authService.estoyLogeado || localStorage.getItem('usuario')) {
         const usuarioLogueado = JSON.parse(localStorage.getItem('usuario') || '{}');
         if (usuarioLogueado.rol === 'cliente') {
             return true;
@@ -20,6 +20,5 @@ export function authGuard() {
             return false;
         }
     }
-    router.navigate(['/']);
     return false;
 }
