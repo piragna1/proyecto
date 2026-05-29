@@ -19,7 +19,6 @@ export function guestGuard() {
         }
     } catch (e) {
         console.log('Error parsing usuario:', e);
-        router.navigateByUrl('/');
     }
     return false;
 }
