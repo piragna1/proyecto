@@ -24,20 +24,38 @@ export class UsuarioService {
     });
   };
 
+  limpiarUserSignal() {
+    this.usuarios.set([]);
+  }
+
   getPeluquerosSignal() { return this.peluqueros };
   setPeluquerosSignal(peluquero: Usuario) {
     this.peluqueros.update((actuales) => {
       if (actuales.find((u) => u.id === peluquero.id)) return actuales;
       return [...actuales, peluquero];
     });
+  };
+  removerPeluquero(id: string | null) {
+    this.peluqueros.update((actuales) => {
+      return actuales.filter((t) => t.id !== id);
+    });
+  };
+  limpiarPeluquerosSignal() {
+    this.peluqueros.set([]);
   }
   getAdministradoresSignal() { return this.administradores; };
   setAdministradoresSignal(administrador: Usuario) {
     this.administradores.update((actuales) => {
       if (actuales.find((a) => a.id === administrador.id)) return actuales
       return [...actuales, administrador];
-    })
-  }
+    });
+  };
+  removerAdmin(id: string | null) {
+    this.administradores.update((actuales) => {
+      return actuales.filter((t) => t.id !== id);
+    });
+  };
+  limpiarAdminsSignal() { this.administradores.set([]); };
 
 
   postUsuario(usuario: Usuario): Observable<Usuario> {
@@ -48,8 +66,15 @@ export class UsuarioService {
     return this.http.get<Usuario[]>(this.url);
   };
 
-  getUsuarioById(id: string): Observable<Usuario> {
+  getUsuarioById(id: string | null): Observable<Usuario> {
     return this.http.get<Usuario>(this.url + '/' + id);
   };
+  putUsuario(u: Usuario, id: string | null): Observable<Usuario> {
+    return this.http.put<Usuario>(this.url + '/' + id, u);
+  }
+
+  deleteUsuario(id: string | undefined): Observable<Usuario> {
+    return this.http.delete<Usuario>(this.url + '/' + id);
+  }
 
 };
