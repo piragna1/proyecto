@@ -21,6 +21,7 @@
     "@angular/router": "^21.2.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
     "epxress": "^0.0.1-security",
     "mysql2": "^3.22.3",
     "rxjs": "~7.8.0",
