@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../auth/services/auth-service';
 
 @Component({
@@ -10,8 +10,15 @@ import { AuthService } from '../../auth/services/auth-service';
 })
 export class NavbarUsuarioHome {
   as: AuthService = inject(AuthService);
+  r: Router = inject(Router);
   onLogOut() {
     this.as.logOut();
     localStorage.removeItem('usuario');
+  }
+  onEditarPerfil() {
+    const usuario = JSON.parse(localStorage.getItem('usuario') ?? 'null') as { id?: string } | null;
+
+    if (!usuario?.id) return;
+    this.r.navigateByUrl(`/editar-perfil/${usuario.id}`);
   }
 }
