@@ -4,6 +4,7 @@ import { TurnoService } from '../../turno/services/turno-service';
 import { Turno } from '../../turno/interface/turno.interface';
 import { ServicioService } from '../../servicio/services/servicio-service';
 import { UsuarioService } from '../../usuario/services/usuario-service';
+import { ToastService } from '../../shared/services/toast-service';
 
 @Component({
   selector: 'app-componente-mis-turnos',
@@ -17,6 +18,7 @@ export class ComponenteMisTurnos implements OnInit {
   us: UsuarioService = inject(UsuarioService);
   r: Router = inject(Router);
   turnos = this.ts.getTurnosSignal();
+  toastService: ToastService = inject(ToastService);
   ngOnInit(): void {
     this.ts.limpiarTurnosSignal();
     this.ts.getTurnos().subscribe({
@@ -63,9 +65,10 @@ export class ComponenteMisTurnos implements OnInit {
     this.ts.deleteTurno(id).subscribe({
       next: () => {
         this.ts.removerTurno(id);
+        this.toastService.mostrarMensaje('Turno eliminado correctamente.')
       }, error: (err) => {
         console.log(err);
       }
-    })
+    });
   };
 }
