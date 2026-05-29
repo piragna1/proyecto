@@ -3,8 +3,8 @@ import bcrypt from 'bcrypt';
 export function obtenerUsuarios(db) {
     return (req, res) => {
         db.query("SELECT * FROM usuarios", (err, result) => {
-            if (err) res.status(500).send(err);
-            else res.json(result);
+            if (err) { db.end(); res.status(500).send(err); }
+            else { db.end(); res.json(result); }
         });
     };
 };
@@ -13,8 +13,8 @@ export function obtenerUsuarioPorId(db) {
     return (req, res) => {
         const { id } = req.params;
         db.query("SELECT * FROM usuarios where id = ?", [id], (err, result) => {
-            if (err) res.status(500).send(err);
-            else res.json(result[0]);
+            if (err) { db.end(); res.status(500).send(err); }
+            else { db.end(); res.json(result[0]); }
         });
     };
 };
@@ -23,16 +23,16 @@ export function insertarUsuario(db) {
     return async (req, res) => {
         try {
             const { nombre, email, telefono, clave, rol, superadmin, direccion } = req.body;
-            console.log('clave:', clave)
             const hash = await bcrypt.hash(clave, 10);
-            console.log('hash:', hash);
 
             db.query('insert into usuarios (nombre,email,telefono,clave,rol,superadmin, direccion) values (?,?,?,?,?,?,?) ',
                 [nombre, email, telefono, hash, rol, superadmin, direccion], (err, result) => {
-                    if (err) return res.json(err);
+                    if (err) { db.end(); return res.json(err); }
+                    db.end();
                     res.json(result);
                 });
         } catch (error) {
+            db.end();
             res.status(500).json(error.message);
         }
     };
@@ -45,13 +45,13 @@ export function actualizarUsuario(db) {
 
             const { id } = req.params;
             if (clave && clave.trim() !== '') {
-                console.log('id de req.params:', id);
 
                 const hash = await bcrypt.hash(clave, 10);
                 db.query('update usuarios set nombre = ?, email = ?, telefono = ?, clave = ?, rol = ?, superadmin = ?, direccion = ? where id = ?',
                     [nombre, email, telefono, hash, rol, superadmin, direccion, id],
                     (err, result) => {
-                        if (err) return res.json(err);
+                        if (err) { db.end(); return res.json(err); }
+                        db.end();
                         return res.json(result);
                     }
                 );
@@ -60,12 +60,14 @@ export function actualizarUsuario(db) {
                 db.query('update usuarios set nombre = ?, email = ?, telefono = ?, rol = ?, superadmin = ?, direccion = ? where id = ?',
                     [nombre, email, telefono, rol, superadmin, direccion, id],
                     (err, result) => {
-                        if (err) return res.json(err);
+                        if (err) { db.end(); return res.json(err); }
+                        db.end();
                         return res.json(result);
                     }
                 );
             }
         } catch (error) {
+            db.end();
             console.log(error)
         }
     };
@@ -76,7 +78,8 @@ export function eliminarUsuario(db) {
         const { id } = req.params;
         db.query('delete from usuarios where id = ?', [id],
             (err, result) => {
-                if (err) return res.json(err);
+                if (err) { db.end(); return res.json(err); }
+                db.end();
                 return res.json(result);
             }
         );

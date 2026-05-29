@@ -3,7 +3,11 @@ export function insertarServicio(db) {
         const { tipo, duracionMinutos, precio } = req.body;
         db.query("insert into servicios (tipo, duracion_minutos, precio) values (?,?,?)", [tipo, duracionMinutos, precio],
             (err, result) => {
-                if (err) return res.json(err);
+                if (err) {
+                    db.end();
+                    return res.json(err);
+                }
+                db.end();
                 return res.json(result);
             }
         );
@@ -13,8 +17,8 @@ export function insertarServicio(db) {
 export function obtenerServicios(db) {
     return (req, res) => {
         db.query("select * from servicios", (err, result) => {
-            if (err) res.status(500).send(err);
-            else res.json(result);
+            if (err) { db.end(); res.status(500).send(err); }
+            else { db.end(); res.json(result); }
         })
     };
 }
@@ -23,8 +27,8 @@ export function obtenerServicioPorId(db) {
     return (req, res) => {
         const { id } = req.params;
         db.query('select * from servicios where id = ?', [id], (err, result) => {
-            if (err) res.status(500).send(err);
-            else res.json(result[0]);
+            if (err) { db.end(); res.status(500).send(err); }
+            else { db.end(); res.json(result[0]); }
         });
     };
 };
@@ -36,8 +40,8 @@ export function actualizarServicio(db) {
         db.query('update servicios set tipo = ?, duracion_minutos = ?, precio = ? where id = ?',
             [tipo, duracionMinutos, precio, id],
             (err, result) => {
-                if (err) res.status(500).send(err);
-                else res.json(result[0]);
+                if (err) { db.end(); res.status(500).send(err); }
+                else { db.end(); res.json(result[0]); }
             }
         );
     };
@@ -49,8 +53,8 @@ export function eliminarServicio(db) {
         db.query('delete from servicios where id = ?',
             [id],
             (err, result) => {
-                if (err) res.status(500).send(err);
-                else return res.json(result[0]);
+                if (err) { db.end(); res.status(500).send(err); }
+                else { db.end(); return res.json(result[0]); }
             }
         );
     };

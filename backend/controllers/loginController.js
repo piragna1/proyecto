@@ -4,17 +4,24 @@ export function loginUsuario(db) {
         const { email, clave } = req.body;
         db.query("select * from usuarios where email = ?", [email],
             async (err, result) => {
-                if (err) return res.status(500).send(err);
+                if (err) {
+                    db.end();
+                    return res.status(500).send(err);
+                }
                 if (result.length === 0) {
+                    db.end();
                     return res.status(401).json({ mensaje: "Credenciales invalidas" });
                 }
-                console.log('result: ', result);
 
                 const coincide = await bcrypt.compare(
                     clave,
                     result[0].clave
                 );
-                if (coincide) { return res.json(result[0]); }
+                if (coincide) {
+                    db.end();
+                    return res.json(result[0]);
+                }
+                db.end();
                 return res.status(401).json({ mensaje: "Credenciales invalidas" });
             }
         );
@@ -28,18 +35,24 @@ export function loginAdmin(db) {
         console.log('clave', clave);
         db.query("select * from usuarios where email = ?", [email],
             async (err, result) => {
-                if (err) return res.status(500).send(err);
+                if (err) {
+                    db.end();
+                    return res.status(500).send(err);
+                }
                 if (result.length === 0) {
+                    db.end();
                     return res.status(401).json({ mensaje: "Credenciales invalidas" });
                 }
-                console.log('result:', result[0]);
 
                 const coincide = await bcrypt.compare(
                     clave,
                     result[0].clave
                 );
-                console.log('coincide:', coincide)
-                if (coincide) { return res.json(result[0]); }
+                if (coincide) {
+                    db.end();
+                    return res.json(result[0]);
+                }
+                db.end();
                 return res.status(401).json({ mensaje: "Credenciales invalidas" });
             }
         );
