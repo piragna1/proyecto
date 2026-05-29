@@ -8,6 +8,7 @@ import { Servicio } from '../../servicio/interface/servicio.interface';
 import { TurnoService } from '../../turno/services/turno-service';
 import { formatearServicio } from '../../servicio/utils/utils';
 import { formatearFechaSQL } from '../../shared/utils/dateHelpers';
+import { ToastService } from '../../shared/services/toast-service';
 
 @Component({
   selector: 'app-componente-modificar-turno-usuario',
@@ -27,6 +28,7 @@ export class ComponenteModificarTurnoUsuario implements OnInit {
   ar: ActivatedRoute = inject(ActivatedRoute);
   id: string | null = null;
   r: Router = inject(Router);
+  toastService: ToastService = inject(ToastService);
   ngOnInit(): void {
 
     this.ss.getServicios().subscribe({
@@ -75,6 +77,7 @@ export class ComponenteModificarTurnoUsuario implements OnInit {
         console.log('turno puteado', value);
         this.ts.limpiarTurnosSignal();
         this.r.navigateByUrl('/mis-turnos');
+        this.toastService.mostrarMensaje('Turno modificado correctamente.');
       },
       error: (err) => {
         console.log(err);
