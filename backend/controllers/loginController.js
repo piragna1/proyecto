@@ -5,11 +5,9 @@ export function loginUsuario(db) {
         db.query("select * from usuarios where email = ?", [email],
             async (err, result) => {
                 if (err) {
-                    db.end();
                     return res.status(500).send(err);
                 }
                 if (result.length === 0) {
-                    db.end();
                     return res.status(401).json({ mensaje: "Credenciales invalidas" });
                 }
 
@@ -18,15 +16,13 @@ export function loginUsuario(db) {
                     result[0].clave
                 );
                 if (coincide) {
-                    db.end();
                     return res.json(result[0]);
                 }
-                db.end();
                 return res.status(401).json({ mensaje: "Credenciales invalidas" });
             }
         );
     };
-}
+};
 
 export function loginAdmin(db) {
     return (req, res) => {
@@ -36,11 +32,9 @@ export function loginAdmin(db) {
         db.query("select * from usuarios where email = ?", [email],
             async (err, result) => {
                 if (err) {
-                    db.end();
                     return res.status(500).send(err);
                 }
                 if (result.length === 0) {
-                    db.end();
                     return res.status(401).json({ mensaje: "Credenciales invalidas" });
                 }
 
@@ -49,10 +43,8 @@ export function loginAdmin(db) {
                     result[0].clave
                 );
                 if (coincide) {
-                    db.end();
                     return res.json(result[0]);
                 }
-                db.end();
                 return res.status(401).json({ mensaje: "Credenciales invalidas" });
             }
         );
