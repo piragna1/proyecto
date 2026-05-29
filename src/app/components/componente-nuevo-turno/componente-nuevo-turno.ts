@@ -8,6 +8,7 @@ import { Usuario } from '../../usuario/interface/usuario.interface';
 import { TurnoService } from '../../turno/services/turno-service';
 import { formatearServicio } from '../../servicio/utils/utils';
 import { formatearFechaSQL } from '../../shared/utils/dateHelpers';
+import { ToastService } from '../../shared/services/toast-service';
 
 @Component({
   selector: 'app-componente-nuevo-turno',
@@ -25,6 +26,7 @@ export class ComponenteNuevoTurno implements OnInit {
   });
   ts: TurnoService = inject(TurnoService);
   r: Router = inject(Router);
+  toasts: ToastService = inject(ToastService);
   ngOnInit(): void {
     this.ss.getServicios().subscribe({
       next: (servicios) => {
@@ -65,6 +67,7 @@ export class ComponenteNuevoTurno implements OnInit {
     this.ts.postTurno(t).subscribe({
       next: (turno) => {
         console.log(turno);
+        this.toasts.mostrarMensaje('Turno generado exitosamente.');
         this.r.navigateByUrl('/mis-turnos');
       },
       error: (e) => {
