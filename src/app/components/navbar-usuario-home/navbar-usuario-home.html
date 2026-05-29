@@ -1,7 +1,9 @@
 <nav>
     <ul>
+        <li><a [routerLink]="'/home'">Inicio</a></li>
         <li><a [routerLink]="'/mis-turnos'">Mis Turnos</a></li>
         <li><a [routerLink]="'/nuevo-turno'">Nuevo Turno</a></li>
+        <li><a (click)="onEditarPerfil()">Perfil</a></li>
         <li><a [routerLink]="''" (click)="onLogOut()">LogOut</a></li>
     </ul>
 </nav>
