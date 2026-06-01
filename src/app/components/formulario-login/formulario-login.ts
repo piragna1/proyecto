@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { LoginService } from '../../login/services/login-service';
 import { AuthService } from '../../auth/services/auth-service';
+import {jwtDecode} from 'jwt-decode';
 
 @Component({
   selector: 'app-formulario-login',
@@ -19,17 +20,23 @@ export class FormularioLogin {
   });
   ls: LoginService = inject(LoginService);
   r: Router = inject(Router);
+  /**
+   * Metodo para iniciar sesion como cliente.
+   * @returns void
+   */
   iniciarSesion() {
     if (this.formulario.invalid) return;
     const { email, clave } = this.formulario.value;
     this.ls.login(email, clave).subscribe({
       next: (val) => {
-        if (val.rol !== 'cliente') {
-          console.log('Usuario no autorizado:', val);
+        const token = val.token;
+        const payload:any = jwtDecode(token)
+        if (payload.rol !== 'cliente') {
+          console.log('Usuario no autorizado:', payload);
           return;
         }
-        console.log('usuario logueado:', val);
-        localStorage.setItem('usuario', JSON.stringify(val));
+        console.log('usuario logueado:', payload);
+        localStorage.setItem('token', JSON.stringify(token));
         this.as.logIn();
         this.r.navigateByUrl('/home');
       },
