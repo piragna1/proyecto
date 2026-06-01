@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 export function loginUsuario(db) {
     return (req, res) => {
         const { email, clave } = req.body;
@@ -7,18 +8,23 @@ export function loginUsuario(db) {
                 if (err) {
                     return res.status(500).send(err);
                 }
-                if (result.length === 0) {
+
+                const usuario = result[0];
+
+                if (!usuario || !bcrypt.compareSync(clave, usuario.clave)) {
                     return res.status(401).json({ mensaje: "Credenciales invalidas" });
                 }
 
-                const coincide = await bcrypt.compare(
-                    clave,
-                    result[0].clave
-                );
-                if (coincide) {
-                    return res.json(result[0]);
-                }
-                return res.status(401).json({ mensaje: "Credenciales invalidas" });
+                const token = jwt.sign({
+                    id:usuario.id,
+                    email:usuario.email,
+                    nombre:usuario.nombre,
+                    rol:usuario.rol,
+                    superadmin:usuario.superadmin
+                }, process.env.JWT_SECRET, {
+                    expiresIn:"1h"
+                });
+                return res.json({token});
             }
         );
     };
@@ -34,18 +40,25 @@ export function loginAdmin(db) {
                 if (err) {
                     return res.status(500).send(err);
                 }
-                if (result.length === 0) {
-                    return res.status(401).json({ mensaje: "Credenciales invalidas" });
-                }
 
-                const coincide = await bcrypt.compare(
-                    clave,
-                    result[0].clave
-                );
-                if (coincide) {
-                    return res.json(result[0]);
-                }
-                return res.status(401).json({ mensaje: "Credenciales invalidas" });
+                const usuario = result[0];
+
+                if (!usuario || !bcrypt.compareSync(clave,usuario.clave)) {
+                    return res.status(401).json({ mensaje: "Credenciales invalidas" });
+                };
+
+                const token = jwt.sign({
+                    id:usuario.id,
+                    email:usuario.email,
+                    nombre:usuario.nombre,
+                    rol:usuario.rol,
+                    superadmin:usuario.superadmin
+                }, process.env.JWT_SECRET, {
+                    expiresIn:"1h"
+                });
+                
+                return res.json({token});
+
             }
         );
     };
