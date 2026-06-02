@@ -30,12 +30,6 @@ export class FormularioLogin {
     this.ls.login(email, clave).subscribe({
       next: (val) => {
         const token = val.token;
-        const payload:any = jwtDecode(token)
-        if (payload.rol !== 'cliente') {
-          console.log('Usuario no autorizado:', payload);
-          return;
-        }
-        console.log('usuario logueado:', payload);
         localStorage.setItem('token', JSON.stringify(token));
         this.as.logIn();
         this.r.navigateByUrl('/home');
