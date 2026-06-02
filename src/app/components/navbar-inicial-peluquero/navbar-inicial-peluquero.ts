@@ -13,7 +13,7 @@ export class NavbarInicialPeluquero {
   r: Router = inject(Router);
   onLogOut() {
     this.as.logOut();
-    localStorage.removeItem('usuario');
+    localStorage.removeItem('token');
   }
   onEditarPerfilPeluquero() {
     const usuarioData = localStorage.getItem('usuario');

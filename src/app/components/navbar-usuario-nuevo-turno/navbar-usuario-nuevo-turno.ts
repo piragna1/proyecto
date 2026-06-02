@@ -13,7 +13,7 @@ export class NavbarUsuarioNuevoTurno {
   r: Router = inject(Router);
   onLogOut() {
     this.as.logOut();
-    localStorage.removeItem('usuario');
+    localStorage.removeItem('token');
   }
   onEditarPerfil() {
     const usuario = JSON.parse(localStorage.getItem('usuario') ?? 'null') as { id?: string } | null;
