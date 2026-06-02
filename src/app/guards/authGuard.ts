@@ -31,7 +31,7 @@ export function authGuard() {
             }
         }
     } catch (error) {
-        console.log('Error al decodificarl el token', error);
+        console.log('Error al decodificar el token', error);
         
     }
 
