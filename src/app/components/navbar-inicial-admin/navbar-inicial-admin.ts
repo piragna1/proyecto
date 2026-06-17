@@ -16,9 +16,8 @@ export class NavbarInicialAdmin {
     this.as.logOut();
   };
   onEditarPefilAdmin() {
-    const usuarioData = localStorage.getItem('usuario');
-    if (!usuarioData) return;
-    const usuario = JSON.parse(usuarioData);
-    this.r.navigateByUrl(`/editar-perfil-administrador/${usuario.id}`);
+    const payload = this.as.obtenerPayload();
+    if (!payload.id) return;
+    this.r.navigateByUrl(`/editar-perfil-administrador/${payload.id}`);
   }
 }
