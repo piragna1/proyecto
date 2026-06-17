@@ -16,9 +16,8 @@ export class NavbarInicialPeluquero {
     localStorage.removeItem('token');
   }
   onEditarPerfilPeluquero() {
-    const usuarioData = localStorage.getItem('usuario');
-    if (!usuarioData) return;
-    const usuario = JSON.parse(usuarioData);
-    this.r.navigateByUrl('/editar-perfil-peluquero/' + usuario.id);
+    const payload = this.as.obtenerPayload();
+    if (!payload.id) return;
+    this.r.navigateByUrl('/editar-perfil-peluquero/' + payload.id);
   }
 }
