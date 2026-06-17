@@ -19,6 +19,7 @@ export class AuthService {
       try {
         return jwtDecode<any>(token);
       } catch (error) {
+        console.log(error)
         return null;
       }
     };
