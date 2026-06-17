@@ -9,6 +9,11 @@ import usuariosRoutes from './routes/usuarios.js'
 import dotenv from 'dotenv';
 dotenv.config();
 
+if (!process.env.JWT_SECRET) {
+    console.error('Missing JWT_SECRET in environment. Create a .env file with JWT_SECRET=your_secret');
+    process.exit(1);
+}
+
 const app = express();
 app.use(cors());
 app.use(express.json());
