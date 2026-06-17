@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from "@angular/router";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { UsuarioService } from '../../usuario/services/usuario-service';
 import { Usuario } from '../../usuario/interface/usuario.interface';
 
@@ -22,6 +22,7 @@ export class EditarPerfilPeluquero implements OnInit {
   ar: ActivatedRoute = inject(ActivatedRoute);
   us: UsuarioService = inject(UsuarioService);
   id: string | null = null;
+  r:Router=inject(Router);
   ngOnInit(): void {
     this.ar.paramMap.subscribe({
       next: (value) => {
@@ -59,6 +60,7 @@ export class EditarPerfilPeluquero implements OnInit {
     this.us.putUsuario(p, this.id).subscribe({
       next: (value) => {
         console.log('Usuario editado', value);
+        this.r.navigateByUrl('/home-peluquero')
       },
       error: (err) => {
         console.log(err);
