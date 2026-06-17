@@ -20,20 +20,14 @@ export class FormularioAdmin {
   });
   r: Router = inject(Router);
   onLogin() {
-    console.log('aaa');
 
     if (this.formulario.invalid) return;
-    console.log('bbb');
 
     const { email, clave } = this.formulario.value;
     this.ls.loginAdmin(email, clave).subscribe({
       next: (response) => {
         console.log('Login exitoso:', response);
-        if (response.rol !== 'administrador') {
-          console.log('Usuario no es administrador:', response);
-          return;
-        };
-        localStorage.setItem('usuario', JSON.stringify(response));
+        localStorage.setItem('token', response.token);
         this.as.logIn();
         this.r.navigateByUrl('/home-admin');
       },

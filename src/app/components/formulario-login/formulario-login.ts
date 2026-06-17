@@ -30,7 +30,7 @@ export class FormularioLogin {
     this.ls.login(email, clave).subscribe({
       next: (val) => {
         const token = val.token;
-        localStorage.setItem('token', JSON.stringify(token));
+        localStorage.setItem('token', token);
         this.as.logIn();
         this.r.navigateByUrl('/home');
       },

@@ -25,11 +25,7 @@ export class FormularioPeluquero {
     this.ls.login(email, clave).subscribe({
       next: (res) => {
         console.log('respuesta del login:', res);
-        if (res.rol !== 'peluquero') {
-          console.log('Usuario no es peluquero:', res);
-          return;
-        }
-        localStorage.setItem('usuario', JSON.stringify(res));
+        localStorage.setItem('token', res.token);
         this.as.logIn();
         this.r.navigateByUrl('/home-peluquero');
       },
