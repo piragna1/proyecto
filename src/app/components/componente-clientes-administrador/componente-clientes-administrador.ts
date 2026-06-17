@@ -1,6 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Usuario } from '../../usuario/interface/usuario.interface';
 import { UsuarioService } from '../../usuario/services/usuario-service';
 
 @Component({
