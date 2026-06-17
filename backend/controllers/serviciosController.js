@@ -7,12 +7,11 @@ export function insertarServicio(db) {
                     db.end();
                     return res.json(err);
                 }
-                db.end();
                 return res.json(result);
             }
         );
     };
-}
+};
 
 export function obtenerServicios(db) {
     return (req, res) => {
