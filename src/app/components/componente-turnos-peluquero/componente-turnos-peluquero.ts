@@ -19,15 +19,13 @@ export class ComponenteTurnosPeluquero {
   ngOnInit(): void {
     this.ts.getTurnos().subscribe({
       next: (t: any[]) => {
-        console.log(t);
         t.forEach(element => {
           this.ss.getServicioById(element.id_servicio).subscribe({
             next: (s) => {
-              console.log(s);
               this.us.getUsuarioById(element.id_usuario).subscribe({
                 next: (u) => {
-                  console.log(u);
                   const turno: Turno = {
+                    id: element.id,
                     usuario: u,
                     fechaHoraInicio: new Date(element.fecha_hora_inicio).toLocaleString('es'),
                     fechaHoraFin: new Date(element.fecha_hora_fin).toLocaleString('es'),
