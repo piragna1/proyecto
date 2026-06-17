@@ -1,22 +1,27 @@
 import { inject } from "@angular/core";
 import { Router } from "@angular/router";
+import { AuthService } from "../auth/services/auth-service";
 
 export function adminGuard() {
     console.log('adminGuard ejecutado');
-    const usuario = localStorage.getItem('usuario');
+    const authService = inject(AuthService);
     const router: Router = inject(Router);
-    if (usuario) {
-        const usuarioLogueado = JSON.parse(usuario);
-        if (usuarioLogueado.rol === 'administrador') {
+
+    if (!authService.esTokenValido()) return false;
+
+    const rol = authService.obtenerRolUsuario();
+
+    switch(rol){
+        case 'administrador':
             return true;
-        }
-        if (usuarioLogueado.rol === 'peluquero') {
+        case 'cliente':
+            router.navigateByUrl('/home');
+            return false;
+        case 'peluquero':
             router.navigateByUrl('/home-peluquero');
             return false;
-        }
-        router.navigateByUrl('/home');
-        return false;
+        default:
+            return false;
     }
-    router.navigateByUrl('/');
-    return false;
+    
 }

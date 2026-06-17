@@ -1,24 +1,26 @@
 import { inject } from "@angular/core";
 import { Router } from "@angular/router";
+import { AuthService } from "../auth/services/auth-service";
 
 export function guestGuard() {
     console.log('guestGuard ejecutado');
-    const usuario = localStorage.getItem('usuario');
-    const router: Router = inject(Router);
-    if (!usuario) {
-        return true;
+    const authService = inject(AuthService);
+    const router:Router = inject(Router);
+
+    const rol = authService.obtenerRolUsuario();
+    console.log('rol:', rol);
+
+    switch(rol){
+        case 'cliente':
+            router.navigateByUrl('/home')
+            return false;
+        case 'administrador':
+            router.navigateByUrl('/home-admin')
+            return false;
+        case 'peluquero':
+            router.navigateByUrl('/home-peluquero')
+            return false;
+        default:
+            return true;
     }
-    try {
-        const usuarioLogueado = JSON.parse(usuario);
-        if (usuarioLogueado.rol === 'administrador') {
-            router.navigateByUrl('/home-admin');
-        } else if (usuarioLogueado.rol === 'peluquero') {
-            router.navigateByUrl('/home-peluquero');
-        } else {
-            router.navigateByUrl('/home');
-        }
-    } catch (e) {
-        console.log('Error parsing usuario:', e);
-    }
-    return false;
 }

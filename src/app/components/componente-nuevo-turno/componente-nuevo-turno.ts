@@ -4,11 +4,12 @@ import { ServicioService } from '../../servicio/services/servicio-service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Servicio } from '../../servicio/interface/servicio.interface';
 import { Turno } from '../../turno/interface/turno.interface';
-import { Usuario } from '../../usuario/interface/usuario.interface';
 import { TurnoService } from '../../turno/services/turno-service';
 import { formatearServicio } from '../../servicio/utils/utils';
 import { formatearFechaSQL } from '../../shared/utils/dateHelpers';
 import { ToastService } from '../../shared/services/toast-service';
+import { AuthService } from '../../auth/services/auth-service';
+import { UsuarioService } from '../../usuario/services/usuario-service';
 
 @Component({
   selector: 'app-componente-nuevo-turno',
@@ -27,6 +28,8 @@ export class ComponenteNuevoTurno implements OnInit {
   ts: TurnoService = inject(TurnoService);
   r: Router = inject(Router);
   toasts: ToastService = inject(ToastService);
+  as:AuthService= inject(AuthService  );
+  us:UsuarioService=inject(UsuarioService);
   ngOnInit(): void {
     this.ss.getServicios().subscribe({
       next: (servicios) => {
@@ -41,15 +44,27 @@ export class ComponenteNuevoTurno implements OnInit {
     });
   }
   generarTurno() {
+    if (!this.as.esTokenValido())return;
+
+    const payload = this.as.obtenerPayload();
+
+    if (payload.rol !== 'cliente') {
+      console.log('usuario no es cliente');
+      
+      return;}
+
     console.log(this.formulario.invalid);
 
     if (this.formulario.invalid) return;
+
+    this.us.getUsuarioById(payload.id).subscribe(
+      {
+        next:(usuario)=>{
+          
     const servicio: Servicio = this.formulario.controls.servicio.value!;
     console.log('servicio:', servicio);
-    const usuarioRaw = localStorage.getItem('usuario');
-    const usuario: Usuario | null = usuarioRaw ? JSON.parse(usuarioRaw) : null;
-    //No permitir a usuarios que no sean clientes sacar turno.
-    if (usuario?.rol !== 'cliente') return;
+
+
     const fechaHoraInicioRaw = this.formulario.controls.fechaHoraInicio.value;
     const fechaHoraInicioDate = new Date(fechaHoraInicioRaw);
     const fechaHoraFinDate = new Date(
@@ -74,5 +89,13 @@ export class ComponenteNuevoTurno implements OnInit {
         console.log(e);
       },
     });
+        },
+        error:(err)=>{
+          console.log(err);
+        }
+      }
+    );
+      
+
   };
 }

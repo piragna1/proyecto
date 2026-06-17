@@ -5,6 +5,7 @@ import { Turno } from '../../turno/interface/turno.interface';
 import { ServicioService } from '../../servicio/services/servicio-service';
 import { UsuarioService } from '../../usuario/services/usuario-service';
 import { ToastService } from '../../shared/services/toast-service';
+import { AuthService } from '../../auth/services/auth-service';
 
 @Component({
   selector: 'app-componente-mis-turnos',
@@ -19,6 +20,7 @@ export class ComponenteMisTurnos implements OnInit {
   r: Router = inject(Router);
   turnos = this.ts.getTurnosSignal();
   toastService: ToastService = inject(ToastService);
+  as:AuthService = inject(AuthService);
   ngOnInit(): void {
     this.ts.limpiarTurnosSignal();
     this.ts.getTurnos().subscribe({
@@ -40,8 +42,9 @@ export class ComponenteMisTurnos implements OnInit {
                   };
                   console.log('turno recuperado:', turno)
                   //Corroborar que el id del usuario coincida con el del usuario logueado.
-                  const usuarioLogueado = JSON.parse(localStorage.getItem('usuario') || '{}');
-                  if (usuarioLogueado.id !== usuario.id) return;
+                  const payload = this.as.obtenerPayload();
+                  const id = payload.id;
+                  if (id !== usuario.id) return;
                   this.ts.setTurnosSignal(turno);
                 }, error: (err) => {
                   console.log(err);
