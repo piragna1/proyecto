@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from "@angular/router";
+import { AuthService } from '../../auth/services/auth-service';
 
 @Component({
   selector: 'app-componente-home',
@@ -8,14 +9,17 @@ import { RouterLink } from "@angular/router";
   styleUrl: './componente-home.css',
 })
 export class ComponenteHome implements OnInit {
+  as:AuthService= inject(AuthService);
   usuario: string = 'Usuario';
+
   ngOnInit(): void {
 
-    const usuarioData = localStorage.getItem('usuario');
+    const payload = this.as.obtenerPayload();
+    console.log(payload);
+    
 
-    if (!usuarioData) return;
-    const usuario = JSON.parse(usuarioData);
+    if (!payload) return;
 
-    this.usuario = usuario.nombre;
+    this.usuario = payload.nombre;
   }
 }
