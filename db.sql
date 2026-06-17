@@ -26,10 +26,6 @@ id_usuario int not null,
 id_servicio int not null,
 fecha_hora_inicio varchar(100) not null,
 fecha_hora_fin varchar(100) not null,
-constraint fk_turnos_usuario foreign key (id_usuario) references usuarios(id),
-constraint fk_turnos_servicio foreign key (id_servicio) references servicios(id)
+    constraint fk_turnos_usuario foreign key (id_usuario) references usuarios(id) ON DELETE CASCADE,
+    constraint fk_turnos_servicio foreign key (id_servicio) references servicios(id) ON DELETE CASCADE
 );
-
-select * from usuarios;
-select * from servicios;
-select * from turnos;
