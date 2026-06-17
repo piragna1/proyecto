@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { Usuario } from '../../usuario/interface/usuario.interface';
 import { UsuarioService } from '../../usuario/services/usuario-service';
+import { AuthService } from '../../auth/services/auth-service';
 
 @Component({
   selector: 'app-editar-perfil-administrador',
@@ -20,6 +21,7 @@ export class EditarPerfilAdministrador implements OnInit {
   us: UsuarioService = inject(UsuarioService);
   id: string | null = null;
   ar: ActivatedRoute = inject(ActivatedRoute);
+  as:AuthService= inject(AuthService);
   ngOnInit(): void {
     this.ar.paramMap.subscribe({
       next: (value) => {
@@ -48,16 +50,18 @@ export class EditarPerfilAdministrador implements OnInit {
 
   editarPerfil() {
     if (this.formulario.invalid) return;
-    const usuarioData = localStorage.getItem('usuario');
-    if (!usuarioData) return;
-    const usuario = JSON.parse(usuarioData);
-    const a: Usuario = {
-      nombre: usuario.nombre,
+    const payload = this.as.obtenerPayload();
+    console.log(payload);
+    this.us.getUsuarioById(payload.id).subscribe({
+      next:(value)=>{
+        console.log(value);
+        const a: Usuario = {
+      nombre: payload.nombre,
       email: this.formulario.controls.email.value,
       telefono: this.formulario.controls.telefono.value,
       clave: this.formulario.controls.clave.value,
-      rol: usuario.rol,
-      superadmin: usuario.superadmin
+      rol: payload.rol,
+      superadmin: payload.superadmin
     };
     this.us.putUsuario(a, this.id).subscribe({
       next: (value) => {
@@ -67,5 +71,14 @@ export class EditarPerfilAdministrador implements OnInit {
         console.log(err);
       }
     });
-  }
-}
+      },
+      error:(err)=>{
+        console.log(err);
+        
+      }
+    });
+    
+
+    
+  };
+};
