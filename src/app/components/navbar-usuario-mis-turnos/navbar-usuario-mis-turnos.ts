@@ -16,9 +16,8 @@ export class NavbarUsuarioMisTurnos {
     localStorage.removeItem('token');
   }
   onEditarPerfil() {
-    const usuario = JSON.parse(localStorage.getItem('usuario') ?? 'null') as { id?: string } | null;
-
-    if (!usuario?.id) return;
-    this.r.navigateByUrl(`/editar-perfil/${usuario.id}`);
+    const payload = this.as.obtenerPayload();
+    if (!payload.id) return;
+    this.r.navigateByUrl(`/editar-perfil/${payload.id}`);
   }
 }
