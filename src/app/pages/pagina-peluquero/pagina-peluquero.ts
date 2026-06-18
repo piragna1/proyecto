@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { FormularioPeluquero } from '../../components/formulario-peluquero/formulario-peluquero';
-import { Footer } from "../../shared/components/footer/footer";
 
 @Component({
   selector: 'app-pagina-peluquero',
-  imports: [FormularioPeluquero, Footer],
+  imports: [FormularioPeluquero],
   templateUrl: './pagina-peluquero.html',
   styleUrl: './pagina-peluquero.css',
 })
