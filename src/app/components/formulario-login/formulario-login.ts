@@ -3,7 +3,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { LoginService } from '../../login/services/login-service';
 import { AuthService } from '../../auth/services/auth-service';
-import {jwtDecode} from 'jwt-decode';
 
 @Component({
   selector: 'app-formulario-login',
