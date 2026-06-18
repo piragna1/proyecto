@@ -3,7 +3,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from "@angular/router";
 import { UsuarioService } from '../../usuario/services/usuario-service';
 import { Usuario } from '../../usuario/interface/usuario.interface';
-import { errorContext } from 'rxjs/internal/util/errorContext';
 
 @Component({
   selector: 'app-componente-alta-peluquero',
