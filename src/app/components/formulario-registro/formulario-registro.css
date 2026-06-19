@@ -58,7 +58,17 @@ button[type="submit"]:hover {
     box-shadow: 0 8px 22px rgba(24, 40, 72, 0.18);
 }
 
-form p {
+.error-message {
+    color: #dc2626;
+    font-size: 13px;
+    margin: 8px 0 0 0;
+    padding: 10px 12px;
+    background: #fee2e2;
+    border-radius: 6px;
+    border-left: 3px solid #dc2626;
+}
+
+form p:last-child {
     margin: 8px 0 0 0;
     font-size: 13px;
     color: #334155;

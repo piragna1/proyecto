@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { UsuarioService } from '../../usuario/services/usuario-service';
@@ -11,6 +11,7 @@ import { UsuarioService } from '../../usuario/services/usuario-service';
 })
 export class FormularioRegistro {
   fb: FormBuilder = inject(FormBuilder);
+  cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   formulario = this.fb.nonNullable.group({
     nombre: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
@@ -21,20 +22,26 @@ export class FormularioRegistro {
   });
   us: UsuarioService = inject(UsuarioService);
   r: Router = inject(Router);
+  mensajeError: string = '';
+  
   generarUsuario() {
     if (this.formulario.invalid) return;
+    this.mensajeError = '';
 
     this.us.postUsuario(this.formulario.getRawValue()).subscribe({
       next: (value) => {
         console.log('El usuario', value, ' ha sido generado.');
         this.us.setUserSignal(value);
+        this.formulario.reset();
+        this.r.navigateByUrl('/login');
       },
       error: (err) => {
-        console.log(err);
+        
+        this.mensajeError = err.error?.mensaje || 'Error al registrar usuario';
+        
+        this.cdr.markForCheck();
       },
     });
 
-    this.formulario.reset();
-    this.r.navigateByUrl('/login');
   }
 }

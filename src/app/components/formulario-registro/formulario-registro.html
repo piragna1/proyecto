@@ -9,6 +9,9 @@
     <label for="password">Clave: </label>
     <input type="password" name="password" id="password" formControlName="clave" />
     <button type="submit">Registrarse</button>
+    @if (mensajeError) {
+      <p class="error-message">{{ mensajeError }}</p>
+    }
     <p>Ya tienes una cuenta? <a [routerLink]="'/login'">Ingresa!</a></p>
   </form>
 </section>
