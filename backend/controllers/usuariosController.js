@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 
-const ROLES_VALIDOS = ['admin', 'peluquero', 'usuario'];
+const ROLES_VALIDOS = ['admin', 'peluquero', 'cliente'];
 
 // Función auxiliar de validación
 function validarUsuario(usuario, esCreacion = true) {
@@ -117,9 +117,13 @@ export function insertarUsuario(db) {
                 [nombre.trim(), email.trim().toLowerCase(), telefono.trim(), hash, rol, superadmin, direccion?.trim() || null],
                 (err, result) => {
                     if (err) {
-                        // Detectar error de email duplicado
+                        // Detectar error de email duplicado o teléfono duplicado
                         if (err.code === 'ER_DUP_ENTRY') {
-                            return res.status(409).json({ mensaje: "El email ya está registrado" });
+                            if (err.message.includes('email')) {
+                                return res.status(409).json({ mensaje: "El email ya está registrado" });
+                            } else if (err.message.includes('telefono')) {
+                                return res.status(409).json({ mensaje: "El teléfono ya está registrado" });
+                            }
                         }
                         return res.status(500).json({ mensaje: "Error al crear usuario" });
                     }
@@ -170,7 +174,11 @@ export function actualizarUsuario(db) {
             db.query(query, params, (err, result) => {
                 if (err) {
                     if (err.code === 'ER_DUP_ENTRY') {
-                        return res.status(409).json({ mensaje: "El email ya está en uso" });
+                        if (err.message.includes('email')) {
+                            return res.status(409).json({ mensaje: "El email ya está en uso" });
+                        } else if (err.message.includes('telefono')) {
+                            return res.status(409).json({ mensaje: "El teléfono ya está en uso" });
+                        }
                     }
                     return res.status(500).json({ mensaje: "Error al actualizar usuario" });
                 }
