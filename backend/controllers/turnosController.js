@@ -1,3 +1,80 @@
+import bcrypt from 'bcrypt';
+
+function validarFechasTurno(body, res) {
+    const { fechaHoraInicio, fechaHoraFin } = body;
+    if (!fechaHoraInicio || !fechaHoraFin) {
+        res.status(400).json({ mensaje: "Fechas requeridas" });
+        return null;
+    }
+
+    const inicio = new Date(fechaHoraInicio);
+    const fin = new Date(fechaHoraFin);
+
+    if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) {
+        res.status(400).json({ mensaje: "Formato de fecha inválido" });
+        return null;
+    }
+
+    if (inicio >= fin) {
+        res.status(400).json({ mensaje: "La hora de inicio debe ser menor a la de fin" });
+        return null;
+    }
+
+    if (inicio < new Date()) {
+        res.status(400).json({ mensaje: "No se puede crear turno en el pasado" });
+        return null;
+    }
+
+    return { inicio, fin, inicioStr: fechaHoraInicio, finStr: fechaHoraFin };
+}
+
+// Verifica solapamiento e inserta el turno (compartido por alta normal y alta de mostrador)
+function insertarTurnoConCliente(db, res, { idUsuario, idServicio, inicio, fin, inicioStr, finStr, respuesta }) {
+    db.query(
+        `select * from turnos where id_servicio = ? 
+         and ((fecha_hora_inicio < ? and fecha_hora_fin > ?)
+         or (fecha_hora_inicio < ? and fecha_hora_fin > ?))`,
+        [idServicio, fin, inicio, fin, inicio],
+        (err, result) => {
+            if (err) {
+                return res.status(500).json({ mensaje: "Error al verificar disponibilidad" });
+            }
+
+            if (result && result.length > 0) {
+                return res.status(409).json({
+                    mensaje: "Ese horario no está disponible"
+                });
+            }
+
+            db.query(
+                "insert into turnos (id_usuario, id_servicio, fecha_hora_inicio, fecha_hora_fin) values (?,?,?,?)",
+                [idUsuario, idServicio, inicioStr, finStr],
+                (err, result2) => {
+                    if (err) {
+                        return res.status(500).json({ mensaje: "Error al crear turno" });
+                    }
+                    return res.status(201).json({ id: result2.insertId, ...respuesta });
+                }
+            );
+        }
+    );
+}
+
+// Genera un email único para clientes de mostrador (derivado del teléfono)
+function obtenerEmailMostrador(db, telefono, callback, intento = 0) {
+    const base = 'turno-mostrador.' + telefono + '@barberia.local';
+    const email = intento === 0 ? base : base.replace('@', '-' + intento + '@');
+
+    db.query('select id from usuarios where email = ?', [email], (err, filas) => {
+        if (err) return callback(null);
+        if (filas && filas.length > 0) {
+            if (intento < 10) return obtenerEmailMostrador(db, telefono, callback, intento + 1);
+            return callback(null);
+        }
+        callback(email);
+    });
+}
+
 export function obtenerTurnos(db) {
     return (req, res) => {
         db.query("select * from turnos", (err, result) => {
@@ -41,70 +118,110 @@ export function obtenerTurnoPorId(db) {
 export function insertarTurno(db) {
     return (req, res) => {
         const turno = req.body;
-        
+
         // Validar estructura
         if (!turno || !turno.usuario || !turno.servicio) {
             return res.status(400).json({ mensaje: "Datos incompletos" });
         }
-        
+
         if (!turno.usuario.id || !turno.servicio.id) {
             return res.status(400).json({ mensaje: "ID usuario o servicio inválido" });
         }
-        
-        // Validar fechas
-        if (!turno.fechaHoraInicio || !turno.fechaHoraFin) {
-            return res.status(400).json({ mensaje: "Fechas requeridas" });
+
+        const validacionFechas = validarFechasTurno(req.body, res);
+        if (!validacionFechas) return;
+
+        insertarTurnoConCliente(db, res, {
+            idUsuario: turno.usuario.id,
+            idServicio: turno.servicio.id,
+            ...validacionFechas,
+            respuesta: turno,
+        });
+    };
+};
+
+export function insertarTurnoMostrador(db) {
+    return (req, res) => {
+        const { idServicio, fechaHoraInicio, fechaHoraFin, nombre, telefono } = req.body;
+
+        if (!idServicio || !fechaHoraInicio || !fechaHoraFin || !nombre || !telefono) {
+            return res.status(400).json({ mensaje: "Datos incompletos" });
         }
-        
-        const inicio = new Date(turno.fechaHoraInicio);
-        const fin = new Date(turno.fechaHoraFin);
-        
-        if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) {
-            return res.status(400).json({ mensaje: "Formato de fecha inválido" });
+
+        const idServicioNum = Number(idServicio);
+        if (!idServicioNum || isNaN(idServicioNum)) {
+            return res.status(400).json({ mensaje: "Servicio inválido" });
         }
-        
-        if (inicio >= fin) {
-            return res.status(400).json({ 
-                mensaje: "La hora de inicio debe ser menor a la de fin" 
-            });
+
+        if (typeof nombre !== 'string' || nombre.trim().length === 0) {
+            return res.status(400).json({ mensaje: "Nombre requerido" });
         }
-        
-        if (inicio < new Date()) {
-            return res.status(400).json({ 
-                mensaje: "No se puede crear turno en el pasado" 
-            });
+
+        if (typeof telefono !== 'string' || telefono.trim().length === 0 || telefono.length > 20) {
+            return res.status(400).json({ mensaje: "Teléfono inválido" });
         }
-        
-        // Validar que no se superpone
-        db.query(
-            `select * from turnos where id_servicio = ? 
-             and ((fecha_hora_inicio < ? and fecha_hora_fin > ?)
-             or (fecha_hora_inicio < ? and fecha_hora_fin > ?))`,
-            [turno.servicio.id, fin, inicio, fin, inicio],
-            (err, result) => {
-                if (err) {
-                    return res.status(500).json({ mensaje: "Error al verificar disponibilidad" });
+
+        const validacionFechas = validarFechasTurno(req.body, res);
+        if (!validacionFechas) return;
+
+        // Validar que el servicio exista
+        db.query('select id from servicios where id = ?', [idServicioNum], (errServ, servicios) => {
+            if (errServ) {
+                return res.status(500).json({ mensaje: "Error al verificar servicio" });
+            }
+
+            if (!servicios || servicios.length === 0) {
+                return res.status(404).json({ mensaje: "Servicio no encontrado" });
+            }
+
+            // Reutilizar usuario si el teléfono ya existe (registrado o mostrador)
+            db.query('select id from usuarios where telefono = ?', [telefono.trim()], (errUsr, usuarios) => {
+                if (errUsr) {
+                    return res.status(500).json({ mensaje: "Error al verificar cliente" });
                 }
-                
-                if (result && result.length > 0) {
-                    return res.status(409).json({ 
-                        mensaje: "Ese horario no está disponible" 
+
+                if (usuarios && usuarios.length > 0) {
+                    return insertarTurnoConCliente(db, res, {
+                        idUsuario: usuarios[0].id,
+                        idServicio: idServicioNum,
+                        ...validacionFechas,
+                        respuesta: { fechaHoraInicio, fechaHoraFin, nombre, telefono },
                     });
                 }
-                
-                // Insertar turno
-                db.query(
-                    "insert into turnos (id_usuario, id_servicio, fecha_hora_inicio, fecha_hora_fin) values (?,?,?,?)",
-                    [turno.usuario.id, turno.servicio.id, turno.fechaHoraInicio, turno.fechaHoraFin],
-                    (err, result) => {
-                        if (err) {
-                            return res.status(500).json({ mensaje: "Error al crear turno" });
-                        }
-                        return res.status(201).json({ id: result.insertId, ...turno });
+
+                // Crear cliente de mostrador
+                obtenerEmailMostrador(db, telefono.trim(), (email) => {
+                    if (!email) {
+                        return res.status(500).json({ mensaje: "Error al crear cliente" });
                     }
-                );
-            }
-        );
+
+                    const claveRandom = Math.random().toString(36).slice(2) + Date.now().toString(36);
+                    bcrypt.hash(claveRandom, 10, (errHash, hash) => {
+                        if (errHash) {
+                            return res.status(500).json({ mensaje: "Error al crear cliente" });
+                        }
+
+                        db.query(
+                            'INSERT INTO usuarios (nombre, email, telefono, clave, rol, superadmin, direccion, mostrador) VALUES (?,?,?,?,?,?,?,?)',
+                            [nombre.trim(), email, telefono.trim(), hash, 'cliente', false, null, true],
+                            (errInsert, result) => {
+                                if (errInsert) {
+                                    console.error('Error al crear cliente de mostrador:', errInsert.message);
+                                    return res.status(500).json({ mensaje: "Error al crear cliente: " + errInsert.message });
+                                }
+
+                                return insertarTurnoConCliente(db, res, {
+                                    idUsuario: result.insertId,
+                                    idServicio: idServicioNum,
+                                    ...validacionFechas,
+                                    respuesta: { fechaHoraInicio, fechaHoraFin, nombre, telefono },
+                                });
+                            }
+                        );
+                    });
+                });
+            });
+        });
     };
 };
 

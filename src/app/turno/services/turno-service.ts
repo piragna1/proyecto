@@ -30,6 +30,15 @@ export class TurnoService {
   postTurno(turno: Turno): Observable<Turno> {
     return this.http.post<Turno>(this.url, turno);
   };
+  postTurnoMostrador(payload: {
+    idServicio: string | undefined;
+    fechaHoraInicio: string;
+    fechaHoraFin: string;
+    nombre: string;
+    telefono: string;
+  }): Observable<unknown> {
+    return this.http.post(this.url + '/mostrador', payload);
+  };
   getTurnos(): Observable<any[]> {
     return this.http.get<any[]>(this.url);
   };

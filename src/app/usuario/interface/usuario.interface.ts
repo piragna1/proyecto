@@ -7,4 +7,5 @@ export interface Usuario {
   rol: string;
   superadmin: boolean;
   direccion?: string;
+  mostrador?: boolean;
 }

@@ -168,7 +168,79 @@ export function insertarUsuario(db) {
                     res.status(201).json({ id: result.insertId, nombre, email, rol });
                 }
             );
-        } catch (error) {
+        } catch {
+            res.status(500).json({ mensaje: "Error al crear usuario" });
+        }
+    };
+};
+
+// Registro público: siempre crea un cliente
+export function registrarUsuario(db) {
+    return async (req, res) => {
+        try {
+            const { nombre, email, telefono, clave, direccion } = req.body;
+
+            const usuario = { nombre, email, telefono, clave, rol: 'cliente', superadmin: false, direccion };
+            const validacion = validarUsuario(usuario, true);
+
+            if (!validacion.valido) {
+                return res.status(400).json({ 
+                    mensaje: "Datos inválidos",
+                    errores: validacion.errores 
+                });
+            }
+
+            const hash = await bcrypt.hash(clave.trim(), 10);
+            const emailFinal = email.trim().toLowerCase();
+            const telefonoFinal = telefono.trim();
+
+            // Si el teléfono pertenece a un cliente de mostrador, se reescribe esa fila
+            db.query(
+                'SELECT id, mostrador FROM usuarios WHERE telefono = ?',
+                [telefonoFinal],
+                (errSelect, fila) => {
+                    if (errSelect) {
+                        return res.status(500).json({ mensaje: "Error al crear usuario" });
+                    }
+
+                    if (fila && fila.length > 0 && fila[0].mostrador === 1) {
+                        db.query(
+                            'UPDATE usuarios SET nombre = ?, email = ?, clave = ?, mostrador = false WHERE id = ?',
+                            [nombre.trim(), emailFinal, hash, fila[0].id],
+                            (err) => {
+                                if (err) {
+                                    if (err.code === 'ER_DUP_ENTRY' && err.message.includes('email')) {
+                                        return res.status(409).json({ mensaje: "El email ya está registrado" });
+                                    }
+                                    return res.status(500).json({ mensaje: "Error al crear usuario" });
+                                }
+                                return res.status(201).json({ id: fila[0].id, nombre, email: emailFinal, rol: 'cliente' });
+                            }
+                        );
+                        return;
+                    }
+
+                    db.query(
+                        'INSERT INTO usuarios (nombre, email, telefono, clave, rol, superadmin, direccion) VALUES (?,?,?,?,?,?,?)',
+                        [nombre.trim(), emailFinal, telefonoFinal, hash, 'cliente', false, direccion?.trim() || null],
+                        (err, result) => {
+                            if (err) {
+                                if (err.code === 'ER_DUP_ENTRY') {
+                                    if (err.message.includes('email')) {
+                                        return res.status(409).json({ mensaje: "El email ya está registrado" });
+                                    } else if (err.message.includes('telefono')) {
+                                        return res.status(409).json({ mensaje: "El teléfono ya está registrado" });
+                                    }
+                                }
+                                return res.status(500).json({ mensaje: "Error al crear usuario" });
+                            }
+
+                            res.status(201).json({ id: result.insertId, nombre, email: emailFinal, rol: 'cliente' });
+                        }
+                    );
+                }
+            );
+        } catch {
             res.status(500).json({ mensaje: "Error al crear usuario" });
         }
     };
@@ -183,50 +255,91 @@ export function actualizarUsuario(db) {
             if (!id || isNaN(id)) {
                 return res.status(400).json({ mensaje: "ID inválido" });
             }
-            
-            // Validar entrada
-            const usuario = { nombre, email, telefono, clave: clave || '', rol, superadmin, direccion };
-            const validacion = validarUsuario(usuario, false);
-            
-            if (!validacion.valido) {
-                return res.status(400).json({ 
-                    mensaje: "Datos inválidos",
-                    errores: validacion.errores 
-                });
+            const idNum = Number(id);
+
+            if (!req.user) {
+                return res.status(403).json({ mensaje: "No autorizado" });
             }
-            
-            let query = 'UPDATE usuarios SET nombre = ?, email = ?, telefono = ?, rol = ?, superadmin = ?, direccion = ?';
-            let params = [nombre.trim(), email.trim().toLowerCase(), telefono.trim(), rol, superadmin, direccion?.trim() || null];
-            
-            // Si hay clave nueva, agregar a query
-            if (clave && clave.trim() !== '') {
-                const hash = await bcrypt.hash(clave.trim(), 10);
-                query += ', clave = ?';
-                params.splice(3, 0, hash); // Insertar hash después de telefono
-            }
-            
-            query += ' WHERE id = ?';
-            params.push(id);
-            
-            db.query(query, params, (err, result) => {
-                if (err) {
-                    if (err.code === 'ER_DUP_ENTRY') {
-                        if (err.message.includes('email')) {
-                            return res.status(409).json({ mensaje: "El email ya está en uso" });
-                        } else if (err.message.includes('telefono')) {
-                            return res.status(409).json({ mensaje: "El teléfono ya está en uso" });
+
+            db.query("SELECT rol, superadmin FROM usuarios WHERE id = ?", [idNum], async (err, resultado) => {
+                try {
+                    if (err) {
+                        return res.status(500).json({ mensaje: "Error al actualizar usuario" });
+                    }
+                    if (!resultado || resultado.length === 0) {
+                        return res.status(404).json({ mensaje: "Usuario no encontrado" });
+                    }
+
+                    const destino = resultado[0];
+                    const esEdicionPropia = idNum === req.user.id;
+
+                    let rolFinal = rol;
+                    let superadminFinal = superadmin;
+
+                    if (esEdicionPropia) {
+                        // En el propio perfil se preservan rol y superadmin actuales
+                        rolFinal = destino.rol;
+                        superadminFinal = esSuperAdmin(destino);
+                    } else {
+                        // Editar a otro usuario exige ser administrador
+                        if (req.user.rol !== 'administrador') {
+                            return res.status(403).json({ mensaje: "No autorizado" });
+                        }
+                        // Un admin normal no puede editar superadmins ni otorgar superadmin/rol admin
+                        if (esSuperAdmin(destino) || superadmin === true || rol === 'administrador') {
+                            if (!esSuperAdmin(req.user)) {
+                                return res.status(403).json({ mensaje: "Solo el superadmin puede modificar superadmins u otorgar superadmin" });
+                            }
                         }
                     }
-                    return res.status(500).json({ mensaje: "Error al actualizar usuario" });
+
+                    // Validar entrada
+                    const usuario = { nombre, email, telefono, clave: clave || '', rol: rolFinal, superadmin: superadminFinal, direccion };
+                    const validacion = validarUsuario(usuario, false);
+
+                    if (!validacion.valido) {
+                        return res.status(400).json({ 
+                            mensaje: "Datos inválidos",
+                            errores: validacion.errores 
+                        });
+                    }
+
+                    let query = 'UPDATE usuarios SET nombre = ?, email = ?, telefono = ?, rol = ?, superadmin = ?, direccion = ?';
+                    let params = [nombre.trim(), email.trim().toLowerCase(), telefono.trim(), rolFinal, superadminFinal, direccion?.trim() || null];
+
+                    // Si hay clave nueva, agregar a query
+                    if (clave && clave.trim() !== '') {
+                        const hash = await bcrypt.hash(clave.trim(), 10);
+                        query += ', clave = ?';
+                        params.splice(3, 0, hash); // Insertar hash después de telefono
+                    }
+
+                    query += ' WHERE id = ?';
+                    params.push(idNum);
+
+                    db.query(query, params, (err, result) => {
+                        if (err) {
+                            if (err.code === 'ER_DUP_ENTRY') {
+                                if (err.message.includes('email')) {
+                                    return res.status(409).json({ mensaje: "El email ya está en uso" });
+                                } else if (err.message.includes('telefono')) {
+                                    return res.status(409).json({ mensaje: "El teléfono ya está en uso" });
+                                }
+                            }
+                            return res.status(500).json({ mensaje: "Error al actualizar usuario" });
+                        }
+                        
+                        if (!result || result.affectedRows === 0) {
+                            return res.status(404).json({ mensaje: "Usuario no encontrado" });
+                        }
+                        
+                        res.json({ mensaje: "Usuario actualizado" });
+                    });
+                } catch {
+                    res.status(500).json({ mensaje: "Error al actualizar usuario" });
                 }
-                
-                if (!result || result.affectedRows === 0) {
-                    return res.status(404).json({ mensaje: "Usuario no encontrado" });
-                }
-                
-                res.json({ mensaje: "Usuario actualizado" });
             });
-        } catch (error) {
+        } catch {
             res.status(500).json({ mensaje: "Error al actualizar usuario" });
         }
     };

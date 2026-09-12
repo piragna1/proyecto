@@ -5,6 +5,7 @@ import { PaginaRegistro } from './pages/pagina-registro/pagina-registro';
 import { PaginaAdmin } from './pages/pagina-admin/pagina-admin';
 import { PaginaHome } from './pages/pagina-home/pagina-home';
 import { PaginaNuevoTurno } from './pages/pagina-nuevo-turno/pagina-nuevo-turno';
+import { PaginaNuevoTurnoMostrador } from './pages/pagina-nuevo-turno-mostrador/pagina-nuevo-turno-mostrador';
 import { PaginaMisTurnos } from './pages/pagina-mis-turnos/pagina-mis-turnos';
 import { PaginaInicialAdministrador } from './pages/pagina-inicial-administrador/pagina-inicial-administrador';
 import { PaginaUsuariosAdministrador } from './pages/pagina-usuarios-administrador/pagina-usuarios-administrador';
@@ -25,6 +26,7 @@ import { guestGuard } from './guards/guestGuard';
 import { adminGuard } from './guards/adminGuard';
 import { superAdminGuard } from './guards/superAdminGuard';
 import { peluqueroGuard } from './guards/peluqueroGuard';
+import { mostradorGuard } from './guards/mostradorGuard';
 import { PaginaPeluquero } from './pages/pagina-peluquero/pagina-peluquero';
 import { PaginaEditarPerfil } from './pages/pagina-editar-perfil/pagina-editar-perfil';
 import { PaginaEditarPerfilAdministrador } from './pages/pagina-editar-perfil-administrador/pagina-editar-perfil-administrador';
@@ -57,6 +59,9 @@ export const routes: Routes = [
     },
     {
         path: 'nuevo-turno', component: PaginaNuevoTurno, canActivate: [authGuard]
+    },
+    {
+        path: 'nuevo-turno-mostrador', component: PaginaNuevoTurnoMostrador, canActivate: [mostradorGuard]
     },
     {
         path: 'mis-turnos', component: PaginaMisTurnos, canActivate: [authGuard]

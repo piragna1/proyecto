@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { actualizarTurno, eliminarTurno, insertarTurno, obtenerTurnoPorId, obtenerTurnos } from '../controllers/turnosController.js';
+import { actualizarTurno, eliminarTurno, insertarTurno, insertarTurnoMostrador, obtenerTurnoPorId, obtenerTurnos } from '../controllers/turnosController.js';
 import { verificarToken } from '../middlewares/verificarToken.js';
+import { verificarRol } from '../middlewares/verificarRol.js';
 
 export default function (db) {
     const router = Router();
@@ -8,6 +9,8 @@ export default function (db) {
     router.get("/", verificarToken, obtenerTurnos(db));
 
     router.get("/:id", verificarToken, obtenerTurnoPorId(db));
+
+    router.post('/mostrador', verificarToken, verificarRol(['administrador', 'peluquero']), insertarTurnoMostrador(db));
 
     router.post('/', verificarToken, insertarTurno(db));
 
