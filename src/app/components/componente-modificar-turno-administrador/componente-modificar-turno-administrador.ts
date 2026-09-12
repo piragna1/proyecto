@@ -8,6 +8,7 @@ import { Servicio } from '../../servicio/interface/servicio.interface';
 import { UsuarioService } from '../../usuario/services/usuario-service';
 import { Turno } from '../../turno/interface/turno.interface';
 import { formatearFechaSQL } from '../../shared/utils/dateHelpers';
+import { ToastService } from '../../shared/services/toast-service';
 
 @Component({
   selector: 'app-componente-modificar-turno-administrador',
@@ -28,6 +29,7 @@ export class ComponenteModificarTurnoAdministrador implements OnInit {
   ts: TurnoService = inject(TurnoService);
   us: UsuarioService = inject(UsuarioService);
   r: Router = inject(Router);
+  toastService: ToastService = inject(ToastService);
   ngOnInit(): void {
     this.ss.limpiarServiciosSignal();
     this.ss.getServicios().subscribe({
@@ -78,6 +80,10 @@ export class ComponenteModificarTurnoAdministrador implements OnInit {
                 console.log('turno puteado', turnoPuteado);
                 this.ts.limpiarTurnosSignal();
                 this.r.navigateByUrl('/turnos-admin');
+              },
+              error: (e) => {
+                console.log(e);
+                this.toastService.mostrarMensaje(e.error?.mensaje || 'No se pudo modificar el turno', true);
               }
             })
           }

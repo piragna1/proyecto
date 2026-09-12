@@ -82,8 +82,9 @@ export class ComponenteModificarTurnoUsuario implements OnInit {
             this.r.navigateByUrl('/mis-turnos');
             this.toastService.mostrarMensaje('Turno modificado correctamente.');
           },
-          error: (err) => {
-            console.log(err);
+          error: (e) => {
+            console.log(e);
+            this.toastService.mostrarMensaje(e.error?.mensaje || 'No se pudo modificar el turno', true);
           }
         });
       },
