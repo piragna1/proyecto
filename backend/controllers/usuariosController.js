@@ -101,8 +101,17 @@ export function obtenerUsuarioPorId(db) {
         if (!id || isNaN(id)) {
             return res.status(400).json({ mensaje: "ID inválido" });
         }
+
+        if (!req.user) {
+            return res.status(403).json({ mensaje: "No autorizado" });
+        }
+
+        // Un cliente solo puede ver su propio perfil; administradores y peluqueros pueden ver cualquiera
+        if (req.user.rol === 'cliente' && Number(id) !== req.user.id) {
+            return res.status(403).json({ mensaje: "No autorizado" });
+        }
         
-        db.query("SELECT id, nombre, email, telefono, rol, superadmin, direccion FROM usuarios WHERE id = ?", 
+        db.query("SELECT id, nombre, email, telefono, rol, superadmin, direccion, mostrador FROM usuarios WHERE id = ?", 
             [id], 
             (err, result) => {
                 if (err) {
