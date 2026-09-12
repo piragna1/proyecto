@@ -31,6 +31,7 @@ export class ComponenteClientesAdministrador implements OnInit {
     this.us.deleteUsuario(id).subscribe({
       next: (value) => {
         console.log('usuario eliminado:', value);
+        this.us.removerUsuario(id!);
       },
       error: (err) => {
         console.log(err);

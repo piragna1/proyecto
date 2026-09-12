@@ -28,6 +28,12 @@ export class UsuarioService {
     this.usuarios.set([]);
   }
 
+  removerUsuario(id: string | null) {
+    this.usuarios.update((actuales) => {
+      return actuales.filter((u) => u.id !== id);
+    });
+  };
+
   getPeluquerosSignal() { return this.peluqueros };
   setPeluquerosSignal(peluquero: Usuario) {
     this.peluqueros.update((actuales) => {
