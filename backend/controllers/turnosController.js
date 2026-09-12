@@ -29,7 +29,7 @@ function validarFechasTurno(body, res) {
 }
 
 // Verifica que un usuario no tenga más de un turno en el mismo día
-function verificarUnTurnoPorDia(db, idUsuario, fechaHoraInicio, res, excluirId, callback) {
+function verificarUnTurnoPorDia(db, idUsuario, fechaHoraInicio, res, excluirId, callback, mensaje) {
     let query = 'select count(*) as cantidad from turnos where id_usuario = ? and date(fecha_hora_inicio) = date(?)';
     const params = [idUsuario, fechaHoraInicio];
 
@@ -44,7 +44,7 @@ function verificarUnTurnoPorDia(db, idUsuario, fechaHoraInicio, res, excluirId, 
         }
 
         if (filas && filas[0].cantidad > 0) {
-            return res.status(409).json({ mensaje: "Ya existe un turno de este usuario para esa fecha" });
+            return res.status(409).json({ mensaje });
         }
 
         callback();
@@ -52,7 +52,7 @@ function verificarUnTurnoPorDia(db, idUsuario, fechaHoraInicio, res, excluirId, 
 }
 
 // Verifica solapamiento e inserta el turno (compartido por alta normal y alta de mostrador)
-function insertarTurnoConCliente(db, res, { idUsuario, idServicio, inicio, fin, inicioStr, finStr, respuesta }) {
+function insertarTurnoConCliente(db, res, { idUsuario, idServicio, inicio, fin, inicioStr, finStr, respuesta, mensajeExisteTurno }) {
     verificarUnTurnoPorDia(db, idUsuario, inicioStr, res, null, () => {
         db.query(
             `select * from turnos where id_servicio = ? 
@@ -82,7 +82,7 @@ function insertarTurnoConCliente(db, res, { idUsuario, idServicio, inicio, fin, 
                 );
             }
         );
-    });
+    }, mensajeExisteTurno);
 }
 
 // Genera un email único para clientes de mostrador (derivado del teléfono)
@@ -161,6 +161,7 @@ export function insertarTurno(db) {
             idServicio: turno.servicio.id,
             ...validacionFechas,
             respuesta: turno,
+            mensajeExisteTurno: "No puedes reservar 2 turnos para el mismo dia",
         });
     };
 };
@@ -211,6 +212,7 @@ export function insertarTurnoMostrador(db) {
                         idServicio: idServicioNum,
                         ...validacionFechas,
                         respuesta: { fechaHoraInicio, fechaHoraFin, nombre, telefono },
+                        mensajeExisteTurno: "El usuario ya tiene un turno reservado para ese día",
                     });
                 }
 
@@ -240,6 +242,7 @@ export function insertarTurnoMostrador(db) {
                                     idServicio: idServicioNum,
                                     ...validacionFechas,
                                     respuesta: { fechaHoraInicio, fechaHoraFin, nombre, telefono },
+                                    mensajeExisteTurno: "El usuario ya tiene un turno reservado para ese día",
                                 });
                             }
                         );
@@ -317,7 +320,7 @@ export function actualizarTurno(db) {
             });
         }
         
-        // Validar que el usuario no supere un turno por día y que no se superponga (excluyendo este turno)
+// Validar que el usuario no supere un turno por día y que no se superponga (excluyendo este turno)
         verificarUnTurnoPorDia(db, usuario.id, fechaHoraInicio, res, id, () => {
             db.query(
             `select * from turnos where id_servicio = ? and id != ?
@@ -353,6 +356,6 @@ export function actualizarTurno(db) {
                 );
             }
             );
-        });
+}, "El usuario ya tiene un turno reservado para ese día");
     };
 };
