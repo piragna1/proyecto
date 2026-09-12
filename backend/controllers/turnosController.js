@@ -28,25 +28,49 @@ function validarFechasTurno(body, res) {
     return { inicio, fin, inicioStr: fechaHoraInicio, finStr: fechaHoraFin };
 }
 
+// Verifica que un usuario no tenga más de un turno en el mismo día
+function verificarUnTurnoPorDia(db, idUsuario, fechaHoraInicio, res, excluirId, callback) {
+    let query = 'select count(*) as cantidad from turnos where id_usuario = ? and date(fecha_hora_inicio) = date(?)';
+    const params = [idUsuario, fechaHoraInicio];
+
+    if (excluirId) {
+        query += ' and id != ?';
+        params.push(excluirId);
+    }
+
+    db.query(query, params, (err, filas) => {
+        if (err) {
+            return res.status(500).json({ mensaje: "Error al verificar turnos del usuario" });
+        }
+
+        if (filas && filas[0].cantidad > 0) {
+            return res.status(409).json({ mensaje: "Ya existe un turno de este usuario para esa fecha" });
+        }
+
+        callback();
+    });
+}
+
 // Verifica solapamiento e inserta el turno (compartido por alta normal y alta de mostrador)
 function insertarTurnoConCliente(db, res, { idUsuario, idServicio, inicio, fin, inicioStr, finStr, respuesta }) {
-    db.query(
-        `select * from turnos where id_servicio = ? 
-         and ((fecha_hora_inicio < ? and fecha_hora_fin > ?)
-         or (fecha_hora_inicio < ? and fecha_hora_fin > ?))`,
-        [idServicio, fin, inicio, fin, inicio],
-        (err, result) => {
-            if (err) {
-                return res.status(500).json({ mensaje: "Error al verificar disponibilidad" });
-            }
+    verificarUnTurnoPorDia(db, idUsuario, inicioStr, res, null, () => {
+        db.query(
+            `select * from turnos where id_servicio = ? 
+             and ((fecha_hora_inicio < ? and fecha_hora_fin > ?)
+             or (fecha_hora_inicio < ? and fecha_hora_fin > ?))`,
+            [idServicio, fin, inicio, fin, inicio],
+            (err, result) => {
+                if (err) {
+                    return res.status(500).json({ mensaje: "Error al verificar disponibilidad" });
+                }
 
-            if (result && result.length > 0) {
-                return res.status(409).json({
-                    mensaje: "Ese horario no está disponible"
-                });
-            }
+                if (result && result.length > 0) {
+                    return res.status(409).json({
+                        mensaje: "Ese horario no está disponible"
+                    });
+                }
 
-            db.query(
+                db.query(
                 "insert into turnos (id_usuario, id_servicio, fecha_hora_inicio, fecha_hora_fin) values (?,?,?,?)",
                 [idUsuario, idServicio, inicioStr, finStr],
                 (err, result2) => {
@@ -54,10 +78,11 @@ function insertarTurnoConCliente(db, res, { idUsuario, idServicio, inicio, fin, 
                         return res.status(500).json({ mensaje: "Error al crear turno" });
                     }
                     return res.status(201).json({ id: result2.insertId, ...respuesta });
-                }
-            );
-        }
-    );
+                    }
+                );
+            }
+        );
+    });
 }
 
 // Genera un email único para clientes de mostrador (derivado del teléfono)
@@ -292,8 +317,9 @@ export function actualizarTurno(db) {
             });
         }
         
-        // Validar que no se superpone (excluyendo este turno)
-        db.query(
+        // Validar que el usuario no supere un turno por día y que no se superponga (excluyendo este turno)
+        verificarUnTurnoPorDia(db, usuario.id, fechaHoraInicio, res, id, () => {
+            db.query(
             `select * from turnos where id_servicio = ? and id != ?
              and ((fecha_hora_inicio < ? and fecha_hora_fin > ?)
              or (fecha_hora_inicio < ? and fecha_hora_fin > ?))`,
@@ -326,6 +352,7 @@ export function actualizarTurno(db) {
                     }
                 );
             }
-        );
+            );
+        });
     };
 };
