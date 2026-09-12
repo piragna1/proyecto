@@ -87,6 +87,7 @@ export class ComponenteNuevoTurno implements OnInit {
       },
       error: (e) => {
         console.log(e);
+        this.toasts.mostrarMensaje(e.error?.mensaje || 'Error al crear turno', true);
       },
     });
         },

@@ -3,6 +3,7 @@ import { AuthService } from '../../auth/services/auth-service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LoginService } from '../../login/services/login-service';
 import { Router } from "@angular/router";
+import { ToastService } from '../../shared/services/toast-service';
 
 @Component({
   selector: 'app-formulario-admin',
@@ -19,6 +20,7 @@ export class FormularioAdmin {
     clave: ['', [Validators.required]]
   });
   r: Router = inject(Router);
+  toasts: ToastService = inject(ToastService);
   onLogin() {
 
     if (this.formulario.invalid) return;
@@ -33,6 +35,7 @@ export class FormularioAdmin {
       },
       error: (err) => {
         console.log('Error en login:', err);
+        this.toasts.mostrarMensaje(err.error?.mensaje || 'Error al iniciar sesión', true);
       }
     })
   }

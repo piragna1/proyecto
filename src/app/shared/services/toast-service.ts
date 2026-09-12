@@ -6,8 +6,10 @@ export class ToastService {
   mensaje = signal('');
   visible = signal(false);
   ocultando = signal(false);
-  mostrarMensaje(mensaje: string) {
+  esError = signal(false);
+  mostrarMensaje(mensaje: string, error = false) {
     this.mensaje.set(mensaje);
+    this.esError.set(error);
     this.ocultando.set(false);
     this.visible.set(true);
     setTimeout(() => {

@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { LoginService } from '../../login/services/login-service';
 import { AuthService } from '../../auth/services/auth-service';
+import { ToastService } from '../../shared/services/toast-service';
 
 @Component({
   selector: 'app-formulario-login',
@@ -19,6 +20,7 @@ export class FormularioLogin {
   });
   ls: LoginService = inject(LoginService);
   r: Router = inject(Router);
+  toasts: ToastService = inject(ToastService);
   /**
    * Metodo para iniciar sesion como cliente.
    * @returns void
@@ -35,6 +37,7 @@ export class FormularioLogin {
       },
       error: (e) => {
         console.log(e);
+        this.toasts.mostrarMensaje(e.error?.mensaje || 'Error al iniciar sesión', true);
       },
     });
   }

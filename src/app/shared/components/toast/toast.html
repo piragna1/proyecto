@@ -1,5 +1,5 @@
 @if (ts.visible()) {
-<div class="app-toast" [class.toast-out]="ts.ocultando()">
+<div class="app-toast" [class.toast-error]="ts.esError()" [class.toast-out]="ts.ocultando()">
     {{ts.mensaje()}}
 </div>
 }

@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/services/auth-service';
 import { LoginService } from '../../login/services/login-service';
+import { ToastService } from '../../shared/services/toast-service';
 
 @Component({
   selector: 'app-formulario-peluquero',
@@ -19,6 +20,7 @@ export class FormularioPeluquero {
   as: AuthService = inject(AuthService);
   ls: LoginService = inject(LoginService);
   r: Router = inject(Router);
+  toasts: ToastService = inject(ToastService);
   onLogin() {
     if (this.formulario.invalid) return;
     const { email, clave } = this.formulario.value;
@@ -31,6 +33,7 @@ export class FormularioPeluquero {
       },
       error: (err) => {
         console.error(err);
+        this.toasts.mostrarMensaje(err.error?.mensaje || 'Error al iniciar sesión', true);
       }
     })
   }
