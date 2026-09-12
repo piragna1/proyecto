@@ -1,6 +1,10 @@
 import bcrypt from 'bcrypt';
 
-const ROLES_VALIDOS = ['admin', 'peluquero', 'cliente'];
+const ROLES_VALIDOS = ['administrador', 'peluquero', 'cliente'];
+
+function esSuperAdmin(usuario) {
+    return usuario?.superadmin === 1 || usuario?.superadmin === true;
+}
 
 // Función auxiliar de validación
 function validarUsuario(usuario, esCreacion = true) {
@@ -58,14 +62,35 @@ function validarUsuario(usuario, esCreacion = true) {
 
 export function obtenerUsuarios(db) {
     return (req, res) => {
-        db.query("SELECT id, nombre, email, telefono, rol, superadmin, direccion FROM usuarios", 
-            (err, result) => {
-                if (err) {
-                    return res.status(500).json({ mensaje: "Error al obtener usuarios" });
-                }
-                res.json(result || []);
+        const { rol } = req.query;
+
+        // Un cliente no puede listar usuarios
+        if (!req.user || req.user.rol === 'cliente') {
+            return res.status(403).json({ mensaje: "No autorizado" });
+        }
+
+        // El peluquero solo puede listar clientes
+        if (req.user.rol === 'peluquero' && rol !== 'cliente') {
+            return res.status(403).json({ mensaje: "No autorizado" });
+        }
+
+        if (rol && !ROLES_VALIDOS.includes(rol)) {
+            return res.status(400).json({ mensaje: "Rol inválido" });
+        }
+
+        let query = "SELECT id, nombre, email, telefono, rol, superadmin, direccion, mostrador FROM usuarios";
+        const params = [];
+        if (rol) {
+            query += " WHERE rol = ?";
+            params.push(rol);
+        }
+
+        db.query(query, params, (err, result) => {
+            if (err) {
+                return res.status(500).json({ mensaje: "Error al obtener usuarios" });
             }
-        );
+            res.json(result || []);
+        });
     };
 };
 
@@ -99,6 +124,18 @@ export function insertarUsuario(db) {
         try {
             const { nombre, email, telefono, clave, rol, superadmin, direccion } = req.body;
             
+            // Solo usuarios administradores pueden crear usuarios
+            if (!req.user || req.user.rol !== 'administrador') {
+                return res.status(403).json({ mensaje: "No autorizado" });
+            }
+
+            // Solo el superadmin puede crear administradores u otorgar superadmin
+            if (rol === 'administrador' || superadmin === true) {
+                if (!esSuperAdmin(req.user)) {
+                    return res.status(403).json({ mensaje: "Solo el superadmin puede crear administradores u otorgar superadmin" });
+                }
+            }
+
             // Validar entrada
             const usuario = { nombre, email, telefono, clave, rol, superadmin, direccion };
             const validacion = validarUsuario(usuario, true);
@@ -202,19 +239,41 @@ export function eliminarUsuario(db) {
         if (!id || isNaN(id)) {
             return res.status(400).json({ mensaje: "ID inválido" });
         }
-        
-        db.query('DELETE FROM usuarios WHERE id = ?', [id],
-            (err, result) => {
-                if (err) {
-                    return res.status(500).json({ mensaje: "Error al eliminar usuario" });
-                }
-                
-                if (!result || result.affectedRows === 0) {
-                    return res.status(404).json({ mensaje: "Usuario no encontrado" });
-                }
-                
-                res.json({ mensaje: "Usuario eliminado" });
+        const idNum = Number(id);
+
+        if (!req.user || req.user.rol !== 'administrador') {
+            return res.status(403).json({ mensaje: "No autorizado" });
+        }
+
+        if (idNum === req.user.id) {
+            return res.status(403).json({ mensaje: "No puedes eliminar tu propia cuenta" });
+        }
+
+        db.query("SELECT superadmin FROM usuarios WHERE id = ?", [idNum], (err, resultado) => {
+            if (err) {
+                return res.status(500).json({ mensaje: "Error al eliminar usuario" });
             }
-        );
+            if (!resultado || resultado.length === 0) {
+                return res.status(404).json({ mensaje: "Usuario no encontrado" });
+            }
+
+            if (esSuperAdmin(resultado[0]) && !esSuperAdmin(req.user)) {
+                return res.status(403).json({ mensaje: "Solo el superadmin puede eliminar superadmins" });
+            }
+
+            db.query('DELETE FROM usuarios WHERE id = ?', [idNum],
+                (err, result) => {
+                    if (err) {
+                        return res.status(500).json({ mensaje: "Error al eliminar usuario" });
+                    }
+                    
+                    if (!result || result.affectedRows === 0) {
+                        return res.status(404).json({ mensaje: "Usuario no encontrado" });
+                    }
+                    
+                    res.json({ mensaje: "Usuario eliminado" });
+                }
+            );
+        });
     };
 };

@@ -10,6 +10,11 @@ export function guestGuard() {
     const rol = authService.obtenerRolUsuario();
     console.log('rol:', rol);
 
+    if (!authService.esTokenValido()){
+        authService.cerrarSesion();
+        return true;
+    }
+
     switch(rol){
         case 'cliente':
             router.navigateByUrl('/home')

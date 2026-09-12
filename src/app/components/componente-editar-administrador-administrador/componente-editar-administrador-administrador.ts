@@ -20,6 +20,7 @@ export class ComponenteEditarAdministradorAdministrador implements OnInit {
   ar: ActivatedRoute = inject(ActivatedRoute);
   us: UsuarioService = inject(UsuarioService);
   id: string | null = null;
+  adminActual: Usuario | null = null;
   r: Router = inject(Router);
   ngOnInit(): void {
     this.ar.paramMap.subscribe({
@@ -34,13 +35,15 @@ export class ComponenteEditarAdministradorAdministrador implements OnInit {
   };
   editarAdministrador() {
     if (this.formulario.invalid) return;
+    const administrador = this.adminActual;
+    if (!administrador) return;
     const a: Usuario = {
-      nombre: 'Super Admin',
+      nombre: administrador.nombre,
       email: this.formulario.controls.email.value,
       telefono: this.formulario.controls.telefono.value,
       clave: this.formulario.controls.clave.value,
-      rol: 'administrador',
-      superadmin: true
+      rol: administrador.rol,
+      superadmin: !!administrador.superadmin
     };
     this.us.putUsuario(a, this.id).subscribe({
       next: (value) => {
@@ -57,6 +60,7 @@ export class ComponenteEditarAdministradorAdministrador implements OnInit {
     this.us.getUsuarioById(id).subscribe({
       next: (value) => {
         console.log('admin encontrado:', value);
+        this.adminActual = value;
         this.formulario.controls.email.setValue(value.email);
         this.formulario.controls.telefono.setValue(value.telefono);
       },

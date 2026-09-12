@@ -6,6 +6,7 @@ import loginRoutes from './routes/login.js'
 import serviciosRoutes from './routes/servicios.js'
 import turnosRoutes from './routes/turnos.js'
 import usuariosRoutes from './routes/usuarios.js'
+import registroRoutes from './routes/registro.js'
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use('/login', loginRoutes(db));
 app.use('/servicios', serviciosRoutes(db));
 app.use('/turnos', turnosRoutes(db));
 app.use('/usuarios', usuariosRoutes(db));
+app.use('/registro', registroRoutes(db));
 
 
 

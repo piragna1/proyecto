@@ -17,8 +17,6 @@ export class FormularioRegistro {
     email: ['', [Validators.required, Validators.email]],
     telefono: ['', [Validators.required, Validators.minLength(10)]],
     clave: ['', [Validators.required]],
-    rol: ['cliente'],
-    superadmin: [false],
   });
   us: UsuarioService = inject(UsuarioService);
   r: Router = inject(Router);
@@ -28,7 +26,7 @@ export class FormularioRegistro {
     if (this.formulario.invalid) return;
     this.mensajeError = '';
 
-    this.us.postUsuario(this.formulario.getRawValue()).subscribe({
+    this.us.registrarUsuario(this.formulario.getRawValue()).subscribe({
       next: (value) => {
         console.log('El usuario', value, ' ha sido generado.');
         this.us.setUserSignal(value);

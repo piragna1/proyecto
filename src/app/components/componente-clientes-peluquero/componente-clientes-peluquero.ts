@@ -12,7 +12,7 @@ export class ComponenteClientesPeluquero implements OnInit {
   us: UsuarioService = inject(UsuarioService);
   clientes = this.us.getUsuariosSignal();
   ngOnInit(): void {
-    this.us.getUsuarios().subscribe({
+    this.us.getUsuarios('cliente').subscribe({
       next: (usuarios) => {
         console.log(usuarios);
         const clientes = usuarios.filter((u) => { return u.rol === 'cliente' });

@@ -12,6 +12,10 @@ export class AuthService {
   logOut() {
     this.estoyLogeado = false;
   }
+  cerrarSesion() {
+    this.logOut();
+    localStorage.removeItem('token');
+  }
   
     obtenerPayload(){
       const token = localStorage.getItem('token');

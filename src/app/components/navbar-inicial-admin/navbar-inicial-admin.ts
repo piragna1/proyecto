@@ -12,8 +12,7 @@ export class NavbarInicialAdmin {
   as: AuthService = inject(AuthService);
   r: Router = inject(Router);
   onLogout() {
-    localStorage.removeItem('token');
-    this.as.logOut();
+    this.as.cerrarSesion();
   };
   onEditarPefilAdmin() {
     const payload = this.as.obtenerPayload();

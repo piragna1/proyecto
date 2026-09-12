@@ -7,7 +7,11 @@ export function authGuard() {
     const authService = inject(AuthService);
     const router: Router = inject(Router);
 
-    if (!authService.esTokenValido()) return false;
+    if (!authService.esTokenValido()) {
+        authService.cerrarSesion();
+        router.navigateByUrl('/');
+        return false;
+    }
 
     const rol = authService.obtenerRolUsuario();
 

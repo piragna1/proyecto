@@ -12,8 +12,7 @@ export class NavbarInicialPeluquero {
   as: AuthService = inject(AuthService);
   r: Router = inject(Router);
   onLogOut() {
-    this.as.logOut();
-    localStorage.removeItem('token');
+    this.as.cerrarSesion();
   }
   onEditarPerfilPeluquero() {
     const payload = this.as.obtenerPayload();

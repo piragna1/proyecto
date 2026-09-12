@@ -12,8 +12,7 @@ export class NavbarUsuarioNuevoTurno {
   as: AuthService = inject(AuthService);
   r: Router = inject(Router);
   onLogOut() {
-    this.as.logOut();
-    localStorage.removeItem('token');
+    this.as.cerrarSesion();
   }
   onEditarPerfil() {
     const payload = this.as.obtenerPayload();

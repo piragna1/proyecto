@@ -9,7 +9,7 @@ export default function (db) {
 
     router.get("/:id", verificarToken, obtenerUsuarioPorId(db));
 
-    router.post('/', insertarUsuario(db));
+    router.post('/', verificarToken, insertarUsuario(db));
 
     router.put('/:id', verificarToken, actualizarUsuario(db));
 

@@ -62,8 +62,13 @@ export class UsuarioService {
     return this.http.post<Usuario>(this.url, usuario);
   };
 
-  getUsuarios(): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(this.url);
+  registrarUsuario(usuario: Omit<Usuario, 'rol' | 'superadmin'>): Observable<Usuario> {
+    return this.http.post<Usuario>('http://localhost:3000/registro', usuario);
+  };
+
+  getUsuarios(rol?: string): Observable<Usuario[]> {
+    const url = rol ? this.url + '?rol=' + rol : this.url;
+    return this.http.get<Usuario[]>(url);
   };
 
   getUsuarioById(id: string | null): Observable<Usuario> {
