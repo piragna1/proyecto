@@ -1,5 +1,9 @@
 <section>
     <a [routerLink]="'/home-admin'">Volver</a>
+    <div>
+        <label>Filtrar por día: <input type="date" [value]="fecha" (change)="filtrarPorDia($event)"></label>
+        <button (click)="verTodos()">Ver todos</button>
+    </div>
     <table>
         <thead>
             <th>Cliente</th>
@@ -15,6 +19,10 @@
                     A: {{item.fechaHoraFin}}</td>
                 <td><button [routerLink]="['/modificar-turno-administrador',item.id]">Editar</button></td>
                 <td><button (click)="eliminarTurno(item.id!)">Eliminar</button></td>
+            </tr>
+            } @empty {
+            <tr>
+                <td colspan="3">Sin turnos para el día seleccionado</td>
             </tr>
             }
         </tbody>

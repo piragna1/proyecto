@@ -16,10 +16,16 @@ export class ComponenteTurnosAdministrador implements OnInit {
   ss: ServicioService = inject(ServicioService);
   us: UsuarioService = inject(UsuarioService);
   turnos = this.ts.getTurnosSignal();
+  fecha: string = '';
   ngOnInit(): void {
-    this.ts.getTurnos().subscribe({
+    this.cargarTurnos();
+  };
+
+  cargarTurnos(fecha?: string) {
+    this.ts.getTurnos(fecha).subscribe({
       next: (t: any[]) => {
         console.log(t);
+        this.ts.limpiarTurnosSignal();
         t.forEach(element => {
           this.ss.getServicioById(element.id_servicio).subscribe({
             next: (s) => {
@@ -50,6 +56,17 @@ export class ComponenteTurnosAdministrador implements OnInit {
         console.log(err);
       }
     });
+  };
+
+  filtrarPorDia(event: any) {
+    const input = event.target;
+    this.fecha = input.value;
+    this.cargarTurnos(this.fecha || undefined);
+  };
+
+  verTodos() {
+    this.fecha = '';
+    this.cargarTurnos();
   };
 
   eliminarTurno(id: string | null) {

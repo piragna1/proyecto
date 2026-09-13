@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import { Turno } from '../interface/turno.interface';
 import { Observable } from 'rxjs';
@@ -39,8 +39,9 @@ export class TurnoService {
   }): Observable<unknown> {
     return this.http.post(this.url + '/mostrador', payload);
   };
-  getTurnos(): Observable<any[]> {
-    return this.http.get<any[]>(this.url);
+  getTurnos(fecha?: string): Observable<any[]> {
+    const params = fecha ? new HttpParams().set('fecha', fecha) : undefined;
+    return this.http.get<any[]>(this.url, params ? { params } : undefined);
   };
   getTurnoById(id: string | null): Observable<Turno> {
     return this.http.get<Turno>(this.url + '/' + id);

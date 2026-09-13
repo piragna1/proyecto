@@ -102,7 +102,25 @@ function obtenerEmailMostrador(db, telefono, callback, intento = 0) {
 
 export function obtenerTurnos(db) {
     return (req, res) => {
-        db.query("select * from turnos", (err, result) => {
+        const { fecha } = req.query;
+
+        if (fecha !== undefined) {
+            if (typeof fecha !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+                return res.status(400).json({ mensaje: "Formato de fecha inválido. Use YYYY-MM-DD" });
+            }
+        }
+
+        let query = "select * from turnos";
+        const params = [];
+
+        if (fecha !== undefined) {
+            query += " where date(fecha_hora_inicio) = ?";
+            params.push(fecha);
+        }
+
+        query += " order by fecha_hora_inicio";
+
+        db.query(query, params, (err, result) => {
             if (err) {
                 return res.status(500).json({ mensaje: "Error al obtener turnos" });
             }

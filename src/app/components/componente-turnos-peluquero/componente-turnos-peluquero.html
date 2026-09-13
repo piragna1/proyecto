@@ -1,5 +1,9 @@
 <section>
     <a [routerLink]="'/home-peluquero'">Volver</a>
+    <div>
+        <label>Filtrar por día: <input type="date" [value]="fecha" (change)="filtrarPorDia($event)"></label>
+        <button (click)="verTodos()">Ver todos</button>
+    </div>
     <table>
         <thead>
             <th>Cliente</th>
@@ -14,6 +18,10 @@
                 <td>De: {{item.fechaHoraInicio}}
                     A: {{item.fechaHoraFin}}
                 </td>
+            </tr>
+            } @empty {
+            <tr>
+                <td colspan="3">Sin turnos para el día seleccionado</td>
             </tr>
             }
         </tbody>
