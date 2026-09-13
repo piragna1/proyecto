@@ -113,9 +113,18 @@ export function obtenerTurnos(db) {
         let query = "select * from turnos";
         const params = [];
 
-        if (fecha !== undefined) {
-            query += " where date(fecha_hora_inicio) = ?";
-            params.push(fecha);
+        if (req.user.rol === 'cliente') {
+            query += " where id_usuario = ?";
+            params.push(req.user.id);
+            if (fecha !== undefined) {
+                query += " and date(fecha_hora_inicio) = ?";
+                params.push(fecha);
+            }
+        } else {
+            if (fecha !== undefined) {
+                query += " where date(fecha_hora_inicio) = ?";
+                params.push(fecha);
+            }
         }
 
         query += " order by fecha_hora_inicio";
@@ -151,6 +160,10 @@ export function obtenerTurnoPorId(db) {
                 if (!result || result.length === 0) {
                     return res.status(404).json({ mensaje: "Turno no encontrado" });
                 }
+
+                if (req.user.rol === 'cliente' && Number(result[0].id_usuario) !== Number(req.user.id)) {
+                    return res.status(403).json({ mensaje: "No autorizado" });
+                }
                 
                 res.json(result[0]);
             }
@@ -171,11 +184,14 @@ export function insertarTurno(db) {
             return res.status(400).json({ mensaje: "ID usuario o servicio inválido" });
         }
 
+        // Un cliente solo puede reservar turnos para sí mismo
+        const idUsuario = req.user.rol === 'cliente' ? req.user.id : turno.usuario.id;
+
         const validacionFechas = validarFechasTurno(req.body, res);
         if (!validacionFechas) return;
 
         insertarTurnoConCliente(db, res, {
-            idUsuario: turno.usuario.id,
+            idUsuario: idUsuario,
             idServicio: turno.servicio.id,
             ...validacionFechas,
             respuesta: turno,
@@ -278,20 +294,39 @@ export function eliminarTurno(db) {
         if (!id || isNaN(id)) {
             return res.status(400).json({ mensaje: "ID inválido" });
         }
-        
-        db.query('delete from turnos where id = ?', [id],
-            (err, result) => {
-                if (err) {
-                    return res.status(500).json({ mensaje: "Error al eliminar turno" });
-                }
-                
-                if (!result || result.affectedRows === 0) {
-                    return res.status(404).json({ mensaje: "Turno no encontrado" });
-                }
-                
-                res.json({ mensaje: "Turno eliminado" });
+
+        // El peluquero no elimina turnos; el cliente solo puede eliminar turnos propios
+        db.query('select id_usuario from turnos where id = ?', [id], (errCheck, filas) => {
+            if (errCheck) {
+                return res.status(500).json({ mensaje: "Error al verificar turno" });
             }
-        );
+
+            if (!filas || filas.length === 0) {
+                return res.status(404).json({ mensaje: "Turno no encontrado" });
+            }
+
+            if (req.user.rol === 'peluquero') {
+                return res.status(403).json({ mensaje: "No autorizado" });
+            }
+
+            if (req.user.rol === 'cliente' && Number(filas[0].id_usuario) !== Number(req.user.id)) {
+                return res.status(403).json({ mensaje: "No autorizado" });
+            }
+
+            db.query('delete from turnos where id = ?', [id],
+                (err, result) => {
+                    if (err) {
+                        return res.status(500).json({ mensaje: "Error al eliminar turno" });
+                    }
+                    
+                    if (!result || result.affectedRows === 0) {
+                        return res.status(404).json({ mensaje: "Turno no encontrado" });
+                    }
+                    
+                    res.json({ mensaje: "Turno eliminado" });
+                }
+            );
+        });
     };
 };
 
@@ -304,76 +339,98 @@ export function actualizarTurno(db) {
         if (!id || isNaN(id)) {
             return res.status(400).json({ mensaje: "ID inválido" });
         }
-        
-        // Validar estructura
-        if (!usuario || !servicio) {
-            return res.status(400).json({ mensaje: "Datos incompletos" });
-        }
-        
-        if (!usuario.id || !servicio.id) {
-            return res.status(400).json({ mensaje: "ID usuario o servicio inválido" });
-        }
-        
-        // Validar fechas
-        if (!fechaHoraInicio || !fechaHoraFin) {
-            return res.status(400).json({ mensaje: "Fechas requeridas" });
-        }
-        
-        const inicio = new Date(fechaHoraInicio);
-        const fin = new Date(fechaHoraFin);
-        
-        if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) {
-            return res.status(400).json({ mensaje: "Formato de fecha inválido" });
-        }
-        
-        if (inicio >= fin) {
-            return res.status(400).json({ 
-                mensaje: "La hora de inicio debe ser menor a la de fin" 
-            });
-        }
-        
-        if (inicio < new Date()) {
-            return res.status(400).json({ 
-                mensaje: "No se puede actualizar a turno en el pasado" 
-            });
-        }
-        
-// Validar que el usuario no supere un turno por día y que no se superponga (excluyendo este turno)
-        verificarUnTurnoPorDia(db, usuario.id, fechaHoraInicio, res, id, () => {
-            db.query(
-            `select * from turnos where id_servicio = ? and id != ?
-             and ((fecha_hora_inicio < ? and fecha_hora_fin > ?)
-             or (fecha_hora_inicio < ? and fecha_hora_fin > ?))`,
-            [servicio.id, id, fin, inicio, fin, inicio],
-            (err, result) => {
-                if (err) {
-                    return res.status(500).json({ mensaje: "Error al verificar disponibilidad" });
-                }
-                
-                if (result && result.length > 0) {
-                    return res.status(409).json({ 
-                        mensaje: "Ese horario no está disponible" 
-                    });
-                }
-                
-                // Actualizar turno
-                db.query(
-                    'update turnos set id_usuario = ?, id_servicio = ?, fecha_hora_inicio = ?, fecha_hora_fin = ? where id = ?',
-                    [usuario.id, servicio.id, fechaHoraInicio, fechaHoraFin, id],
-                    (err, result) => {
-                        if (err) {
-                            return res.status(500).json({ mensaje: "Error al actualizar turno" });
-                        }
-                        
-                        if (!result || result.affectedRows === 0) {
-                            return res.status(404).json({ mensaje: "Turno no encontrado" });
-                        }
-                        
-                        res.json({ mensaje: "Turno actualizado" });
-                    }
-                );
+
+        // El peluquero no modifica turnos; el cliente solo puede modificar turnos propios
+        db.query('select id_usuario from turnos where id = ?', [id], (errCheck, filas) => {
+            if (errCheck) {
+                return res.status(500).json({ mensaje: "Error al verificar turno" });
             }
-            );
-}, "El usuario ya tiene un turno reservado para ese día");
+
+            if (!filas || filas.length === 0) {
+                return res.status(404).json({ mensaje: "Turno no encontrado" });
+            }
+
+            if (req.user.rol === 'peluquero') {
+                return res.status(403).json({ mensaje: "No autorizado" });
+            }
+
+            if (req.user.rol === 'cliente' && Number(filas[0].id_usuario) !== Number(req.user.id)) {
+                return res.status(403).json({ mensaje: "No autorizado" });
+            }
+
+            // Un cliente solo puede modificar sus propios turnos
+            const idUsuario = req.user.rol === 'cliente' ? req.user.id : usuario.id;
+            
+            // Validar estructura
+            if (!usuario || !servicio) {
+                return res.status(400).json({ mensaje: "Datos incompletos" });
+            }
+            
+            if (!usuario.id || !servicio.id) {
+                return res.status(400).json({ mensaje: "ID usuario o servicio inválido" });
+            }
+            
+            // Validar fechas
+            if (!fechaHoraInicio || !fechaHoraFin) {
+                return res.status(400).json({ mensaje: "Fechas requeridas" });
+            }
+            
+            const inicio = new Date(fechaHoraInicio);
+            const fin = new Date(fechaHoraFin);
+            
+            if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) {
+                return res.status(400).json({ mensaje: "Formato de fecha inválido" });
+            }
+            
+            if (inicio >= fin) {
+                return res.status(400).json({ 
+                    mensaje: "La hora de inicio debe ser menor a la de fin" 
+                });
+            }
+            
+            if (inicio < new Date()) {
+                return res.status(400).json({ 
+                    mensaje: "No se puede actualizar a turno en el pasado" 
+                });
+            }
+            
+            // Validar que el usuario no supere un turno por día y que no se superponga (excluyendo este turno)
+            verificarUnTurnoPorDia(db, idUsuario, fechaHoraInicio, res, id, () => {
+                db.query(
+                `select * from turnos where id_servicio = ? and id != ?
+                 and ((fecha_hora_inicio < ? and fecha_hora_fin > ?)
+                 or (fecha_hora_inicio < ? and fecha_hora_fin > ?))`,
+                [servicio.id, id, fin, inicio, fin, inicio],
+                (err, result) => {
+                    if (err) {
+                        return res.status(500).json({ mensaje: "Error al verificar disponibilidad" });
+                    }
+                    
+                    if (result && result.length > 0) {
+                        return res.status(409).json({ 
+                            mensaje: "Ese horario no está disponible" 
+                        });
+                    }
+                    
+                    // Actualizar turno
+                    db.query(
+                        'update turnos set id_usuario = ?, id_servicio = ?, fecha_hora_inicio = ?, fecha_hora_fin = ? where id = ?',
+                        [idUsuario, servicio.id, fechaHoraInicio, fechaHoraFin, id],
+                        (err, result) => {
+                            if (err) {
+                                return res.status(500).json({ mensaje: "Error al actualizar turno" });
+                            }
+                            
+                            if (!result || result.affectedRows === 0) {
+                                return res.status(404).json({ mensaje: "Turno no encontrado" });
+                            }
+                            
+                            res.json({ mensaje: "Turno actualizado" });
+                        }
+                    );
+                }
+                );
+            }, "El usuario ya tiene un turno reservado para ese día");
+        });
     };
 };
