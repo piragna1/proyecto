@@ -1,14 +1,20 @@
 //notificacionesService.js
-// Registro de avisos de turno en la tabla `notificaciones` (sin envío real por WhatsApp).
-// El envío por whatsapp-web.js quedó descartado: si el día de la demo se integra
-// la API oficial (ej. WhatsApp Cloud API), basta con reemplazar registrar() por el envío.
+// Avisos de turno: registra el intento en la tabla `notificaciones` y lo envía por
+// WhatsApp a través de un gateway tipo "linked device" (Whapi.Cloud por defecto).
+// Sin WHAPI_TOKEN configurado, queda registrado como 'omitida' y la app no se rompe.
+const WHAPI_URL = process.env.WHAPI_URL || 'https://gate.whapi.cloud';
+
 export function normalizarTelefono(telefono) {
     if (!telefono) return null;
     let num = String(telefono).replace(/\D/g, '');
     const pais = process.env.PAIS_CODE || '54';
-    if (num.startsWith(pais)) return num;
     if (num.startsWith('0')) num = num.slice(1);
-    num = pais + num;
+    if (!num.startsWith(pais)) num = pais + num;
+    // Argentina: los móviles se registran en WhatsApp como 549 + área + número (incluye el 9).
+    // Los fijos no tienen WhatsApp, así que si el número no trae el 9 se asume móvil.
+    if (pais === '54' && /^54(?!9)/.test(num)) {
+        num = num.slice(0, 2) + '9' + num.slice(2);
+    }
     return num.length >= 11 && num.length <= 15 ? num : null;
 }
 
@@ -41,17 +47,54 @@ export function armarMensaje(tipo, { usuario, servicio, motivo, anterior, actual
     return lineas.join('\n');
 }
 
-function registrar(db, { idUsuario, tipo, motivo, telefonoDestino, mensaje, estado }) {
+function registrar(db, { idUsuario, tipo, motivo, telefonoDestino, mensaje, estado, fechaEnvio }) {
     db.query(
         'insert into notificaciones (id_usuario, tipo, motivo, telefono, mensaje, estado, fecha_envio) values (?,?,?,?,?,?,?)',
-        [idUsuario, tipo, motivo || null, telefonoDestino || null, mensaje, estado, null],
+        [idUsuario, tipo, motivo || null, telefonoDestino || null, mensaje, estado, fechaEnvio || null],
         (err) => {
             if (err) console.error('[notificaciones] Error al registrar:', err.message);
         }
     );
 }
 
-// Fire-and-forget: registra el aviso (omitida = no se envía, queda documentado el intento)
+function actualizarEstado(db, id, estado, fechaEnvio) {
+    db.query(
+        'update notificaciones set estado = ?, fecha_envio = ? where id = ?',
+        [estado, fechaEnvio || null, id],
+        (err) => {
+            if (err) console.error('[notificaciones] Error al actualizar estado:', err.message);
+        }
+    );
+}
+
+async function enviarPorWhapi(telefono, mensaje) {
+    const controlador = new AbortController();
+    const timer = setTimeout(() => controlador.abort(), 15000);
+    try {
+        const respuesta = await fetch(`${WHAPI_URL}/messages/text`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.WHAPI_TOKEN}`,
+            },
+            body: JSON.stringify({ to: telefono, body: mensaje }),
+            signal: controlador.signal,
+        });
+        clearTimeout(timer);
+        const cuerpo = await respuesta.json().catch(() => null);
+        if (respuesta.ok) {
+            const id = (cuerpo && (cuerpo.id || (cuerpo.messages && cuerpo.messages[0] && cuerpo.messages[0].id))) || null;
+            return { ok: true, id };
+        }
+        const detalle = cuerpo && (cuerpo.error || cuerpo.message) ? `${cuerpo.error || cuerpo.message}` : 'error desconocido';
+        return { ok: false, error: `HTTP ${respuesta.status}: ${detalle}` };
+    } catch (err) {
+        clearTimeout(timer);
+        return { ok: false, error: err && err.name === 'AbortError' ? 'timeout (15s)' : (err && err.message) || 'error de red' };
+    }
+}
+
+// Fire-and-forget: registra el intento (pendiente) y envía por WhatsApp al número del cliente
 export function enviarNotificacionTurno(db, datos) {
     const { idUsuario, idServicio, tipo, motivo, anterior, actual } = datos;
 
@@ -65,15 +108,34 @@ export function enviarNotificacionTurno(db, datos) {
         db.query('select tipo, precio from servicios where id = ?', [idServicio], (errServ, servicios) => {
             const servicio = (!errServ && servicios && servicios.length > 0) ? servicios[0] : null;
             const mensaje = armarMensaje(tipo, { usuario, servicio, motivo, anterior, actual });
-            const telefonoDestino = normalizarTelefono(process.env.DEMO_DESTINO || usuario.telefono);
+            const telefonoDestino = normalizarTelefono(usuario.telefono);
 
-            if (process.env.NOTIFICACIONES_ACTIVO !== 'true') {
-                console.log('[notificaciones] Aviso omitido (NOTIFICACIONES_ACTIVO != true):\n' + mensaje);
+            if (process.env.NOTIFICACIONES_ACTIVO !== 'true' || !process.env.WHAPI_TOKEN) {
+                console.log('[notificaciones] Aviso omitido (sin token o desactivado):\n' + mensaje);
                 return registrar(db, { idUsuario, tipo, motivo, telefonoDestino, mensaje, estado: 'omitida' });
             }
 
-            console.log('[notificaciones] Aviso registrado (sin envío real):\n' + mensaje);
-            registrar(db, { idUsuario, tipo, motivo, telefonoDestino, mensaje, estado: 'omitida' });
+            db.query(
+                'insert into notificaciones (id_usuario, tipo, motivo, telefono, mensaje, estado, fecha_envio) values (?,?,?,?,?,?,?)',
+                [idUsuario, tipo, motivo || null, telefonoDestino || null, mensaje, 'pendiente', null],
+                (err, result) => {
+                    if (err) {
+                        console.error('[notificaciones] Error al registrar:', err.message);
+                        return;
+                    }
+                    const idNotif = result.insertId;
+                    console.log(`[notificaciones] Enviando a ${telefonoDestino}...\n${mensaje}`);
+                    enviarPorWhapi(telefonoDestino, mensaje).then((res) => {
+                        if (res.ok) {
+                            console.log(`[notificaciones] Enviado a ${telefonoDestino}${res.id ? ' (id ' + res.id + ')' : ''}`);
+                            actualizarEstado(db, idNotif, 'enviado', new Date());
+                        } else {
+                            console.error(`[notificaciones] Error al enviar a ${telefonoDestino}:`, res.error);
+                            actualizarEstado(db, idNotif, 'fallo', null);
+                        }
+                    });
+                }
+            );
         });
     });
 }
