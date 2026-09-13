@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import { enviarNotificacionTurno } from '../services/notificacionesService.js';
 
 function validarFechasTurno(body, res) {
     const { fechaHoraInicio, fechaHoraFin } = body;
@@ -77,6 +78,7 @@ function insertarTurnoConCliente(db, res, { idUsuario, idServicio, inicio, fin, 
                     if (err) {
                         return res.status(500).json({ mensaje: "Error al crear turno" });
                     }
+                    enviarNotificacionTurno(db, { idUsuario, idServicio, tipo: 'creacion', actual: inicioStr });
                     return res.status(201).json({ id: result2.insertId, ...respuesta });
                     }
                 );
@@ -296,7 +298,7 @@ export function eliminarTurno(db) {
         }
 
         // El peluquero no elimina turnos; el cliente solo puede eliminar turnos propios
-        db.query('select id_usuario from turnos where id = ?', [id], (errCheck, filas) => {
+        db.query('select * from turnos where id = ?', [id], (errCheck, filas) => {
             if (errCheck) {
                 return res.status(500).json({ mensaje: "Error al verificar turno" });
             }
@@ -312,6 +314,8 @@ export function eliminarTurno(db) {
             if (req.user.rol === 'cliente' && Number(filas[0].id_usuario) !== Number(req.user.id)) {
                 return res.status(403).json({ mensaje: "No autorizado" });
             }
+
+            const turnoEliminado = filas[0];
 
             db.query('delete from turnos where id = ?', [id],
                 (err, result) => {
@@ -322,6 +326,13 @@ export function eliminarTurno(db) {
                     if (!result || result.affectedRows === 0) {
                         return res.status(404).json({ mensaje: "Turno no encontrado" });
                     }
+
+                    enviarNotificacionTurno(db, {
+                        idUsuario: turnoEliminado.id_usuario,
+                        idServicio: turnoEliminado.id_servicio,
+                        tipo: 'eliminacion',
+                        anterior: turnoEliminado.fecha_hora_inicio,
+                    });
                     
                     res.json({ mensaje: "Turno eliminado" });
                 }
@@ -332,7 +343,7 @@ export function eliminarTurno(db) {
 
 export function actualizarTurno(db) {
     return (req, res) => {
-        const { usuario, servicio, fechaHoraInicio, fechaHoraFin } = req.body;
+        const { usuario, servicio, fechaHoraInicio, fechaHoraFin, motivo } = req.body;
         const { id } = req.params;
         
         // Validar ID
@@ -340,8 +351,13 @@ export function actualizarTurno(db) {
             return res.status(400).json({ mensaje: "ID inválido" });
         }
 
+        // El motivo es obligatorio cuando modifica un administrador
+        if (req.user.rol === 'administrador' && (!motivo || motivo.trim().length === 0)) {
+            return res.status(400).json({ mensaje: "El motivo de la modificación es requerido" });
+        }
+
         // El peluquero no modifica turnos; el cliente solo puede modificar turnos propios
-        db.query('select id_usuario from turnos where id = ?', [id], (errCheck, filas) => {
+        db.query('select * from turnos where id = ?', [id], (errCheck, filas) => {
             if (errCheck) {
                 return res.status(500).json({ mensaje: "Error al verificar turno" });
             }
@@ -357,6 +373,8 @@ export function actualizarTurno(db) {
             if (req.user.rol === 'cliente' && Number(filas[0].id_usuario) !== Number(req.user.id)) {
                 return res.status(403).json({ mensaje: "No autorizado" });
             }
+
+            const turnoAnterior = filas[0];
 
             // Un cliente solo puede modificar sus propios turnos
             const idUsuario = req.user.rol === 'cliente' ? req.user.id : usuario.id;
@@ -424,7 +442,16 @@ export function actualizarTurno(db) {
                             if (!result || result.affectedRows === 0) {
                                 return res.status(404).json({ mensaje: "Turno no encontrado" });
                             }
-                            
+
+                            enviarNotificacionTurno(db, {
+                                idUsuario,
+                                idServicio: servicio.id,
+                                tipo: 'modificacion',
+                                motivo,
+                                anterior: turnoAnterior.fecha_hora_inicio,
+                                actual: fechaHoraInicio,
+                            });
+
                             res.json({ mensaje: "Turno actualizado" });
                         }
                     );

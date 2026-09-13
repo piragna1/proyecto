@@ -23,6 +23,7 @@ export class ComponenteModificarTurnoAdministrador implements OnInit {
   formulario = this.fb.nonNullable.group({
     servicio: [null as Servicio | null, [Validators.required]],
     fechaHoraInicio: ['', [Validators.required]],
+    motivo: ['', [Validators.required]],
   });
   ar: ActivatedRoute = inject(ActivatedRoute);
   id: string | null = null;
@@ -72,7 +73,8 @@ export class ComponenteModificarTurnoAdministrador implements OnInit {
               fechaHoraInicio: inicio,
               fechaHoraFin: fin,
               usuario: u,
-              servicio
+              servicio,
+              motivo: this.formulario.controls.motivo.value,
             };
             console.log('turno armado:', t);
             this.ts.putTurno(t, this.id).subscribe({
@@ -98,7 +100,7 @@ export class ComponenteModificarTurnoAdministrador implements OnInit {
     this.ts.getTurnoById(id).subscribe({
       next: (value: any) => {
         this.ss.getServicioById(value.id_servicio).subscribe({
-          next: (serv) => {
+          next: () => {
             const fecha = new Date(value.fecha_hora_inicio);
             const fechaLocal = new Date(
               fecha.getTime() - fecha.getTimezoneOffset() * 60000

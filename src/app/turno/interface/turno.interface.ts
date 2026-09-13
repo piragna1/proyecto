@@ -7,4 +7,5 @@ export interface Turno {
   fechaHoraInicio: string;
   fechaHoraFin: string;
   servicio: Servicio;
+  motivo?: string;
 }
