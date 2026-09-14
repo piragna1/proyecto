@@ -8,6 +8,7 @@ import turnosRoutes from './routes/turnos.js'
 import usuariosRoutes from './routes/usuarios.js'
 import registroRoutes from './routes/registro.js'
 import notificacionesRoutes from './routes/notificaciones.js'
+import pagosRoutes from './routes/pagos.js'
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use('/turnos', turnosRoutes(db));
 app.use('/usuarios', usuariosRoutes(db));
 app.use('/registro', registroRoutes(db));
 app.use('/notificaciones', notificacionesRoutes(db));
+app.use('/pagos', pagosRoutes(db));
 
 app.listen(3000, () => {
     console.log("Servidor en http://localhost:3000");

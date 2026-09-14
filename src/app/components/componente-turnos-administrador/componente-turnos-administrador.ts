@@ -1,13 +1,16 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from "@angular/router";
+import { FormsModule } from '@angular/forms';
 import { TurnoService } from '../../turno/services/turno-service';
 import { ServicioService } from '../../servicio/services/servicio-service';
 import { UsuarioService } from '../../usuario/services/usuario-service';
 import { Turno } from '../../turno/interface/turno.interface';
+import { PagoService } from '../../pago/services/pago-service';
+import { ToastService } from '../../shared/services/toast-service';
 
 @Component({
   selector: 'app-componente-turnos-administrador',
-  imports: [RouterLink],
+  imports: [RouterLink, FormsModule],
   templateUrl: './componente-turnos-administrador.html',
   styleUrl: './componente-turnos-administrador.css',
 })
@@ -15,8 +18,13 @@ export class ComponenteTurnosAdministrador implements OnInit {
   ts: TurnoService = inject(TurnoService);
   ss: ServicioService = inject(ServicioService);
   us: UsuarioService = inject(UsuarioService);
+  ps: PagoService = inject(PagoService);
+  toast: ToastService = inject(ToastService);
   turnos = this.ts.getTurnosSignal();
   fecha: string = '';
+  cobrarTurno: Turno | null = null;
+  metodo: string = 'efectivo';
+  monto: number | null = null;
   ngOnInit(): void {
     this.cargarTurnos();
   };
@@ -38,7 +46,8 @@ export class ComponenteTurnosAdministrador implements OnInit {
                     usuario: u,
                     fechaHoraInicio: new Date(element.fecha_hora_inicio).toLocaleString('es'),
                     fechaHoraFin: new Date(element.fecha_hora_fin).toLocaleString('es'),
-                    servicio: s
+                    servicio: s,
+                    pagado: Number(element.pagado) === 1
                   };
                   console.log('turno recuperado: ', turno);
                   this.ts.setTurnosSignal(turno);
@@ -80,4 +89,40 @@ export class ComponenteTurnosAdministrador implements OnInit {
       }
     })
   }
+
+  abrirCobro(turno: Turno) {
+    this.cobrarTurno = turno;
+    this.metodo = 'efectivo';
+    this.monto = turno.servicio.precio;
+  };
+
+  cerrarCobro() {
+    this.cobrarTurno = null;
+  };
+
+  confirmarCobro() {
+    if (!this.cobrarTurno || !this.cobrarTurno.id || this.monto === null || this.monto <= 0) {
+      this.toast.mostrarMensaje('El monto debe ser mayor a cero', true);
+      return;
+    }
+    const idTurno = this.cobrarTurno.id;
+    this.ps.postPago({ idTurno, metodo: this.metodo, monto: this.monto }).subscribe({
+      next: (p) => {
+        console.log('pago registrado:', p);
+        this.marcarPagado(idTurno);
+        this.cerrarCobro();
+        this.toast.mostrarMensaje('Pago registrado');
+      },
+      error: (err) => {
+        console.log(err);
+        this.toast.mostrarMensaje('No se pudo registrar el pago', true);
+      }
+    });
+  };
+
+  marcarPagado(id: string) {
+    this.turnos.update(actuales =>
+      actuales.map(t => t.id === id ? { ...t, pagado: true } : t)
+    );
+  };
 };

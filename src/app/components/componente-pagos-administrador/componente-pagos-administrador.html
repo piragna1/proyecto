@@ -1,0 +1,37 @@
+<section>
+    <a [routerLink]="'/home-admin'">Volver</a>
+    <h2>Historial de pagos</h2>
+    <div>
+        <label>Filtrar por día: <input type="date" [value]="fecha" (change)="filtrarPorDia($event)"></label>
+        <button (click)="verTodos()">Ver todos</button>
+    </div>
+    <div class="total">Total recaudado: ${{ total }}</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Servicio</th>
+                <th>Horario</th>
+                <th>Método</th>
+                <th>Monto</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (item of pagos(); track $index) {
+            <tr>
+                <td>{{ item.fecha_pago ? (item.fecha_pago | date:'dd/MM/yyyy HH:mm') : '-' }}</td>
+                <td>{{ item.nombre_cliente }}</td>
+                <td>{{ item.servicio_tipo }}</td>
+                <td>{{ item.horario_turno }}</td>
+                <td>{{ item.metodo }}</td>
+                <td>${{ item.monto }}</td>
+            </tr>
+            } @empty {
+            <tr>
+                <td colspan="6">Sin pagos registrados</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</section>

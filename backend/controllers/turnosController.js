@@ -112,24 +112,24 @@ export function obtenerTurnos(db) {
             }
         }
 
-        let query = "select * from turnos";
+        let query = "select t.*, case when p.id is null then 0 else 1 end as pagado from turnos t left join pagos p on p.id_turno = t.id";
         const params = [];
 
         if (req.user.rol === 'cliente') {
-            query += " where id_usuario = ?";
+            query += " where t.id_usuario = ?";
             params.push(req.user.id);
             if (fecha !== undefined) {
-                query += " and date(fecha_hora_inicio) = ?";
+                query += " and date(t.fecha_hora_inicio) = ?";
                 params.push(fecha);
             }
         } else {
             if (fecha !== undefined) {
-                query += " where date(fecha_hora_inicio) = ?";
+                query += " where date(t.fecha_hora_inicio) = ?";
                 params.push(fecha);
             }
         }
 
-        query += " order by fecha_hora_inicio";
+        query += " order by t.fecha_hora_inicio";
 
         db.query(query, params, (err, result) => {
             if (err) {

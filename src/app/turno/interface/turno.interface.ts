@@ -8,4 +8,5 @@ export interface Turno {
   fechaHoraFin: string;
   servicio: Servicio;
   motivo?: string;
+  pagado?: boolean;
 }

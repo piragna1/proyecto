@@ -38,6 +38,7 @@ import { PaginaEditarPeluqueroAdministrador } from './pages/pagina-editar-peluqu
 import { PaginaEditarAdministradorAdministrador } from './pages/pagina-editar-administrador-administrador/pagina-editar-administrador-administrador';
 import { PaginaEditarServicioAdministrador } from './pages/pagina-editar-servicio-administrador/pagina-editar-servicio-administrador';
 import { PaginaNotificacionesAdministrador } from './pages/pagina-notificaciones-administrador/pagina-notificaciones-administrador';
+import { PaginaPagosAdministrador } from './pages/pagina-pagos-administrador/pagina-pagos-administrador';
 
 export const routes: Routes = [
     {
@@ -123,6 +124,9 @@ export const routes: Routes = [
     },
     {
         path: 'notificaciones-admin', component: PaginaNotificacionesAdministrador, canActivate: [adminGuard]
+    },
+    {
+        path: 'pagos-admin', component: PaginaPagosAdministrador, canActivate: [adminGuard]
     },
     {
         path: 'home-peluquero', component: PaginaInicialPeluquero, canActivate: [peluqueroGuard]

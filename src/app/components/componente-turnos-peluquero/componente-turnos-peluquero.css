@@ -34,7 +34,7 @@ section>a:hover {
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 600px;
+    min-width: 720px;
 }
 
 thead {
@@ -51,6 +51,103 @@ td {
 
 tbody tr:hover {
     background: rgba(75, 108, 183, 0.08);
+}
+
+button.cobrar {
+    background: #16a34a;
+    color: #ffffff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+button.cobrar:hover {
+    transform: translateY(-2px);
+}
+
+.badge-pagado {
+    background: rgba(22, 163, 74, 0.15);
+    color: #15803d;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.badge-pendiente {
+    background: rgba(217, 119, 6, 0.15);
+    color: #b45309;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+}
+
+.modal {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 24px;
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 20px 50px rgba(18, 38, 84, 0.25);
+}
+
+.modal h3 {
+    margin: 0;
+    color: #182848;
+}
+
+.modal-datos {
+    margin: 0;
+    color: #475569;
+    font-weight: 600;
+}
+
+.modal label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.modal select,
+.modal input {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    font-size: 1rem;
+}
+
+.modal-acciones {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+button.confirmar {
+    background: #16a34a;
+    color: #ffffff;
+}
+
+button.cancelar {
+    background: rgba(100, 116, 139, 0.15);
+    color: #475569;
 }
 
 @media (max-width: 760px) {
