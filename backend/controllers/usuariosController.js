@@ -38,8 +38,8 @@ function validarUsuario(usuario, esCreacion = true) {
     if (esCreacion || (usuario.clave && usuario.clave.trim() !== '')) {
         if (!usuario.clave || typeof usuario.clave !== 'string') {
             errores.push("Contraseña requerida");
-        } else if (usuario.clave.length < 6) {
-            errores.push("Contraseña muy corta (mínimo 6 caracteres)");
+        } else if (usuario.clave.length < 10) {
+            errores.push("Contraseña muy corta (mínimo 10 caracteres)");
         } else if (usuario.clave.length > 255) {
             errores.push("Contraseña muy larga");
         }
@@ -350,6 +350,71 @@ export function actualizarUsuario(db) {
             });
         } catch {
             res.status(500).json({ mensaje: "Error al actualizar usuario" });
+        }
+    };
+};
+
+export function cambiarClave(db) {
+    return async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { claveAnterior, nuevaClave } = req.body;
+
+            if (!id || isNaN(id)) {
+                return res.status(400).json({ mensaje: "ID inválido" });
+            }
+            const idNum = Number(id);
+
+            if (!req.user || idNum !== req.user.id) {
+                return res.status(403).json({ mensaje: "No autorizado" });
+            }
+
+            if (!claveAnterior || typeof claveAnterior !== 'string') {
+                return res.status(400).json({ mensaje: "Clave anterior requerida" });
+            }
+
+            const errores = [];
+            if (!nuevaClave || typeof nuevaClave !== 'string') {
+                errores.push("Contraseña requerida");
+            } else if (nuevaClave.length < 10) {
+                errores.push("Contraseña muy corta (mínimo 10 caracteres)");
+            } else if (nuevaClave.length > 255) {
+                errores.push("Contraseña muy larga");
+            }
+            if (errores.length > 0) {
+                return res.status(400).json({ mensaje: "Datos inválidos", errores });
+            }
+
+            db.query("SELECT clave FROM usuarios WHERE id = ?", [idNum], async (err, resultado) => {
+                try {
+                    if (err) {
+                        return res.status(500).json({ mensaje: "Error al cambiar la clave" });
+                    }
+                    if (!resultado || resultado.length === 0) {
+                        return res.status(404).json({ mensaje: "Usuario no encontrado" });
+                    }
+
+                    const hashActual = resultado[0].clave;
+                    if (!bcrypt.compareSync(claveAnterior, hashActual)) {
+                        return res.status(401).json({ mensaje: "La clave anterior es incorrecta" });
+                    }
+
+                    const hashNuevo = await bcrypt.hash(nuevaClave.trim(), 10);
+                    db.query('UPDATE usuarios SET clave = ? WHERE id = ?', [hashNuevo, idNum], (err, result) => {
+                        if (err) {
+                            return res.status(500).json({ mensaje: "Error al cambiar la clave" });
+                        }
+                        if (!result || result.affectedRows === 0) {
+                            return res.status(404).json({ mensaje: "Usuario no encontrado" });
+                        }
+                        res.json({ mensaje: "Clave actualizada" });
+                    });
+                } catch {
+                    res.status(500).json({ mensaje: "Error al cambiar la clave" });
+                }
+            });
+        } catch {
+            res.status(500).json({ mensaje: "Error al cambiar la clave" });
         }
     };
 };

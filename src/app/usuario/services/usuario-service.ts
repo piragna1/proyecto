@@ -84,6 +84,10 @@ export class UsuarioService {
     return this.http.put<Usuario>(this.url + '/' + id, u);
   }
 
+  cambiarClave(id: string | null, claveAnterior: string, nuevaClave: string): Observable<any> {
+    return this.http.post<any>(this.url + '/' + id + '/cambiar-clave', { claveAnterior, nuevaClave });
+  }
+
   deleteUsuario(id: string | undefined): Observable<Usuario> {
     return this.http.delete<Usuario>(this.url + '/' + id);
   }

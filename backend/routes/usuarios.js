@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { actualizarUsuario, eliminarUsuario, insertarUsuario, obtenerUsuarioPorId, obtenerUsuarios } from '../controllers/usuariosController.js';
+import { actualizarUsuario, cambiarClave, eliminarUsuario, insertarUsuario, obtenerUsuarioPorId, obtenerUsuarios } from '../controllers/usuariosController.js';
 import { verificarToken } from '../middlewares/verificarToken.js';
 
 export default function (db) {
@@ -12,6 +12,8 @@ export default function (db) {
     router.post('/', verificarToken, insertarUsuario(db));
 
     router.put('/:id', verificarToken, actualizarUsuario(db));
+
+    router.post('/:id/cambiar-clave', verificarToken, cambiarClave(db));
 
     router.delete('/:id', verificarToken, eliminarUsuario(db));
 

@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { UsuarioService } from '../../usuario/services/usuario-service';
 import { Usuario } from '../../usuario/interface/usuario.interface';
@@ -16,7 +16,7 @@ export class ComponenteEditarClienteAdministrador implements OnInit {
     nombre: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
     telefono: ['', [Validators.required, Validators.minLength(10)]],
-    clave: [''],
+    clave: ['', [(ctrl: AbstractControl) => (ctrl.value && ctrl.value.trim() !== '' && ctrl.value.length < 10) ? { minlength: { requiredLength: 10 } } : null]],
     rol: ['cliente'],
     superadmin: [false],
   });

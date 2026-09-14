@@ -19,7 +19,7 @@ export class FormularioRegistro {
     nombre: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
     telefono: ['', [Validators.required, Validators.minLength(10)]],
-    clave: ['', [Validators.required]],
+    clave: ['', [Validators.required, Validators.minLength(10)]],
   });
   us: UsuarioService = inject(UsuarioService);
   ls: LoginService = inject(LoginService);

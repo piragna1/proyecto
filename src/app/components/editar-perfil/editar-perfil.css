@@ -15,7 +15,7 @@ section>a {
     border-radius: 8px;
 }
 
-form {
+.perfil-card {
     width: 100%;
     max-width: 520px;
     display: flex;
@@ -27,16 +27,42 @@ form {
     box-shadow: 0 6px 18px rgba(18, 38, 84, 0.06);
 }
 
-label {
+.card-title {
+    margin: 0;
+    font-size: 18px;
+    color: #16325c;
+}
+
+.field-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 0;
+}
+
+.field-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.field-label {
     font-size: 14px;
     color: #16325c;
     font-weight: 600;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="tel"],
-input[type="password"] {
+.field-value {
+    font-size: 14px;
+    color: #1f3458;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #fff;
+    border: 1px solid rgba(16, 44, 91, 0.12);
+}
+
+.field-input {
     width: 100%;
     padding: 10px 12px;
     border-radius: 8px;
@@ -46,27 +72,146 @@ input[type="password"] {
     transition: box-shadow 150ms ease, border-color 150ms ease;
 }
 
-input:focus {
+.field-input:focus {
     outline: none;
     border-color: #4b6cb7;
     box-shadow: 0 4px 12px rgba(75, 108, 183, 0.12);
 }
 
-button[type="submit"] {
-    align-self: flex-end;
+.btn-edit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: #4b6cb7;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: background-color 120ms ease, transform 120ms ease;
+}
+
+.btn-edit:hover {
+    background: rgba(75, 108, 183, 0.1);
+    transform: translateY(-1px);
+}
+
+.card-actions,
+.clave-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.btn-cancel {
+    background: #fff;
+    color: #4b6cb7;
+    border: 1px solid rgba(75, 108, 183, 0.4);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 120ms ease, transform 120ms ease;
+}
+
+.btn-cancel:hover {
+    background: rgba(75, 108, 183, 0.08);
+}
+
+.btn-save {
     background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
     color: #fff;
     border: none;
     padding: 10px 14px;
     border-radius: 8px;
     font-weight: 700;
+    font-size: 14px;
     cursor: pointer;
     transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
-button[type="submit"]:hover {
+.btn-save:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 22px rgba(24, 40, 72, 0.14);
+}
+
+.btn-save:disabled,
+.btn-cancel:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.clave-section {
+    margin-top: 8px;
+}
+
+.btn-change-pw {
+    background: rgba(75, 108, 183, 0.1);
+    color: #4b6cb7;
+    border: 1px solid rgba(75, 108, 183, 0.3);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.btn-change-pw:hover {
+    background: rgba(75, 108, 183, 0.16);
+}
+
+.clave-panel {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.35s ease, opacity 0.25s ease;
+}
+
+.clave-panel.open {
+    max-height: 420px;
+    opacity: 1;
+}
+
+.clave-inner {
+    padding-top: 14px;
+    margin-top: 14px;
+    border-top: 1px solid rgba(16, 44, 91, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.clave-inner label {
+    font-size: 14px;
+    color: #16325c;
+    font-weight: 600;
+}
+
+.clave-inner input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(16, 44, 91, 0.12);
+    background: #fff;
+    font-size: 14px;
+    transition: box-shadow 150ms ease, border-color 150ms ease;
+}
+
+.clave-inner input[type="password"]:focus {
+    outline: none;
+    border-color: #4b6cb7;
+    box-shadow: 0 4px 12px rgba(75, 108, 183, 0.12);
+}
+
+.field-error {
+    font-size: 13px;
+    color: #d32f2f;
 }
 
 @media (max-width: 520px) {
@@ -74,7 +219,7 @@ button[type="submit"]:hover {
         padding: 18px 12px;
     }
 
-    form {
+    .perfil-card {
         padding: 16px;
     }
 }

@@ -1,16 +1,56 @@
 <section>
     <a [routerLink]="'/home-peluquero'">Volver</a>
-    <form [formGroup]="formulario" (ngSubmit)="editarPeluquero()">
-        <label for="nombre">Nombre: </label>
-        <input type="text" name="nombre" id="nombre" formControlName="nombre">
-        <label for="email">Email:</label>
-        <input type="email" name="email" id="email" formControlName="email">
-        <label for="telefono">Telefono:</label>
-        <input type="tel" name="telefono" id="telefono" formControlName="telefono">
-        <label for="telefono">Clave:</label>
-        <input type="password" name="clave" id="clave" formControlName="clave">
-        <label for="direccion">Direccion:</label>
-        <input type="text" name="direccion" id="direccion" formControlName="direccion">
-        <button type="submit">Editar perfil</button>
-    </form>
+    <div class="perfil-card">
+        <h3 class="card-title">Datos del perfil</h3>
+        <form [formGroup]="formulario">
+            @for (campo of camposVisibles(); track campo.clave) {
+            <div class="field-row">
+                <div class="field-header">
+                    <span class="field-label">{{ campo.etiqueta }}:</span>
+                    @if (campoEditando() !== campo.clave) {
+                    <button type="button" class="btn-edit" (click)="editarCampo(campo.clave)" [attr.aria-label]="'Editar '+campo.etiqueta" [attr.title]="'Editar '+campo.etiqueta">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                    </button>
+                    }
+                </div>
+                @if (campoEditando() === campo.clave) {
+                <input class="field-input" [formControlName]="campo.clave" [type]="campo.clave === 'clave' ? 'password' : 'text'" />
+                } @else {
+                <span class="field-value">{{ campo.valor }}</span>
+                }
+            </div>
+            }
+        </form>
+
+        @if (campoEditando()) {
+        <div class="card-actions">
+            <button type="button" class="btn-cancel" (click)="cancelarEdicion()">Cancelar</button>
+            <button type="button" class="btn-save" (click)="guardarEdicion()" [disabled]="formulario.invalid">Guardar cambios</button>
+        </div>
+        }
+
+        <div class="clave-section">
+            <button type="button" class="btn-change-pw" (click)="toggleCambioClave()">Cambiar clave</button>
+            <div class="clave-panel" [class.open]="mostrandoCambioClave()">
+                <div class="clave-inner">
+                    <form [formGroup]="formClave">
+                        <label for="clave-anterior">Clave actual</label>
+                        <input type="password" id="clave-anterior" formControlName="anterior" />
+                        @if (errorClaveAnterior()) {
+                        <span class="field-error">{{ errorClaveAnterior() }}</span>
+                        }
+                        <label for="clave-nueva">Nueva clave (mínimo 10 caracteres)</label>
+                        <input type="password" id="clave-nueva" formControlName="nueva" />
+                        @if (formClave.controls.nueva.invalid && formClave.controls.nueva.touched) {
+                        <span class="field-error">La nueva clave debe tener al menos 10 caracteres</span>
+                        }
+                    </form>
+                    <div class="clave-actions">
+                        <button type="button" class="btn-cancel" (click)="cancelarCambioClave()">Cancelar</button>
+                        <button type="button" class="btn-save" (click)="guardarClave()" [disabled]="formClave.invalid || procesandoClave()">Guardar clave</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>

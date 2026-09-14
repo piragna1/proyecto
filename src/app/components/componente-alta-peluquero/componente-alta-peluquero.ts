@@ -16,7 +16,7 @@ export class ComponenteAltaPeluquero {
     nombre: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
     telefono: ['', [Validators.required, Validators.minLength(10)]],
-    clave: ['', [Validators.required, Validators.minLength(8)]],
+    clave: ['', [Validators.required, Validators.minLength(10)]],
     direccion: ['', [Validators.required, Validators.minLength(8)]]
   });
   us: UsuarioService = inject(UsuarioService);

@@ -15,7 +15,7 @@ export class ComponenteAltaAdministrador {
   formulario = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     telefono: ['', [Validators.required, Validators.minLength(10)]],
-    clave: ['', [Validators.required, Validators.minLength(8)]]
+    clave: ['', [Validators.required, Validators.minLength(10)]]
   });
   us: UsuarioService = inject(UsuarioService);
   r: Router = inject(Router);
