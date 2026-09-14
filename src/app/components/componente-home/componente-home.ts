@@ -1,6 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { AuthService } from '../../auth/services/auth-service';
+import { UsuarioService } from '../../usuario/services/usuario-service';
 
 @Component({
   selector: 'app-componente-home',
@@ -9,17 +10,22 @@ import { AuthService } from '../../auth/services/auth-service';
   styleUrl: './componente-home.css',
 })
 export class ComponenteHome implements OnInit {
-  as:AuthService= inject(AuthService);
-  usuario: string = 'Usuario';
+  as: AuthService = inject(AuthService);
+  us: UsuarioService = inject(UsuarioService);
+  usuario = signal<string>('Usuario');
 
   ngOnInit(): void {
-
     const payload = this.as.obtenerPayload();
-    console.log(payload);
-    
 
-    if (!payload) return;
+    if (!payload?.id) return;
 
-    this.usuario = payload.nombre;
+    this.us.getUsuarioById(payload.id).subscribe({
+      next: (u) => {
+        this.usuario.set(u.nombre);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
   }
 }

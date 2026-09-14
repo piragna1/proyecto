@@ -56,7 +56,7 @@ export class EditarPerfilAdministrador implements OnInit {
       next:(value)=>{
         console.log(value);
         const a: Usuario = {
-      nombre: payload.nombre,
+      nombre: value.nombre,
       email: this.formulario.controls.email.value,
       telefono: this.formulario.controls.telefono.value,
       clave: this.formulario.controls.clave.value,

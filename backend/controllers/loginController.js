@@ -70,7 +70,6 @@ export function loginUsuario(db) {
                 const token = jwt.sign({
                     id: usuario.id,
                     email: usuario.email,
-                    nombre: usuario.nombre,
                     rol: usuario.rol,
                     superadmin: usuario.superadmin
                 }, process.env.JWT_SECRET, {
