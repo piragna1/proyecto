@@ -2,6 +2,9 @@ import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { UsuarioService } from '../../usuario/services/usuario-service';
+import { LoginService } from '../../login/services/login-service';
+import { AuthService } from '../../auth/services/auth-service';
+import { ToastService } from '../../shared/services/toast-service';
 
 @Component({
   selector: 'app-formulario-registro',
@@ -19,6 +22,9 @@ export class FormularioRegistro {
     clave: ['', [Validators.required]],
   });
   us: UsuarioService = inject(UsuarioService);
+  ls: LoginService = inject(LoginService);
+  as: AuthService = inject(AuthService);
+  toasts: ToastService = inject(ToastService);
   r: Router = inject(Router);
   mensajeError: string = '';
   
@@ -30,8 +36,22 @@ export class FormularioRegistro {
       next: (value) => {
         console.log('El usuario', value, ' ha sido generado.');
         this.us.setUserSignal(value);
-        this.formulario.reset();
-        this.r.navigateByUrl('/login');
+        const { email, clave } = this.formulario.getRawValue();
+        this.ls.login(email, clave).subscribe({
+          next: (val) => {
+            localStorage.setItem('token', val.token);
+            this.as.logIn();
+            this.formulario.reset();
+            this.r.navigateByUrl('/home');
+            this.toasts.mostrarMensaje('Cuenta creada. Sesión iniciada.');
+          },
+          error: (err) => {
+            console.log(err);
+            this.formulario.reset();
+            this.r.navigateByUrl('/login');
+            this.toasts.mostrarMensaje('Cuenta creada. Iniciá sesión manualmente.', true);
+          },
+        });
       },
       error: (err) => {
         
