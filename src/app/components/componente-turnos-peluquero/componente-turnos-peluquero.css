@@ -42,6 +42,10 @@ thead {
     color: #ffffff;
 }
 
+td {
+    color: #000000;
+}
+
 th,
 td {
     padding: 14px 16px;
