@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LoginService } from '../../login/services/login-service';
 import { Router } from "@angular/router";
 import { ToastService } from '../../shared/services/toast-service';
+import { emailValidator } from '../../shared/utils/validators';
 
 @Component({
   selector: 'app-formulario-admin',
@@ -16,7 +17,7 @@ export class FormularioAdmin {
   fb: FormBuilder = inject(FormBuilder);
   ls: LoginService = inject(LoginService);
   formulario = this.fb.nonNullable.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, emailValidator]],
     clave: ['', [Validators.required]]
   });
   r: Router = inject(Router);

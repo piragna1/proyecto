@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { LoginService } from '../../login/services/login-service';
 import { AuthService } from '../../auth/services/auth-service';
 import { ToastService } from '../../shared/services/toast-service';
+import { emailValidator } from '../../shared/utils/validators';
 
 @Component({
   selector: 'app-formulario-login',
@@ -15,7 +16,7 @@ export class FormularioLogin {
   fb: FormBuilder = inject(FormBuilder);
   as: AuthService = inject(AuthService);
   formulario = this.fb.nonNullable.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, emailValidator]],
     clave: ['', [Validators.required]],
   });
   ls: LoginService = inject(LoginService);

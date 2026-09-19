@@ -55,7 +55,14 @@ export class ComponenteNuevoTurno implements OnInit {
 
     console.log(this.formulario.invalid);
 
-    if (this.formulario.invalid) return;
+    if (this.formulario.invalid) {
+      const faltantes: string[] = [];
+      if (this.formulario.controls.servicio.invalid) faltantes.push('un servicio');
+      if (this.formulario.controls.fechaHoraInicio.invalid) faltantes.push('un horario');
+      const mensaje = 'Seleccioná ' + faltantes.join(' y ');
+      this.toasts.mostrarMensaje(mensaje, true);
+      return;
+    }
 
     this.us.getUsuarioById(payload.id).subscribe(
       {

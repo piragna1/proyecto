@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from "@angular/router";
 import { Usuario } from '../../usuario/interface/usuario.interface';
 import { UsuarioService } from '../../usuario/services/usuario-service';
+import { emailValidator } from '../../shared/utils/validators';
 
 @Component({
   selector: 'app-componente-alta-administrador',
@@ -13,7 +14,7 @@ import { UsuarioService } from '../../usuario/services/usuario-service';
 export class ComponenteAltaAdministrador {
   fb: FormBuilder = inject(FormBuilder);
   formulario = this.fb.nonNullable.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, emailValidator]],
     telefono: ['', [Validators.required, Validators.minLength(10)]],
     clave: ['', [Validators.required, Validators.minLength(10)]]
   });

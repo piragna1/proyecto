@@ -1,13 +1,25 @@
 <section>
   <form [formGroup]="formulario" (ngSubmit)="generarUsuario()">
     <label for="nombre">Nombre:</label>
-    <input type="text" name="nombre" id="nombre" formControlName="nombre" />
+    <input type="text" name="nombre" id="nombre" formControlName="nombre" [class.invalid]="hayError('nombre')" />
+    @if (hayError('nombre')) {
+      <p class="field-error">{{ mensajeCampo('nombre') }}</p>
+    }
     <label for="email">Email: </label>
-    <input type="email" name="email" id="email" formControlName="email" />
+    <input type="email" name="email" id="email" formControlName="email" [class.invalid]="hayError('email')" />
+    @if (hayError('email')) {
+      <p class="field-error">{{ mensajeCampo('email') }}</p>
+    }
     <label for="telefono">Telefono:</label>
-    <input type="tel" name="telefono" id="telefono" formControlName="telefono" />
+    <input type="tel" name="telefono" id="telefono" formControlName="telefono" [class.invalid]="hayError('telefono')" />
+    @if (hayError('telefono')) {
+      <p class="field-error">{{ mensajeCampo('telefono') }}</p>
+    }
     <label for="password">Clave: </label>
-    <input type="password" name="password" id="password" formControlName="clave" />
+    <input type="password" name="password" id="password" formControlName="clave" [class.invalid]="hayError('clave')" />
+    @if (hayError('clave')) {
+      <p class="field-error">{{ mensajeCampo('clave') }}</p>
+    }
     <button type="submit">Registrarse</button>
     @if (mensajeError) {
       <p class="error-message">{{ mensajeError }}</p>

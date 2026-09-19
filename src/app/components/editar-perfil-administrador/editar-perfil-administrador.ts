@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from "@angular/router";
 import { Usuario } from '../../usuario/interface/usuario.interface';
 import { UsuarioService } from '../../usuario/services/usuario-service';
 import { ToastService } from '../../shared/services/toast-service';
+import { emailValidator } from '../../shared/utils/validators';
 
 @Component({
   selector: 'app-editar-perfil-administrador',
@@ -14,7 +15,7 @@ import { ToastService } from '../../shared/services/toast-service';
 export class EditarPerfilAdministrador implements OnInit {
   fb: FormBuilder = inject(FormBuilder);
   formulario = this.fb.nonNullable.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, emailValidator]],
     telefono: ['', [Validators.required, Validators.minLength(10)]],
   });
   formClave = this.fb.nonNullable.group({
