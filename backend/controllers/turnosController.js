@@ -219,8 +219,8 @@ export function insertarTurnoMostrador(db) {
             return res.status(400).json({ mensaje: "Nombre requerido" });
         }
 
-        if (typeof telefono !== 'string' || telefono.trim().length === 0 || telefono.length > 20) {
-            return res.status(400).json({ mensaje: "Teléfono inválido" });
+        if (typeof telefono !== 'string' || telefono.trim().length === 0 || !/^\+?549\d{10}$|^\d{10}$/.test(telefono.trim())) {
+            return res.status(400).json({ mensaje: "Teléfono inválido (debe ser un número de Argentina)" });
         }
 
         const validacionFechas = validarFechasTurno(req.body, res);

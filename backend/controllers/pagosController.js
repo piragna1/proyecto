@@ -18,7 +18,7 @@ export function registrarPago(db) {
 
         db.query(
             `select t.id as id_turno, t.id_usuario, t.fecha_hora_inicio as horario,
-                    s.tipo as servicio_tipo, s.precio, u.nombre as nombre_cliente
+                    s.tipo as servicio_tipo, s.precio, u.nombre as nombre_cliente, u.telefono as telefono_cliente
              from turnos t
              join servicios s on s.id = t.id_servicio
              join usuarios u on u.id = t.id_usuario
@@ -52,9 +52,9 @@ export function registrarPago(db) {
                     }
 
                     db.query(
-                        `insert into pagos (id_turno, id_usuario, monto, metodo, nombre_cliente, servicio_tipo, horario_turno)
-                         values (?,?,?,?,?,?,?)`,
-                        [idTurno, turno.id_usuario, montoFinal, metodo, turno.nombre_cliente, turno.servicio_tipo, turno.horario],
+                        `insert into pagos (id_turno, id_usuario, monto, metodo, nombre_cliente, servicio_tipo, horario_turno, telefono_cliente)
+                         values (?,?,?,?,?,?,?,?)`,
+                        [idTurno, turno.id_usuario, montoFinal, metodo, turno.nombre_cliente, turno.servicio_tipo, turno.horario, turno.telefono_cliente || null],
                         (errInsert, result) => {
                             if (errInsert) {
                                 console.error('Error al registrar pago:', errInsert.message);
@@ -71,7 +71,7 @@ export function registrarPago(db) {
 
 export function obtenerPagos(db) {
     return (req, res) => {
-        const { fecha, cliente, servicio, horario, metodo, montoMin, montoMax } = req.query;
+        const { fecha, cliente, telefono, servicio, horario, metodo, montoMin, montoMax } = req.query;
 
         const condiciones = [];
         const params = [];
@@ -87,6 +87,11 @@ export function obtenerPagos(db) {
         if (cliente !== undefined && cliente !== '') {
             condiciones.push('nombre_cliente like ?');
             params.push(`%${cliente}%`);
+        }
+
+        if (telefono !== undefined && telefono !== '') {
+            condiciones.push('telefono_cliente like ?');
+            params.push(`%${telefono}%`);
         }
 
         if (servicio !== undefined && servicio !== '') {

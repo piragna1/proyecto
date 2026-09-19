@@ -3,7 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from "@angular/router";
 import { UsuarioService } from '../../usuario/services/usuario-service';
 import { Usuario } from '../../usuario/interface/usuario.interface';
-import { emailValidator } from '../../shared/utils/validators';
+import { emailValidator, telefonoValidator } from '../../shared/utils/validators';
 
 @Component({
   selector: 'app-componente-alta-peluquero',
@@ -16,7 +16,7 @@ export class ComponenteAltaPeluquero {
   formulario = this.fb.nonNullable.group({
     nombre: ['', [Validators.required]],
     email: ['', [Validators.required, emailValidator]],
-    telefono: ['', [Validators.required, Validators.minLength(10)]],
+    telefono: ['', [Validators.required, telefonoValidator]],
     clave: ['', [Validators.required, Validators.minLength(10)]],
     direccion: ['', [Validators.required, Validators.minLength(8)]]
   });

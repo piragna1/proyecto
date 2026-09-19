@@ -6,6 +6,7 @@ export interface Pago {
   metodo: 'efectivo' | 'transferencia';
   fecha_pago?: string;
   nombre_cliente?: string;
+  telefono_cliente?: string;
   servicio_tipo?: string;
   horario_turno?: string;
 }
@@ -18,6 +19,7 @@ export interface PagosResponse {
 export interface PagosFiltros {
   fecha?: string;
   cliente?: string;
+  telefono?: string;
   servicio?: string;
   horario?: string;
   metodo?: string;

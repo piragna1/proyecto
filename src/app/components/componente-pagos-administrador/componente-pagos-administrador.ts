@@ -3,7 +3,7 @@ import { RouterLink } from "@angular/router";
 import { DatePipe } from '@angular/common';
 import { PagoService } from '../../pago/services/pago-service';
 
-type CampoFiltro = 'fecha' | 'cliente' | 'servicio' | 'horario' | 'metodo' | 'montoMin' | 'montoMax';
+type CampoFiltro = 'fecha' | 'cliente' | 'telefono' | 'servicio' | 'horario' | 'metodo' | 'montoMin' | 'montoMax';
 
 @Component({
   selector: 'app-componente-pagos-administrador',
@@ -19,6 +19,7 @@ export class ComponentePagosAdministrador implements OnInit, OnDestroy {
   filtros: Record<CampoFiltro, WritableSignal<string>> = {
     fecha: signal(''),
     cliente: signal(''),
+    telefono: signal(''),
     servicio: signal(''),
     horario: signal(''),
     metodo: signal(''),
@@ -46,6 +47,7 @@ export class ComponentePagosAdministrador implements OnInit, OnDestroy {
     this.ps.getPagos({
       fecha: this.filtros.fecha() || undefined,
       cliente: this.filtros.cliente().trim() || undefined,
+      telefono: this.filtros.telefono().trim() || undefined,
       servicio: this.filtros.servicio().trim() || undefined,
       horario: this.filtros.horario().trim() || undefined,
       metodo: this.filtros.metodo() || undefined,

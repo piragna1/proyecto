@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { UsuarioService } from '../../usuario/services/usuario-service';
 import { Usuario } from '../../usuario/interface/usuario.interface';
-import { emailValidator } from '../../shared/utils/validators';
+import { emailValidator, telefonoValidator } from '../../shared/utils/validators';
 
 @Component({
   selector: 'app-componente-editar-administrador-administrador',
@@ -15,7 +15,7 @@ export class ComponenteEditarAdministradorAdministrador implements OnInit {
   fb: FormBuilder = inject(FormBuilder);
   formulario = this.fb.nonNullable.group({
     email: ['', [Validators.required, emailValidator]],
-    telefono: ['', [Validators.required, Validators.minLength(10)]],
+    telefono: ['', [Validators.required, telefonoValidator]],
     clave: ['', [(ctrl: AbstractControl) => (ctrl.value && ctrl.value.trim() !== '' && ctrl.value.length < 10) ? { minlength: { requiredLength: 10 } } : null]]
   });
   ar: ActivatedRoute = inject(ActivatedRoute);

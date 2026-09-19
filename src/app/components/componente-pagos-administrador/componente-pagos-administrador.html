@@ -4,6 +4,7 @@
     <div class="filtros">
         <label>Fecha: <input type="date" [value]="filtros.fecha()" (change)="actualizarFiltro('fecha', $event)"></label>
         <label>Cliente: <input type="text" [value]="filtros.cliente()" (input)="actualizarFiltro('cliente', $event)" placeholder="Buscar cliente"></label>
+        <label>Teléfono: <input type="text" [value]="filtros.telefono()" (input)="actualizarFiltro('telefono', $event)" placeholder="Buscar teléfono"></label>
         <label>Servicio: <input type="text" [value]="filtros.servicio()" (input)="actualizarFiltro('servicio', $event)" placeholder="Buscar servicio"></label>
         <label>Horario: <input type="text" [value]="filtros.horario()" (input)="actualizarFiltro('horario', $event)" placeholder="Buscar horario"></label>
         <label>Método:
@@ -23,6 +24,7 @@
             <tr>
                 <th>Fecha</th>
                 <th>Cliente</th>
+                <th>Teléfono</th>
                 <th>Servicio</th>
                 <th>Horario</th>
                 <th>Método</th>
@@ -34,6 +36,7 @@
             <tr>
                 <td>{{ item.fecha_pago ? (item.fecha_pago | date:'dd/MM/yyyy HH:mm') : '-' }}</td>
                 <td>{{ item.nombre_cliente }}</td>
+                <td>{{ item.telefono_cliente || '-' }}</td>
                 <td>{{ item.servicio_tipo }}</td>
                 <td>{{ item.horario_turno }}</td>
                 <td>{{ item.metodo }}</td>
@@ -41,7 +44,7 @@
             </tr>
             } @empty {
             <tr>
-                <td colspan="6">Sin pagos registrados</td>
+                <td colspan="7">Sin pagos registrados</td>
             </tr>
             }
         </tbody>

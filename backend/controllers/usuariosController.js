@@ -30,8 +30,8 @@ function validarUsuario(usuario, esCreacion = true) {
     
     if (!usuario.telefono || typeof usuario.telefono !== 'string') {
         errores.push("Teléfono requerido");
-    } else if (usuario.telefono.length > 20) {
-        errores.push("Teléfono muy largo");
+    } else if (!/^\+?549\d{10}$|^\d{10}$/.test(usuario.telefono.trim())) {
+        errores.push("Teléfono inválido (debe ser un número de Argentina)");
     }
     
     // Validar clave solo en creación o si se proporciona en actualización

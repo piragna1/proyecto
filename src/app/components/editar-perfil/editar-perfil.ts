@@ -5,7 +5,7 @@ import { ActivatedRoute, RouterLink } from "@angular/router";
 import { Usuario } from '../../usuario/interface/usuario.interface';
 import { UsuarioService } from '../../usuario/services/usuario-service';
 import { ToastService } from '../../shared/services/toast-service';
-import { emailValidator } from '../../shared/utils/validators';
+import { emailValidator, telefonoValidator } from '../../shared/utils/validators';
 
 @Component({
   selector: 'app-editar-perfil',
@@ -18,7 +18,7 @@ export class EditarPerfil implements OnInit {
   formulario = this.fb.nonNullable.group({
     nombre: ['', [Validators.required]],
     email: ['', [Validators.required, emailValidator]],
-    telefono: ['', [Validators.required, Validators.minLength(10)]],
+    telefono: ['', [Validators.required, telefonoValidator]],
   });
   formClave = this.fb.nonNullable.group({
     anterior: ['', [Validators.required]],

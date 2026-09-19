@@ -8,6 +8,7 @@ import { formatearServicio } from '../../servicio/utils/utils';
 import { formatearFechaSQL } from '../../shared/utils/dateHelpers';
 import { ToastService } from '../../shared/services/toast-service';
 import { AuthService } from '../../auth/services/auth-service';
+import { telefonoValidator } from '../../shared/utils/validators';
 
 @Component({
   selector: 'app-componente-nuevo-turno-mostrador',
@@ -23,7 +24,7 @@ export class ComponenteNuevoTurnoMostrador implements OnInit {
     servicio: [null as Servicio | null, [Validators.required]],
     fechaHoraInicio: ['', [Validators.required]],
     nombre: ['', [Validators.required]],
-    telefono: ['', [Validators.required, Validators.minLength(10)]],
+    telefono: ['', [Validators.required, telefonoValidator]],
   });
   ts: TurnoService = inject(TurnoService);
   toasts: ToastService = inject(ToastService);

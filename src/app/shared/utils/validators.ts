@@ -7,6 +7,7 @@ const MAX_DOMAIN_LENGTH = 253;
 const LOCAL_ATEXT = /^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+$/;
 const DOMAIN_LABEL = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?$/;
 const TLD = /^[A-Za-z]{2,63}$/;
+const TELEFONO_REGEX = /^\+?549\d{10}$|^\d{10}$/;
 
 export function emailValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value as string | null | undefined;
@@ -39,4 +40,10 @@ export function emailValidator(control: AbstractControl): ValidationErrors | nul
     }
 
     return null;
+}
+
+export function telefonoValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value as string | null | undefined;
+    if (!value || value.trim() === '') return null;
+    return TELEFONO_REGEX.test(value.trim()) ? null : { telefono: true };
 }
