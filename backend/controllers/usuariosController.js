@@ -20,7 +20,7 @@ function validarUsuario(usuario, esCreacion = true) {
         errores.push("Email requerido");
     } else {
         usuario.email = usuario.email.trim().toLowerCase();
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(usuario.email)) {
+        if (!/^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*\.[A-Za-z]{2,}$/.test(usuario.email)) {
             errores.push("Email inválido");
         }
         if (usuario.email.length > 255) {
