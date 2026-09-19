@@ -112,12 +112,12 @@ export function enviarNotificacionTurno(db, datos) {
 
             if (process.env.NOTIFICACIONES_ACTIVO !== 'true' || !process.env.WHAPI_TOKEN) {
                 console.log('[notificaciones] Aviso omitido (sin token o desactivado):\n' + mensaje);
-                return registrar(db, { idUsuario, tipo, motivo, telefonoDestino, mensaje, estado: 'omitida' });
+                return registrar(db, { idUsuario, tipo, motivo, telefonoDestino, mensaje, estado: 'omitida', fechaEnvio: new Date() });
             }
 
             db.query(
                 'insert into notificaciones (id_usuario, tipo, motivo, telefono, mensaje, estado, fecha_envio) values (?,?,?,?,?,?,?)',
-                [idUsuario, tipo, motivo || null, telefonoDestino || null, mensaje, 'pendiente', null],
+                [idUsuario, tipo, motivo || null, telefonoDestino || null, mensaje, 'pendiente', new Date()],
                 (err, result) => {
                     if (err) {
                         console.error('[notificaciones] Error al registrar:', err.message);
@@ -131,7 +131,7 @@ export function enviarNotificacionTurno(db, datos) {
                             actualizarEstado(db, idNotif, 'enviado', new Date());
                         } else {
                             console.error(`[notificaciones] Error al enviar a ${telefonoDestino}:`, res.error);
-                            actualizarEstado(db, idNotif, 'fallo', null);
+                            actualizarEstado(db, idNotif, 'fallo', new Date());
                         }
                     });
                 }
