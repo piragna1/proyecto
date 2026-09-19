@@ -20,7 +20,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error) => {
-      if (error?.status === 401 && localStorage.getItem('token')) {
+      if (error?.status === 401 && localStorage.getItem('token') && !req.url.includes('/cambiar-clave')) {
         authService.cerrarSesion();
         router.navigateByUrl('/');
       }
