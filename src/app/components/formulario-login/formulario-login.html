@@ -1,9 +1,15 @@
 <section>
   <form action="" [formGroup]="formulario" (ngSubmit)="iniciarSesion()">
     <label for="email">Email: </label>
-    <input type="email" name="email" id="email" formControlName="email" />
+    <input type="email" name="email" id="email" formControlName="email" [class.invalid]="hayError('email')" />
+    @if (hayError('email')) {
+      <p class="field-error">{{ mensajeCampo('email') }}</p>
+    }
     <label for="clave">Clave: </label>
-    <input type="password" name="clave" id="clave" formControlName="clave" />
+    <input type="password" name="clave" id="clave" formControlName="clave" [class.invalid]="hayError('clave')" />
+    @if (hayError('clave')) {
+      <p class="field-error">{{ mensajeCampo('clave') }}</p>
+    }
     <button type="submit">LogIn</button>
     <p>No tienes una cuenta? <a [routerLink]="'/registro'">Registrate!</a></p>
   </form>
