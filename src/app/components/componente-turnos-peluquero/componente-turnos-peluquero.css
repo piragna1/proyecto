@@ -164,3 +164,86 @@ button.cancelar {
         min-width: 0;
     }
 }
+
+@media (max-width: 570px) {
+    section {
+        align-items: stretch;
+        padding: 16px 12px;
+    }
+
+    .table-wrapper {
+        overflow: visible;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    table,
+    thead,
+    tbody,
+    tr,
+    th,
+    td {
+        display: block;
+    }
+
+    thead {
+        display: none;
+    }
+
+    tr {
+        border: 1px solid #cbd3e0;
+        border-radius: 10px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        background: #e8ecf3;
+    }
+
+    tr,
+    td {
+        box-sizing: border-box;
+    }
+
+    td {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        border: none;
+        border-bottom: 1px solid #dde3ee;
+        padding: 8px 10px;
+        word-break: break-word;
+    }
+
+    td:last-child {
+        border-bottom: none;
+    }
+
+    td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #182848;
+    }
+
+    td[colspan] {
+        display: block;
+        text-align: center;
+    }
+
+    td[colspan]::before {
+        content: none;
+    }
+
+    td.td-acciones {
+        display: block;
+    }
+
+    td.td-acciones::before {
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    td.td-acciones button {
+        margin: 4px 8px 4px 0;
+    }
+}

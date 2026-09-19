@@ -15,18 +15,17 @@
         <tbody>
             @for (item of turnos(); track $index) {
             <tr>
-                <td>{{item.usuario?.nombre}}-{{item.usuario?.telefono}}</td>
-                <td>{{item.servicio.tipo}}-${{item.servicio.precio}}</td>
-                <td>De: {{item.fechaHoraInicio}}
-                    A: {{item.fechaHoraFin}}</td>
-                <td>
+                <td data-label="Cliente"><span class="td-valor">{{item.usuario?.nombre}} - {{item.usuario?.telefono}}</span></td>
+                <td data-label="Servicio"><span class="td-valor">{{item.servicio.tipo}} - ${{item.servicio.precio}}</span></td>
+                <td data-label="Horario"><span class="td-valor">De: {{item.fechaHoraInicio}}<br>A: {{item.fechaHoraFin}}</span></td>
+                <td data-label="Pago">
                     @if (item.pagado) {
                     <span class="badge-pagado">Pagado</span>
                     } @else {
                     <span class="badge-pendiente">Pendiente</span>
                     }
                 </td>
-                <td>
+                <td class="td-acciones" data-label="Acciones">
                     @if (!item.pagado) {
                     <button class="cobrar" (click)="abrirCobro(item)">Cobrar</button>
                     }
