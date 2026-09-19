@@ -34,13 +34,13 @@
         <tbody>
             @for (item of pagos(); track $index) {
             <tr>
-                <td>{{ item.fecha_pago ? (item.fecha_pago | date:'dd/MM/yyyy HH:mm') : '-' }}</td>
-                <td>{{ item.nombre_cliente }}</td>
-                <td>{{ item.telefono_cliente || '-' }}</td>
-                <td>{{ item.servicio_tipo }}</td>
-                <td>{{ item.horario_turno }}</td>
-                <td>{{ item.metodo }}</td>
-                <td>${{ item.monto }}</td>
+                <td data-label="Fecha">{{ item.fecha_pago ? (item.fecha_pago | date:'dd/MM/yyyy HH:mm') : '-' }}</td>
+                <td data-label="Cliente">{{ item.nombre_cliente }}</td>
+                <td data-label="Teléfono">{{ item.telefono_cliente || '-' }}</td>
+                <td data-label="Servicio">{{ item.servicio_tipo }}</td>
+                <td data-label="Horario">{{ item.horario_turno }}</td>
+                <td data-label="Método">{{ item.metodo }}</td>
+                <td data-label="Monto">${{ item.monto }}</td>
             </tr>
             } @empty {
             <tr>
