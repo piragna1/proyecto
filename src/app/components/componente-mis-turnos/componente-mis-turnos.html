@@ -1,6 +1,28 @@
 <section>
     <a [routerLink]="'/home'">Volver</a>
     <h2>Mis turnos: </h2>
+    @if (cargando()) {
+    <div class="loader-wrapper">
+        <div class="loader" aria-hidden="true"></div>
+    </div>
+    } @else if (turnos().length === 0) {
+    <div class="empty-state">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="75" y="28" width="6" height="16" rx="3" fill="#8b9bb0" />
+            <rect x="119" y="28" width="6" height="16" rx="3" fill="#8b9bb0" />
+            <rect x="35" y="40" width="130" height="120" rx="14" fill="#cfd8e3" />
+            <rect x="35" y="40" width="130" height="32" rx="14" fill="#aebccc" />
+            <rect x="95" y="56" width="10" height="4" rx="2" fill="#8b9bb0" />
+            <rect x="50" y="84" width="100" height="12" rx="6" fill="#e2e8f0" />
+            <rect x="50" y="104" width="100" height="12" rx="6" fill="#e2e8f0" />
+            <rect x="50" y="124" width="64" height="12" rx="6" fill="#e2e8f0" />
+            <circle cx="100" cy="100" r="52" fill="#eef2f7" opacity="0.55" />
+            <circle cx="100" cy="100" r="52" fill="none" stroke="#8b9bb0" stroke-width="6" />
+            <path d="M 78 78 L 122 122 M 122 78 L 78 122" stroke="#94a3b8" stroke-width="7" stroke-linecap="round" />
+        </svg>
+        <p>No tienes turnos pendientes</p>
+    </div>
+    } @else {
     <div class="card-container">
         @for (item of turnos(); track $index) {
         <div class="card">
@@ -13,4 +35,5 @@
         </div>
         }
     </div>
+    }
 </section>

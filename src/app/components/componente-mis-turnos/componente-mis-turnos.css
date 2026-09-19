@@ -89,6 +89,122 @@ h2 {
     box-shadow: 0 10px 26px rgba(24, 40, 72, 0.12);
 }
 
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 48px 16px;
+    text-align: center;
+}
+
+.empty-state svg {
+    width: 160px;
+    height: 160px;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #94a3b8;
+}
+
+.loader-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding-top: 120px;
+    min-height: 320px;
+}
+
+.loader {
+    --color-1: #4b6cb7;
+    --size: 2.4px;
+
+    color: var(--color-1);
+    font-size: calc(45 * var(--size));
+    text-indent: -9999em;
+    overflow: hidden;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    position: relative;
+    transform: translateZ(0);
+    animation:
+        mltShdSpin 1.7s infinite ease,
+        round 1.7s infinite ease;
+}
+
+@keyframes mltShdSpin {
+    0% {
+        box-shadow:
+            0 -0.83em 0 -0.4em,
+            0 -0.83em 0 -0.42em,
+            0 -0.83em 0 -0.44em,
+            0 -0.83em 0 -0.46em,
+            0 -0.83em 0 -0.477em;
+    }
+
+    5%,
+    95% {
+        box-shadow:
+            0 -0.83em 0 -0.4em,
+            0 -0.83em 0 -0.42em,
+            0 -0.83em 0 -0.44em,
+            0 -0.83em 0 -0.46em,
+            0 -0.83em 0 -0.477em;
+    }
+
+    10%,
+    59% {
+        box-shadow:
+            0 -0.83em 0 -0.4em,
+            -0.087em -0.825em 0 -0.42em,
+            -0.173em -0.812em 0 -0.44em,
+            -0.256em -0.789em 0 -0.46em,
+            -0.297em -0.775em 0 -0.477em;
+    }
+
+    20% {
+        box-shadow:
+            0 -0.83em 0 -0.4em,
+            -0.338em -0.758em 0 -0.42em,
+            -0.555em -0.617em 0 -0.44em,
+            -0.671em -0.488em 0 -0.46em,
+            -0.749em -0.34em 0 -0.477em;
+    }
+
+    38% {
+        box-shadow:
+            0 -0.83em 0 -0.4em,
+            -0.377em -0.74em 0 -0.42em,
+            -0.645em -0.522em 0 -0.44em,
+            -0.775em -0.297em 0 -0.46em,
+            -0.82em -0.09em 0 -0.477em;
+    }
+
+    100% {
+        box-shadow:
+            0 -0.83em 0 -0.4em,
+            0 -0.83em 0 -0.42em,
+            0 -0.83em 0 -0.44em,
+            0 -0.83em 0 -0.46em,
+            0 -0.83em 0 -0.477em;
+    }
+}
+
+@keyframes round {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 @media (max-width: 520px) {
     section {
         padding: 18px 12px;
@@ -100,5 +216,14 @@ h2 {
 
     .card .actions {
         justify-content: center;
+    }
+
+    .empty-state svg {
+        width: 110px;
+        height: 110px;
+    }
+
+    .empty-state p {
+        font-size: 15px;
     }
 }

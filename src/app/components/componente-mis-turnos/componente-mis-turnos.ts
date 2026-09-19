@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink } from "@angular/router";
 import { TurnoService } from '../../turno/services/turno-service';
 import { Turno } from '../../turno/interface/turno.interface';
@@ -19,6 +19,8 @@ export class ComponenteMisTurnos implements OnInit {
   us: UsuarioService = inject(UsuarioService);
   r: Router = inject(Router);
   turnos = this.ts.getTurnosSignal();
+  cargando = signal(true);
+  private inicioCarga = Date.now();
   toastService: ToastService = inject(ToastService);
   as:AuthService = inject(AuthService);
   ngOnInit(): void {
@@ -56,12 +58,20 @@ export class ComponenteMisTurnos implements OnInit {
             }
           })
         });
+        this.ocultarLoader();
       },
       error: (e) => {
         console.log(e);
+        this.ocultarLoader();
       }
     });
   };
+
+  private ocultarLoader() {
+    const transcurrido = Date.now() - this.inicioCarga;
+    const restante = Math.max(0, 500 - transcurrido);
+    setTimeout(() => this.cargando.set(false), restante);
+  }
 
   cancelarTurno(id: string | undefined) {
     if (!id) return;
