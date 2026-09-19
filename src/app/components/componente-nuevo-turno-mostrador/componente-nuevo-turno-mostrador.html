@@ -1,8 +1,8 @@
 <section>
   <h2>Nuevo turno (mostrador):</h2>
   <form (ngSubmit)="generarTurno()" [formGroup]="formulario">
+    <label for="servicio">Servicio</label>
     <select name="servicio" id="servicio" formControlName="servicio">
-      <option value="" disabled selected>Servicio</option>
       @for (item of servicios(); track $index) {
       <option [ngValue]="item">{{ item.tipo }} - {{ item.duracionMinutos }} minutos</option>
       }
