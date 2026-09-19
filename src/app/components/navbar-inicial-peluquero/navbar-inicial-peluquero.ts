@@ -12,6 +12,13 @@ export class NavbarInicialPeluquero {
   as: AuthService = inject(AuthService);
   r: Router = inject(Router);
   mostrarInicio = signal(this.r.url !== '/home-peluquero');
+  abierto = signal(false);
+  alternar() {
+    this.abierto.update((v) => !v);
+  }
+  cerrar() {
+    this.abierto.set(false);
+  }
   onLogOut() {
     this.as.cerrarSesion();
   }

@@ -1,7 +1,12 @@
 <nav>
-    <ul>
-        <li><a [routerLink]="'/home'">Inicio</a></li>
-        <li><a [routerLink]="'/nuevo-turno'">Nuevo Turno</a></li>
+    <button class="menu-btn" (click)="alternar()" [attr.aria-expanded]="abierto()" aria-label="Abrir menú">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <ul [class.menu-abierto]="abierto()">
+        <li><a [routerLink]="'/home'" (click)="cerrar()">Inicio</a></li>
+        <li><a [routerLink]="'/nuevo-turno'" (click)="cerrar()">Nuevo Turno</a></li>
         <li><a (click)="onEditarPerfil()">Perfil</a></li>
         <li><a [routerLink]="''" (click)="onLogOut()">LogOut</a></li>
     </ul>

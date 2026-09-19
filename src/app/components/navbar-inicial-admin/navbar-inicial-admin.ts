@@ -12,6 +12,13 @@ export class NavbarInicialAdmin {
   as: AuthService = inject(AuthService);
   r: Router = inject(Router);
   mostrarInicio = signal(this.r.url !== '/home-admin');
+  abierto = signal(false);
+  alternar() {
+    this.abierto.update((v) => !v);
+  }
+  cerrar() {
+    this.abierto.set(false);
+  }
   onLogout() {
     this.as.cerrarSesion();
   };

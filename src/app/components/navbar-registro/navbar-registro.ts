@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -7,4 +7,12 @@ import { RouterLink } from '@angular/router';
   templateUrl: './navbar-registro.html',
   styleUrl: './navbar-registro.css',
 })
-export class NavbarRegistro { }
+export class NavbarRegistro {
+  abierto = signal(false);
+  alternar() {
+    this.abierto.update((v) => !v);
+  }
+  cerrar() {
+    this.abierto.set(false);
+  }
+}

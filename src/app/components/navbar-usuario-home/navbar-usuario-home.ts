@@ -12,6 +12,13 @@ export class NavbarUsuarioHome {
   as: AuthService = inject(AuthService);
   r: Router = inject(Router);
   mostrarInicio = signal(this.r.url !== '/home');
+  abierto = signal(false);
+  alternar() {
+    this.abierto.update((v) => !v);
+  }
+  cerrar() {
+    this.abierto.set(false);
+  }
   onLogOut() {
     this.as.cerrarSesion();
   }

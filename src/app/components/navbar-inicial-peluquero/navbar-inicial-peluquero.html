@@ -1,12 +1,17 @@
 <nav>
-    <ul>
+    <button class="menu-btn" (click)="alternar()" [attr.aria-expanded]="abierto()" aria-label="Abrir menú">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <ul [class.menu-abierto]="abierto()">
         @if (mostrarInicio()) {
-            <li><a [routerLink]="'/home-peluquero'">Inicio</a></li>
+            <li><a [routerLink]="'/home-peluquero'" (click)="cerrar()">Inicio</a></li>
         }
-        <li><a [routerLink]="'/clientes-peluquero'">Clientes</a></li>
-        <li><a [routerLink]="'/turnos-peluquero'">Turnos</a></li>
-        <li><a [routerLink]="'/nuevo-turno-mostrador'">Nuevo turno</a></li>
-        <li><a [routerLink]="'/servicios-peluquero'">Servicios</a></li>
+        <li><a [routerLink]="'/clientes-peluquero'" (click)="cerrar()">Clientes</a></li>
+        <li><a [routerLink]="'/turnos-peluquero'" (click)="cerrar()">Turnos</a></li>
+        <li><a [routerLink]="'/nuevo-turno-mostrador'" (click)="cerrar()">Nuevo turno</a></li>
+        <li><a [routerLink]="'/servicios-peluquero'" (click)="cerrar()">Servicios</a></li>
         <li><a (click)="onEditarPerfilPeluquero()">Perfil</a></li>
         <li><a [routerLink]="''" (click)="onLogOut()">LogOut</a></li>
     </ul>

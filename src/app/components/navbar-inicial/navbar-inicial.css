@@ -2,6 +2,7 @@ nav {
     background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
     padding: 10px 16px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    position: relative;
 }
 
 nav ul {
@@ -31,21 +32,65 @@ nav a:focus {
     transform: translateY(-1px);
 }
 
-/* Small screens: center the nav */
-@media (max-width: 640px) {
-    nav ul {
-        justify-content: center;
-        gap: 8px;
-    }
-
-    nav a {
-        padding: 6px 10px;
-        font-size: 14px;
-    }
-}
-
-/* Accessible focus ring for keyboard users */
 nav a:focus-visible {
     outline: 3px solid rgba(255, 255, 255, 0.18);
     outline-offset: 2px;
+}
+
+.menu-btn {
+    display: none;
+}
+
+@media (max-width: 850px) {
+    .menu-btn {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-left: auto;
+        background: none;
+        border: none;
+        padding: 8px;
+        cursor: pointer;
+    }
+
+    .menu-btn span {
+        width: 26px;
+        height: 3px;
+        background: #ffffff;
+        border-radius: 2px;
+        transition: opacity 200ms ease;
+    }
+
+    .menu-btn:hover span {
+        opacity: 0.8;
+    }
+
+    nav ul {
+        display: none;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+        background: #1c2a47;
+        padding: 10px 16px 14px;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+        z-index: 20;
+    }
+
+    nav ul.menu-abierto {
+        display: flex;
+    }
+
+    nav li {
+        width: 100%;
+    }
+
+    nav a {
+        display: block;
+        width: 100%;
+        padding: 12px 14px;
+    }
 }

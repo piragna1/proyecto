@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from "@angular/router";
 import { AuthService } from '../../auth/services/auth-service';
 
@@ -11,6 +11,13 @@ import { AuthService } from '../../auth/services/auth-service';
 export class NavbarUsuarioNuevoTurno {
   as: AuthService = inject(AuthService);
   r: Router = inject(Router);
+  abierto = signal(false);
+  alternar() {
+    this.abierto.update((v) => !v);
+  }
+  cerrar() {
+    this.abierto.set(false);
+  }
   onLogOut() {
     this.as.cerrarSesion();
   }
