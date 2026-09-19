@@ -26,6 +26,43 @@ h2 {
     color: #182848;
 }
 
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    justify-content: center;
+    align-items: flex-end;
+    max-width: 1000px;
+    width: 100%;
+}
+
+.filtros label {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.85rem;
+    gap: 4px;
+    color: #182848;
+}
+
+.filtros input,
+.filtros select {
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    min-width: 110px;
+}
+
+.filtros button {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+    color: #ffffff;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
 table {
     border-collapse: collapse;
     width: 100%;

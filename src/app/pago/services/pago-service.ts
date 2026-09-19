@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Pago, PagosResponse } from '../interface/pago.interface';
+import { Pago, PagosFiltros, PagosResponse } from '../interface/pago.interface';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -25,9 +25,16 @@ export class PagoService {
   limpiarPagosSignal() {
     this.pagos.set([]);
   };
-  getPagos(fecha?: string): Observable<PagosResponse> {
-    const params = fecha ? new HttpParams().set('fecha', fecha) : undefined;
-    return this.http.get<PagosResponse>(this.url, params ? { params } : undefined);
+  getPagos(filtros?: PagosFiltros): Observable<PagosResponse> {
+    let params = new HttpParams();
+    if (filtros) {
+      (Object.entries(filtros) as [keyof PagosFiltros, string | undefined][]).forEach(([clave, valor]) => {
+        if (valor !== undefined && valor !== '') {
+          params = params.set(clave, valor);
+        }
+      });
+    }
+    return this.http.get<PagosResponse>(this.url, params.keys().length ? { params } : undefined);
   };
   postPago(payload: { idTurno: string; metodo: string; monto: number }): Observable<Pago> {
     return this.http.post<Pago>(this.url, payload);

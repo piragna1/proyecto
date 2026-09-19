@@ -1,8 +1,20 @@
 <section>
     <a [routerLink]="'/home-admin'">Volver</a>
     <h2>Historial de pagos</h2>
-    <div>
-        <label>Filtrar por día: <input type="date" [value]="fecha" (change)="filtrarPorDia($event)"></label>
+    <div class="filtros">
+        <label>Fecha: <input type="date" [value]="filtros.fecha()" (change)="actualizarFiltro('fecha', $event)"></label>
+        <label>Cliente: <input type="text" [value]="filtros.cliente()" (input)="actualizarFiltro('cliente', $event)" placeholder="Buscar cliente"></label>
+        <label>Servicio: <input type="text" [value]="filtros.servicio()" (input)="actualizarFiltro('servicio', $event)" placeholder="Buscar servicio"></label>
+        <label>Horario: <input type="text" [value]="filtros.horario()" (input)="actualizarFiltro('horario', $event)" placeholder="Buscar horario"></label>
+        <label>Método:
+            <select [value]="filtros.metodo()" (change)="actualizarFiltro('metodo', $event)">
+                <option value="">Todos</option>
+                <option value="efectivo">Efectivo</option>
+                <option value="transferencia">Transferencia</option>
+            </select>
+        </label>
+        <label>Monto desde: <input type="number" min="0" [value]="filtros.montoMin()" (input)="actualizarFiltro('montoMin', $event)"></label>
+        <label>Monto hasta: <input type="number" min="0" [value]="filtros.montoMax()" (input)="actualizarFiltro('montoMax', $event)"></label>
         <button (click)="verTodos()">Ver todos</button>
     </div>
     <div class="total">Total recaudado: ${{ total }}</div>

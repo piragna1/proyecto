@@ -71,22 +71,64 @@ export function registrarPago(db) {
 
 export function obtenerPagos(db) {
     return (req, res) => {
-        const { fecha } = req.query;
+        const { fecha, cliente, servicio, horario, metodo, montoMin, montoMax } = req.query;
+
+        const condiciones = [];
+        const params = [];
 
         if (fecha !== undefined) {
             if (typeof fecha !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
                 return res.status(400).json({ mensaje: "Formato de fecha inválido. Use YYYY-MM-DD" });
             }
-        }
-
-        let query = 'select * from pagos';
-        const params = [];
-
-        if (fecha !== undefined) {
-            query += ' where date(fecha_pago) = ?';
+            condiciones.push('date(fecha_pago) = ?');
             params.push(fecha);
         }
 
+        if (cliente !== undefined && cliente !== '') {
+            condiciones.push('nombre_cliente like ?');
+            params.push(`%${cliente}%`);
+        }
+
+        if (servicio !== undefined && servicio !== '') {
+            condiciones.push('servicio_tipo like ?');
+            params.push(`%${servicio}%`);
+        }
+
+        if (horario !== undefined && horario !== '') {
+            condiciones.push('horario_turno like ?');
+            params.push(`%${horario}%`);
+        }
+
+        if (metodo !== undefined && metodo !== '') {
+            if (!METODOS_VALIDOS.includes(metodo)) {
+                return res.status(400).json({ mensaje: "Método de pago inválido (efectivo o transferencia)" });
+            }
+            condiciones.push('metodo = ?');
+            params.push(metodo);
+        }
+
+        if (montoMin !== undefined && montoMin !== '') {
+            const min = Number(montoMin);
+            if (isNaN(min)) {
+                return res.status(400).json({ mensaje: "Monto mínimo inválido" });
+            }
+            condiciones.push('monto >= ?');
+            params.push(min);
+        }
+
+        if (montoMax !== undefined && montoMax !== '') {
+            const max = Number(montoMax);
+            if (isNaN(max)) {
+                return res.status(400).json({ mensaje: "Monto máximo inválido" });
+            }
+            condiciones.push('monto <= ?');
+            params.push(max);
+        }
+
+        let query = 'select * from pagos';
+        if (condiciones.length > 0) {
+            query += ' where ' + condiciones.join(' and ');
+        }
         query += ' order by fecha_pago desc';
 
         db.query(query, params, (err, pagos) => {

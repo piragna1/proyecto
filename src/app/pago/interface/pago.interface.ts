@@ -14,3 +14,13 @@ export interface PagosResponse {
   pagos: Pago[];
   total: number;
 }
+
+export interface PagosFiltros {
+  fecha?: string;
+  cliente?: string;
+  servicio?: string;
+  horario?: string;
+  metodo?: string;
+  montoMin?: string;
+  montoMax?: string;
+}
