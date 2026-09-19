@@ -16,13 +16,13 @@
         <tbody>
             @for (item of notificaciones(); track $index) {
             <tr>
-                <td>{{ item.fecha_envio ? (item.fecha_envio | date:'dd/MM/yyyy HH:mm') : '-' }}</td>
-                <td>{{ item.usuario_nombre }}</td>
-                <td>{{ item.tipo }}</td>
-                <td>{{ item.motivo || '-' }}</td>
-                <td>{{ item.telefono || '-' }}</td>
-                <td>{{ item.mensaje }}</td>
-                <td>{{ item.estado }}</td>
+                <td data-label="Fecha">{{ item.fecha_envio ? (item.fecha_envio | date:'dd/MM/yyyy HH:mm') : '-' }}</td>
+                <td data-label="Usuario">{{ item.usuario_nombre }}</td>
+                <td data-label="Tipo">{{ item.tipo }}</td>
+                <td data-label="Motivo">{{ item.motivo || '-' }}</td>
+                <td data-label="Teléfono">{{ item.telefono || '-' }}</td>
+                <td data-label="Mensaje">{{ item.mensaje }}</td>
+                <td data-label="Estado">{{ item.estado }}</td>
             </tr>
             } @empty {
             <tr>
