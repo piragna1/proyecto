@@ -55,6 +55,10 @@ export class ComponenteModificarTurnoUsuario implements OnInit {
       }
     })
   }
+  compararServicios(a: Servicio | null, b: Servicio | null) {
+    return a?.id === b?.id;
+  }
+
   modificarTurno() {
     if (this.formulario.invalid) return;
     const payload = this.as.obtenerPayload();

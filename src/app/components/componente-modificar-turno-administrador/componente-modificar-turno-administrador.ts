@@ -53,6 +53,10 @@ export class ComponenteModificarTurnoAdministrador implements OnInit {
       }
     })
   }
+  compararServicios(a: Servicio | null, b: Servicio | null) {
+    return a?.id === b?.id;
+  }
+
   modificarTurno() {
     if (this.formulario.invalid) return;
     this.ts.getTurnoById(this.id).subscribe({
@@ -100,7 +104,8 @@ export class ComponenteModificarTurnoAdministrador implements OnInit {
     this.ts.getTurnoById(id).subscribe({
       next: (value: any) => {
         this.ss.getServicioById(value.id_servicio).subscribe({
-          next: () => {
+          next: (serv) => {
+            this.formulario.controls.servicio.setValue(serv);
             const fecha = new Date(value.fecha_hora_inicio);
             const fechaLocal = new Date(
               fecha.getTime() - fecha.getTimezoneOffset() * 60000

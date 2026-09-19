@@ -3,7 +3,7 @@
     <h2>Modificar turno:</h2>
     <form (ngSubmit)="modificarTurno()" [formGroup]="formulario">
         <label for="servicio">Servicio</label>
-        <select name="servicio" id="servicio" formControlName="servicio">
+        <select name="servicio" id="servicio" formControlName="servicio" [compareWith]="compararServicios">
             @for (item of servicios(); track $index) {
             <option [ngValue]="item">{{ item.tipo }} - {{ item.duracionMinutos }} minutos</option>
             }
