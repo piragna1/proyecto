@@ -1,6 +1,8 @@
 <nav>
     <ul>
-        <li><a [routerLink]="'/home'">Inicio</a></li>
+        @if (mostrarInicio()) {
+          <li><a [routerLink]="'/home'">Inicio</a></li>
+        }
         <li><a [routerLink]="'/mis-turnos'">Mis Turnos</a></li>
         <li><a [routerLink]="'/nuevo-turno'">Nuevo Turno</a></li>
         <li><a (click)="onEditarPerfil()">Perfil</a></li>

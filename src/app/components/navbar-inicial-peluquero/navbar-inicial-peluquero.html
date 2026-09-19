@@ -1,6 +1,8 @@
 <nav>
     <ul>
-        <li><a [routerLink]="'/home-peluquero'">Inicio</a></li>
+        @if (mostrarInicio()) {
+            <li><a [routerLink]="'/home-peluquero'">Inicio</a></li>
+        }
         <li><a [routerLink]="'/clientes-peluquero'">Clientes</a></li>
         <li><a [routerLink]="'/turnos-peluquero'">Turnos</a></li>
         <li><a [routerLink]="'/nuevo-turno-mostrador'">Nuevo turno</a></li>

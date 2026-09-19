@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from "@angular/router";
 import { AuthService } from '../../auth/services/auth-service';
 
@@ -11,6 +11,7 @@ import { AuthService } from '../../auth/services/auth-service';
 export class NavbarInicialAdmin {
   as: AuthService = inject(AuthService);
   r: Router = inject(Router);
+  mostrarInicio = signal(this.r.url !== '/home-admin');
   onLogout() {
     this.as.cerrarSesion();
   };
