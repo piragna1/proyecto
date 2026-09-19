@@ -4,6 +4,17 @@
 // Sin WHAPI_TOKEN configurado, queda registrado como 'omitida' y la app no se rompe.
 const WHAPI_URL = process.env.WHAPI_URL || 'https://gate.whapi.cloud';
 
+function formatearFecha(valor) {
+    if (!valor) return null;
+    const fecha = new Date(valor);
+    if (isNaN(fecha.getTime())) return String(valor);
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const hora = String(fecha.getHours()).padStart(2, '0');
+    const minutos = String(fecha.getMinutes()).padStart(2, '0');
+    return `${dia}/${mes} ${hora}:${minutos}`;
+}
+
 export function normalizarTelefono(telefono) {
     if (!telefono) return null;
     let num = String(telefono).replace(/\D/g, '');
@@ -18,29 +29,25 @@ export function normalizarTelefono(telefono) {
     return num.length >= 11 && num.length <= 15 ? num : null;
 }
 
-export function armarMensaje(tipo, { usuario, servicio, motivo, anterior, actual }) {
+export function armarMensaje(tipo, { servicio, motivo, anterior, actual }) {
     const ubicacion = process.env.UBICACION_NEGOCIO || 'Consultar ubicación';
-    const nombre = usuario && usuario.nombre ? usuario.nombre : 'Cliente';
     const servicioTexto = servicio ? `${servicio.tipo} - $${servicio.precio}` : 'Servicio no disponible';
     const lineas = [];
 
     if (tipo === 'modificacion') {
         lineas.push('TURNO MODIFICADO');
-        lineas.push(`Cliente: ${nombre}`);
         lineas.push(`Servicio: ${servicioTexto}`);
-        if (anterior) lineas.push(`Horario anterior: ${anterior}`);
-        if (actual) lineas.push(`Nuevo horario: ${actual}`);
+        if (anterior) lineas.push(`Fecha anterior: ${formatearFecha(anterior)}`);
+        if (actual) lineas.push(`Nueva fecha: ${formatearFecha(actual)}`);
         if (motivo) lineas.push(`Motivo: ${motivo}`);
     } else if (tipo === 'eliminacion') {
         lineas.push('TURNO CANCELADO');
-        lineas.push(`Cliente: ${nombre}`);
         lineas.push(`Servicio: ${servicioTexto}`);
-        if (anterior) lineas.push(`Horario: ${anterior}`);
+        if (anterior) lineas.push(`Fecha: ${formatearFecha(anterior)}`);
     } else {
         lineas.push('NUEVO TURNO RESERVADO');
-        lineas.push(`Cliente: ${nombre}`);
         lineas.push(`Servicio: ${servicioTexto}`);
-        if (actual) lineas.push(`Horario: ${actual}`);
+        if (actual) lineas.push(`Fecha: ${formatearFecha(actual)}`);
     }
 
     lineas.push(`Dirección: ${ubicacion}`);
