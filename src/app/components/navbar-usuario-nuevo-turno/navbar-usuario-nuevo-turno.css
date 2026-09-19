@@ -41,7 +41,7 @@ nav a:focus-visible {
     display: none;
 }
 
-@media (max-width: 850px) {
+@media (max-width: 875px) {
     .menu-btn {
         display: flex;
         flex-direction: column;
