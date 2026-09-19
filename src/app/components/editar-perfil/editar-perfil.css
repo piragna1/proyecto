@@ -210,6 +210,8 @@ section>a {
 }
 
 .field-error {
+    display: block;
+    margin-top: -4px;
     font-size: 13px;
     color: #d32f2f;
 }

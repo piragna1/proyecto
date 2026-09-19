@@ -1,5 +1,6 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { Usuario } from '../../usuario/interface/usuario.interface';
 import { UsuarioService } from '../../usuario/services/usuario-service';
@@ -21,7 +22,14 @@ export class EditarPerfilAdministrador implements OnInit {
   formClave = this.fb.nonNullable.group({
     anterior: ['', [Validators.required]],
     nueva: ['', [Validators.required, Validators.minLength(10)]],
+  }, {
+    validators: (grupo: AbstractControl) => {
+      const anterior = grupo.get('anterior')?.value;
+      const nueva = grupo.get('nueva')?.value;
+      return (anterior && nueva && anterior === nueva) ? { claveIgual: true } : null;
+    },
   });
+  formClaveVersion = toSignal(this.formClave.valueChanges, { initialValue: null });
   us: UsuarioService = inject(UsuarioService);
   toasts: ToastService = inject(ToastService);
   id: string | null = null;
@@ -154,4 +162,10 @@ export class EditarPerfilAdministrador implements OnInit {
       }
     });
   };
+
+  claveIgualError(): string {
+    this.formClaveVersion();
+    if (this.formClave.hasError('claveIgual')) return 'No puedes utilizar la misma clave que antes';
+    return '';
+  }
 };

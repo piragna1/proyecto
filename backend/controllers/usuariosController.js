@@ -398,6 +398,9 @@ export function cambiarClave(db) {
                     if (!bcrypt.compareSync(claveAnterior, hashActual)) {
                         return res.status(401).json({ mensaje: "La clave anterior es incorrecta" });
                     }
+                    if (bcrypt.compareSync(nuevaClave.trim(), hashActual)) {
+                        return res.status(400).json({ mensaje: "No puedes utilizar la misma clave que antes" });
+                    }
 
                     const hashNuevo = await bcrypt.hash(nuevaClave.trim(), 10);
                     db.query('UPDATE usuarios SET clave = ? WHERE id = ?', [hashNuevo, idNum], (err, result) => {

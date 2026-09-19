@@ -44,6 +44,9 @@
                         @if (formClave.controls.nueva.invalid && formClave.controls.nueva.touched) {
                         <span class="field-error">La nueva clave debe tener al menos 10 caracteres</span>
                         }
+                        @if (claveIgualError()) {
+                        <span class="field-error">{{ claveIgualError() }}</span>
+                        }
                     </form>
                     <div class="clave-actions">
                         <button type="button" class="btn-cancel" (click)="cancelarCambioClave()">Cancelar</button>
