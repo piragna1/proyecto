@@ -1,8 +1,27 @@
 <section>
     <a class="volver" [routerLink]="'/home-admin'">Volver</a>
-    <div>
-        <label>Filtrar por día: <input type="date" [value]="fecha" (change)="filtrarPorDia($event)"></label>
-        <button (click)="verTodos()">Ver todos</button>
+    <div class="filtro-dia">
+        <button type="button" class="flecha-dia" (click)="cambiarDia(-1)" aria-label="Día anterior">◀</button>
+        <div class="calendario">
+            <div class="cal-cabecera">{{ nombreMes() }} {{ anioVisible() }}</div>
+            <div class="cal-grid">
+                @for (letra of diasSemana; track $index) {
+                <span class="cal-dow">{{ letra }}</span>
+                }
+                @for (celda of diasMes(); track $index) {
+                @if (celda.num) {
+                <button type="button" class="cal-dia" (click)="seleccionarDia(celda.fecha)" [class.seleccionado]="celda.fecha === fecha()" [class.hoy]="celda.esHoy">{{ celda.num }}</button>
+                } @else {
+                <span class="cal-dia vacio"></span>
+                }
+                }
+            </div>
+        </div>
+        <button type="button" class="flecha-dia" (click)="cambiarDia(1)" aria-label="Día siguiente">▶</button>
+    </div>
+    <div class="filtro-pie">
+        <span class="etiqueta-dia" [class.todos]="fecha() === ''">{{ etiquetaDia() }}</span>
+        <button type="button" class="ver-todos" (click)="verTodos()">Ver todos</button>
     </div>
     <table>
         <thead>

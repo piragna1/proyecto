@@ -21,10 +21,47 @@ export class ComponenteTurnosAdministrador implements OnInit {
   ps: PagoService = inject(PagoService);
   toast: ToastService = inject(ToastService);
   turnos = this.ts.getTurnosSignal();
-  fecha: string = '';
+  fecha = signal<string>('');
   cobrarTurno: Turno | null = null;
   metodo: string = 'efectivo';
   monto: number | null = null;
+  diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  mesVisible = computed(() => {
+    const base = this.fecha() ? new Date(this.fecha() + 'T12:00:00') : new Date();
+    return base.getMonth();
+  });
+  anioVisible = computed(() => {
+    const base = this.fecha() ? new Date(this.fecha() + 'T12:00:00') : new Date();
+    return base.getFullYear();
+  });
+  nombreMes = computed(() => {
+    const n = new Date(this.anioVisible(), this.mesVisible(), 1).toLocaleString('es', { month: 'long' });
+    return n.charAt(0).toUpperCase() + n.slice(1);
+  });
+  etiquetaDia = computed(() => {
+    if (!this.fecha()) return 'Todos';
+    return new Date(this.fecha() + 'T12:00:00').toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  });
+  diasMes = computed(() => {
+    const base = this.fecha() ? new Date(this.fecha() + 'T12:00:00') : new Date();
+    const mes = base.getMonth();
+    const anio = base.getFullYear();
+    const offset = (new Date(anio, mes, 1).getDay() + 6) % 7;
+    const ultimoDia = new Date(anio, mes + 1, 0).getDate();
+    const hoyStr = this.aYYYYMMDD(new Date());
+    const celdas: { num: number | null; fecha: string; esHoy: boolean }[] = [];
+    for (let i = 0; i < offset; i++) {
+      celdas.push({ num: null, fecha: '', esHoy: false });
+    }
+    for (let d = 1; d <= ultimoDia; d++) {
+      const fechaStr = this.aYYYYMMDD(new Date(anio, mes, d));
+      celdas.push({ num: d, fecha: fechaStr, esHoy: fechaStr === hoyStr });
+    }
+    while (celdas.length < 42) {
+      celdas.push({ num: null, fecha: '', esHoy: false });
+    }
+    return celdas;
+  });
 
   orden = signal<'cliente' | 'telefono' | 'servicio' | 'horario' | 'pago'>('horario');
   direccion = signal<'asc' | 'desc'>('asc');
@@ -105,14 +142,28 @@ export class ComponenteTurnosAdministrador implements OnInit {
     });
   };
 
-  filtrarPorDia(event: any) {
-    const input = event.target;
-    this.fecha = input.value;
-    this.cargarTurnos(this.fecha || undefined);
+  aYYYYMMDD(date: Date): string {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  };
+
+  seleccionarDia(fechaStr: string) {
+    this.fecha.set(fechaStr);
+    this.cargarTurnos(fechaStr);
+  };
+
+  cambiarDia(delta: number) {
+    const base = this.fecha() ? new Date(this.fecha() + 'T12:00:00') : new Date();
+    base.setDate(base.getDate() + delta);
+    const nueva = this.aYYYYMMDD(base);
+    this.fecha.set(nueva);
+    this.cargarTurnos(nueva);
   };
 
   verTodos() {
-    this.fecha = '';
+    this.fecha.set('');
     this.cargarTurnos();
   };
 
