@@ -74,7 +74,7 @@ button[ng-reflect-router-link] {
     color: #ffffff;
 }
 
-button:not([routerLink]):not([ng-reflect-router-link]) {
+button.eliminar {
     background: rgba(220, 38, 38, 0.12);
     color: #c02626;
 }
@@ -372,6 +372,12 @@ button.flecha-dia:hover {
     text-transform: capitalize;
 }
 
-.etiqueta-dia.todos {
-    color: #64748b;
+button.hoy {
+    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+    color: #ffffff;
+}
+
+button.ver-todos {
+    background: rgba(75, 108, 183, 0.15);
+    color: #33539e;
 }

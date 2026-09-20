@@ -167,6 +167,16 @@ export class ComponenteTurnosAdministrador implements OnInit {
     this.cargarTurnos();
   };
 
+  irAHoy() {
+    const hoy = this.aYYYYMMDD(new Date());
+    this.fecha.set(hoy);
+    this.cargarTurnos(hoy);
+  };
+
+  hoyActual(): string {
+    return this.aYYYYMMDD(new Date());
+  };
+
   eliminarTurno(id: string | null) {
     this.ts.deleteTurno(id).subscribe({
       next: (t) => {

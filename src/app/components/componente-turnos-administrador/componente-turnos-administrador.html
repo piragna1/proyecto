@@ -20,7 +20,12 @@
         <button type="button" class="flecha-dia" (click)="cambiarDia(1)" aria-label="Día siguiente">▶</button>
     </div>
     <div class="filtro-pie">
-        <span class="etiqueta-dia" [class.todos]="fecha() === ''">{{ etiquetaDia() }}</span>
+        @if (fecha()) {
+        <span class="etiqueta-dia">{{ etiquetaDia() }}</span>
+        }
+        @if (fecha() !== hoyActual()) {
+        <button type="button" class="hoy" (click)="irAHoy()">Hoy</button>
+        }
         <button type="button" class="ver-todos" (click)="verTodos()">Ver todos</button>
     </div>
     <table>
@@ -52,7 +57,7 @@
                     }
                     @if (!item.pagado) {
                     <button [routerLink]="['/modificar-turno-administrador',item.id]">Editar</button>
-                    <button (click)="eliminarTurno(item.id!)">Eliminar</button>
+                    <button class="eliminar" (click)="eliminarTurno(item.id!)">Eliminar</button>
                     }
                 </td>
             </tr>
