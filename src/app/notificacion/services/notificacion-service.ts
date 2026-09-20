@@ -1,7 +1,17 @@
 import { Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Notificacion } from '../interface/notificacion.interface';
 import { Observable } from 'rxjs';
+
+export interface NotificacionFiltros {
+  fecha?: string;
+  usuario?: string;
+  tipo?: string;
+  motivo?: string;
+  telefono?: string;
+  mensaje?: string;
+  estado?: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +35,15 @@ export class NotificacionService {
   limpiarNotificacionesSignal() {
     this.notificaciones.set([]);
   };
-  getNotificaciones(): Observable<Notificacion[]> {
-    return this.http.get<Notificacion[]>(this.url);
+  getNotificaciones(filtros?: NotificacionFiltros): Observable<Notificacion[]> {
+    let params = new HttpParams();
+    if (filtros) {
+      (Object.entries(filtros) as [keyof NotificacionFiltros, string | undefined][]).forEach(([clave, valor]) => {
+        if (valor !== undefined && valor !== '') {
+          params = params.set(clave, valor);
+        }
+      });
+    }
+    return this.http.get<Notificacion[]>(this.url, params.keys().length ? { params } : undefined);
   };
 }

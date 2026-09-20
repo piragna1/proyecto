@@ -70,6 +70,10 @@ table {
     margin-top: 0.5rem;
 }
 
+td {
+    color: #000000;
+}
+
 th,
 td {
     border: 1px solid #ddd;

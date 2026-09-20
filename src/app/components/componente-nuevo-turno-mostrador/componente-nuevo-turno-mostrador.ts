@@ -49,6 +49,10 @@ export class ComponenteNuevoTurnoMostrador implements OnInit {
     const servicio: Servicio = this.formulario.controls.servicio.value!;
     const fechaHoraInicioRaw = this.formulario.controls.fechaHoraInicio.value;
     const fechaHoraInicioDate = new Date(fechaHoraInicioRaw);
+    if (isNaN(fechaHoraInicioDate.getTime())) {
+      this.toasts.mostrarMensaje('Ingresá un horario válido', true);
+      return;
+    }
 
     this.ts.postTurnoMostrador({
       idServicio: servicio.id,

@@ -68,6 +68,10 @@ export class ComponenteModificarTurnoAdministrador implements OnInit {
             const servicio = this.formulario.controls.servicio.value!;
             const fechaHoraInicioRaw = this.formulario.controls.fechaHoraInicio.value;
             const fechaHoraInicioDate = new Date(fechaHoraInicioRaw);
+            if (isNaN(fechaHoraInicioDate.getTime())) {
+                this.toastService.mostrarMensaje('Ingresá un horario válido', true);
+                return;
+            }
             const inicio = formatearFechaSQL(fechaHoraInicioDate);
             const t: Turno = {
               fechaHoraInicio: inicio,

@@ -1,6 +1,31 @@
 <section>
     <a [routerLink]="'/home-admin'">Volver</a>
     <h2>Historial de notificaciones</h2>
+    <div class="filtros">
+        <label>Fecha: <input type="date" [value]="filtros.fecha()" (change)="actualizarFiltro('fecha', $event)"></label>
+        <label>Usuario: <input type="text" [value]="filtros.usuario()" (input)="actualizarFiltro('usuario', $event)" placeholder="Buscar usuario"></label>
+        <label>Tipo:
+            <select [value]="filtros.tipo()" (change)="actualizarFiltro('tipo', $event)">
+                <option value="">Todas</option>
+                <option value="creacion">Creación</option>
+                <option value="modificacion">Modificación</option>
+                <option value="eliminacion">Eliminación</option>
+            </select>
+        </label>
+        <label>Motivo: <input type="text" [value]="filtros.motivo()" (input)="actualizarFiltro('motivo', $event)" placeholder="Buscar motivo"></label>
+        <label>Teléfono: <input type="text" [value]="filtros.telefono()" (input)="actualizarFiltro('telefono', $event)" placeholder="Buscar teléfono"></label>
+        <label>Mensaje: <input type="text" [value]="filtros.mensaje()" (input)="actualizarFiltro('mensaje', $event)" placeholder="Buscar mensaje"></label>
+        <label>Estado:
+            <select [value]="filtros.estado()" (change)="actualizarFiltro('estado', $event)">
+                <option value="">Todos</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="enviado">Enviado</option>
+                <option value="fallo">Fallo</option>
+                <option value="omitida">Omitida</option>
+            </select>
+        </label>
+        <button (click)="verTodos()">Ver todos</button>
+    </div>
     <table>
         <thead>
             <tr>
