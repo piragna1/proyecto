@@ -24,9 +24,11 @@
         <span class="etiqueta-dia">{{ etiquetaDia() }}</span>
         }
         @if (fecha() !== hoyActual()) {
-        <button type="button" class="hoy" (click)="irAHoy()">Hoy</button>
+        <button type="button" class="btn-hoy" (click)="irAHoy()">Hoy</button>
         }
+        @if (fecha()) {
         <button type="button" class="ver-todos" (click)="verTodos()">Ver todos</button>
+        }
     </div>
     <table>
         <thead>

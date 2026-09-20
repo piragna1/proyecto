@@ -331,8 +331,7 @@ button.cal-dia.seleccionado {
 }
 
 button.cal-dia.hoy {
-    border-color: #4b6cb7;
-    box-shadow: inset 0 0 0 1px #4b6cb7;
+    border-color: #000000;
 }
 
 .cal-dia.vacio {
@@ -372,7 +371,7 @@ button.flecha-dia:hover {
     text-transform: capitalize;
 }
 
-button.hoy {
+button.btn-hoy {
     background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
     color: #ffffff;
 }
