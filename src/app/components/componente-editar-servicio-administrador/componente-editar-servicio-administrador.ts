@@ -14,7 +14,6 @@ export class ComponenteEditarServicioAdministrador implements OnInit {
   fb: FormBuilder = inject(FormBuilder);
   formulario = this.fb.nonNullable.group({
     tipo: ['', [Validators.required]],
-    duracionMinutos: [0, [Validators.required, Validators.min(30)]],
     precio: [0, [Validators.required, Validators.min(15000)]],
   });
   ar: ActivatedRoute = inject(ActivatedRoute);
@@ -37,7 +36,6 @@ export class ComponenteEditarServicioAdministrador implements OnInit {
     if (this.formulario.invalid) return;
     const s: Servicio = {
       tipo: this.formulario.controls.tipo.value,
-      duracionMinutos: this.formulario.controls.duracionMinutos.value,
       precio: this.formulario.controls.precio.value
     };
     this.ss.putServicio(s, this.id).subscribe({
@@ -54,7 +52,6 @@ export class ComponenteEditarServicioAdministrador implements OnInit {
     this.ss.getServicioById(id).subscribe({
       next: (value) => {
         this.formulario.controls.tipo.setValue(value.tipo);
-        this.formulario.controls.duracionMinutos.setValue(value.duracionMinutos);
         this.formulario.controls.precio.setValue(value.precio);
       },
       error: (err) => {

@@ -33,7 +33,6 @@ export class TurnoService {
   postTurnoMostrador(payload: {
     idServicio: string | undefined;
     fechaHoraInicio: string;
-    fechaHoraFin: string;
     nombre: string;
     telefono: string;
   }): Observable<unknown> {

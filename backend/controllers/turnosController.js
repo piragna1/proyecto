@@ -2,22 +2,16 @@ import bcrypt from 'bcrypt';
 import { enviarNotificacionTurno } from '../services/notificacionesService.js';
 
 function validarFechasTurno(body, res) {
-    const { fechaHoraInicio, fechaHoraFin } = body;
-    if (!fechaHoraInicio || !fechaHoraFin) {
-        res.status(400).json({ mensaje: "Fechas requeridas" });
+    const { fechaHoraInicio } = body;
+    if (!fechaHoraInicio) {
+        res.status(400).json({ mensaje: "Fecha requerida" });
         return null;
     }
 
     const inicio = new Date(fechaHoraInicio);
-    const fin = new Date(fechaHoraFin);
 
-    if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) {
+    if (isNaN(inicio.getTime())) {
         res.status(400).json({ mensaje: "Formato de fecha inválido" });
-        return null;
-    }
-
-    if (inicio >= fin) {
-        res.status(400).json({ mensaje: "La hora de inicio debe ser menor a la de fin" });
         return null;
     }
 
@@ -26,7 +20,7 @@ function validarFechasTurno(body, res) {
         return null;
     }
 
-    return { inicio, fin, inicioStr: fechaHoraInicio, finStr: fechaHoraFin };
+    return { inicio, inicioStr: fechaHoraInicio };
 }
 
 // Verifica que un usuario no tenga más de un turno en el mismo día
@@ -53,13 +47,11 @@ function verificarUnTurnoPorDia(db, idUsuario, fechaHoraInicio, res, excluirId, 
 }
 
 // Verifica solapamiento e inserta el turno (compartido por alta normal y alta de mostrador)
-function insertarTurnoConCliente(db, res, { idUsuario, idServicio, inicio, fin, inicioStr, finStr, respuesta, mensajeExisteTurno }) {
+function insertarTurnoConCliente(db, res, { idUsuario, idServicio, inicioStr, respuesta, mensajeExisteTurno }) {
     verificarUnTurnoPorDia(db, idUsuario, inicioStr, res, null, () => {
         db.query(
-            `select * from turnos where id_servicio = ? 
-             and ((fecha_hora_inicio < ? and fecha_hora_fin > ?)
-             or (fecha_hora_inicio < ? and fecha_hora_fin > ?))`,
-            [idServicio, fin, inicio, fin, inicio],
+            `select * from turnos where id_servicio = ? and fecha_hora_inicio = ?`,
+            [idServicio, inicioStr],
             (err, result) => {
                 if (err) {
                     return res.status(500).json({ mensaje: "Error al verificar disponibilidad" });
@@ -72,8 +64,8 @@ function insertarTurnoConCliente(db, res, { idUsuario, idServicio, inicio, fin, 
                 }
 
                 db.query(
-                "insert into turnos (id_usuario, id_servicio, fecha_hora_inicio, fecha_hora_fin) values (?,?,?,?)",
-                [idUsuario, idServicio, inicioStr, finStr],
+                "insert into turnos (id_usuario, id_servicio, fecha_hora_inicio) values (?,?,?)",
+                [idUsuario, idServicio, inicioStr],
                 (err, result2) => {
                     if (err) {
                         return res.status(500).json({ mensaje: "Error al crear turno" });
@@ -204,9 +196,9 @@ export function insertarTurno(db) {
 
 export function insertarTurnoMostrador(db) {
     return (req, res) => {
-        const { idServicio, fechaHoraInicio, fechaHoraFin, nombre, telefono } = req.body;
+        const { idServicio, fechaHoraInicio, nombre, telefono } = req.body;
 
-        if (!idServicio || !fechaHoraInicio || !fechaHoraFin || !nombre || !telefono) {
+        if (!idServicio || !fechaHoraInicio || !nombre || !telefono) {
             return res.status(400).json({ mensaje: "Datos incompletos" });
         }
 
@@ -247,7 +239,7 @@ export function insertarTurnoMostrador(db) {
                         idUsuario: usuarios[0].id,
                         idServicio: idServicioNum,
                         ...validacionFechas,
-                        respuesta: { fechaHoraInicio, fechaHoraFin, nombre, telefono },
+                        respuesta: { fechaHoraInicio, nombre, telefono },
                         mensajeExisteTurno: "El usuario ya tiene un turno reservado para ese día",
                     });
                 }
@@ -277,7 +269,7 @@ export function insertarTurnoMostrador(db) {
                                     idUsuario: result.insertId,
                                     idServicio: idServicioNum,
                                     ...validacionFechas,
-                                    respuesta: { fechaHoraInicio, fechaHoraFin, nombre, telefono },
+                                    respuesta: { fechaHoraInicio, nombre, telefono },
                                     mensajeExisteTurno: "El usuario ya tiene un turno reservado para ese día",
                                 });
                             }
@@ -343,7 +335,7 @@ export function eliminarTurno(db) {
 
 export function actualizarTurno(db) {
     return (req, res) => {
-        const { usuario, servicio, fechaHoraInicio, fechaHoraFin, motivo } = req.body;
+        const { usuario, servicio, fechaHoraInicio, motivo } = req.body;
         const { id } = req.params;
         
         // Validar ID
@@ -389,21 +381,14 @@ export function actualizarTurno(db) {
             }
             
             // Validar fechas
-            if (!fechaHoraInicio || !fechaHoraFin) {
+            if (!fechaHoraInicio) {
                 return res.status(400).json({ mensaje: "Fechas requeridas" });
             }
             
             const inicio = new Date(fechaHoraInicio);
-            const fin = new Date(fechaHoraFin);
             
-            if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) {
+            if (isNaN(inicio.getTime())) {
                 return res.status(400).json({ mensaje: "Formato de fecha inválido" });
-            }
-            
-            if (inicio >= fin) {
-                return res.status(400).json({ 
-                    mensaje: "La hora de inicio debe ser menor a la de fin" 
-                });
             }
             
             if (inicio < new Date()) {
@@ -412,13 +397,11 @@ export function actualizarTurno(db) {
                 });
             }
             
-            // Validar que el usuario no supere un turno por día y que no se superponga (excluyendo este turno)
+            // Validar que el usuario no supere un turno por día y que el horario no este ocupado (excluyendo este turno)
             verificarUnTurnoPorDia(db, idUsuario, fechaHoraInicio, res, id, () => {
                 db.query(
-                `select * from turnos where id_servicio = ? and id != ?
-                 and ((fecha_hora_inicio < ? and fecha_hora_fin > ?)
-                 or (fecha_hora_inicio < ? and fecha_hora_fin > ?))`,
-                [servicio.id, id, fin, inicio, fin, inicio],
+                `select * from turnos where id_servicio = ? and id != ? and fecha_hora_inicio = ?`,
+                [servicio.id, id, fechaHoraInicio],
                 (err, result) => {
                     if (err) {
                         return res.status(500).json({ mensaje: "Error al verificar disponibilidad" });
@@ -432,8 +415,8 @@ export function actualizarTurno(db) {
                     
                     // Actualizar turno
                     db.query(
-                        'update turnos set id_usuario = ?, id_servicio = ?, fecha_hora_inicio = ?, fecha_hora_fin = ? where id = ?',
-                        [idUsuario, servicio.id, fechaHoraInicio, fechaHoraFin, id],
+                        'update turnos set id_usuario = ?, id_servicio = ?, fecha_hora_inicio = ? where id = ?',
+                        [idUsuario, servicio.id, fechaHoraInicio, id],
                         (err, result) => {
                             if (err) {
                                 return res.status(500).json({ mensaje: "Error al actualizar turno" });

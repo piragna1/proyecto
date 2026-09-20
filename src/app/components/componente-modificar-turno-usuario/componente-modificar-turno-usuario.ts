@@ -68,14 +68,9 @@ export class ComponenteModificarTurnoUsuario implements OnInit {
         const servicio: Servicio = this.formulario.controls.servicio.value!;
         const fechaHoraInicioRaw = this.formulario.controls.fechaHoraInicio.value;
         const fechaHoraInicioDate = new Date(fechaHoraInicioRaw);
-        const fechaHoraFinDate = new Date(
-          fechaHoraInicioDate.getTime() + servicio.duracionMinutos * 60000,
-        );
         const inicio = formatearFechaSQL(fechaHoraInicioDate);
-        const fin = formatearFechaSQL(fechaHoraFinDate);
         const t: Turno = {
           fechaHoraInicio: inicio,
-          fechaHoraFin: fin,
           usuario: value,
           servicio
         };

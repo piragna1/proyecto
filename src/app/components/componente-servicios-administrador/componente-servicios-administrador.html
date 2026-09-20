@@ -3,15 +3,13 @@
   <table>
     <thead>
       <th>Tipo</th>
-      <th>Duracion</th>
       <th>Precio</th>
     </thead>
     <tbody>
       @for (item of servicios(); track $index) {
       <tr>
         <td>{{ item.tipo }}</td>
-        <td>{{ item.duracionMinutos }}</td>
-        <td>{{ item.precio }}</td>
+        <td>${{ item.precio }}</td>
         <td><button [routerLink]="['/editar-servicio-administrador', item.id]">Editar</button></td>
         <td><button (click)="eliminarServicio(item.id)">Eliminar</button></td>
       </tr>

@@ -3,14 +3,12 @@
     <table>
         <thead>
             <th>Tipo</th>
-            <th>Duracion</th>
             <th>Precio</th>
         </thead>
         <tbody>
             @for (item of servicios(); track $index) {
             <tr>
                 <td>{{item.tipo}}</td>
-                <td>{{item.duracionMinutos}} minutos</td>
                 <td>${{item.precio}}</td>
             </tr>
             }

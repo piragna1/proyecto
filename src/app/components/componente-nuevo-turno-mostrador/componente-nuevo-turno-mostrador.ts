@@ -49,14 +49,10 @@ export class ComponenteNuevoTurnoMostrador implements OnInit {
     const servicio: Servicio = this.formulario.controls.servicio.value!;
     const fechaHoraInicioRaw = this.formulario.controls.fechaHoraInicio.value;
     const fechaHoraInicioDate = new Date(fechaHoraInicioRaw);
-    const fechaHoraFinDate = new Date(
-      fechaHoraInicioDate.getTime() + servicio.duracionMinutos * 60000,
-    );
 
     this.ts.postTurnoMostrador({
       idServicio: servicio.id,
       fechaHoraInicio: formatearFechaSQL(fechaHoraInicioDate),
-      fechaHoraFin: formatearFechaSQL(fechaHoraFinDate),
       nombre: this.formulario.controls.nombre.value.trim(),
       telefono: this.formulario.controls.telefono.value.trim(),
     }).subscribe({

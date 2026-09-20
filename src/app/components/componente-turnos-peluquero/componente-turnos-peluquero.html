@@ -17,7 +17,7 @@
             <tr>
                 <td data-label="Cliente"><span class="td-valor">{{item.usuario?.nombre}} - {{item.usuario?.telefono}}</span></td>
                 <td data-label="Servicio"><span class="td-valor">{{item.servicio.tipo}} - ${{item.servicio.precio}}</span></td>
-                <td data-label="Horario"><span class="td-valor">De: {{item.fechaHoraInicio}}<br>A: {{item.fechaHoraFin}}</span></td>
+                <td data-label="Horario"><span class="td-valor">{{ item.fechaHoraInicio }}</span></td>
                 <td data-label="Pago">
                     @if (item.pagado) {
                     <span class="badge-pagado">Pagado</span>

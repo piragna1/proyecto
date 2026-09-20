@@ -37,7 +37,6 @@ export class ComponenteMisTurnos implements OnInit {
                   console.log(usuario);
                   const turno: Turno = {
                     id: t.id,
-                    fechaHoraFin: new Date(t.fecha_hora_fin).toLocaleString('es'),
                     fechaHoraInicio: new Date(t.fecha_hora_inicio).toLocaleString('es'),
                     servicio: servicio,
                     usuario: usuario

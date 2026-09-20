@@ -21,7 +21,6 @@ export class ComponenteServiciosAdministrador implements OnInit {
           this.ss.setServiciosSignal({
             id: s.id,
             tipo: s.tipo,
-            duracionMinutos: s.duracion_minutos,
             precio: s.precio
           });
         });

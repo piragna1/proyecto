@@ -42,7 +42,6 @@ export class ComponenteTurnosPeluquero implements OnInit {
                     id: element.id,
                     usuario: u,
                     fechaHoraInicio: new Date(element.fecha_hora_inicio).toLocaleString('es'),
-                    fechaHoraFin: new Date(element.fecha_hora_fin).toLocaleString('es'),
                     servicio: s,
                     pagado: Number(element.pagado) === 1
                   };

@@ -21,7 +21,6 @@ export class ComponenteServiciosPeluquero implements OnInit {
           const servicio: Servicio = {
             id: element.id,
             tipo: element.tipo,
-            duracionMinutos: element.duracion_minutos,
             precio: element.precio
           };
           console.log('servicio construido:', servicio);

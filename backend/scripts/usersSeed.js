@@ -23,9 +23,9 @@ const PELUQUEROS = [
 ];
 
 const SERVICIOS = [
-    { tipo: 'Corte', duracionMinutos: 45, precio: 29000 },
-    { tipo: 'Barba', duracionMinutos: 30, precio: 20000 },
-    { tipo: 'Color', duracionMinutos: 60, precio: 35000 }
+    { tipo: 'Corte', precio: 29000 },
+    { tipo: 'Barba', precio: 20000 },
+    { tipo: 'Color', precio: 35000 }
 ];
 
 const TURNOS_POR_CLIENTE = ['Maria Sanchez', 'Juan Perez', 'Carla Lopez', 'Diego Martinez', 'Ana Gomez'];
@@ -137,21 +137,21 @@ async function seedServicios() {
     const mapTipo = new Map();
 
     for (const s of SERVICIOS) {
-        const [existentes] = await db.query('select id, precio, duracion_minutos from servicios where tipo = ?', [s.tipo]);
+        const [existentes] = await db.query('select id, precio from servicios where tipo = ?', [s.tipo]);
 
         if (existentes.length > 0) {
-            mapTipo.set(s.tipo, { id: existentes[0].id, precio: Number(existentes[0].precio), duracionMinutos: existentes[0].duracion_minutos });
+            mapTipo.set(s.tipo, { id: existentes[0].id, precio: Number(existentes[0].precio) });
             console.log(`Ya existe servicio: ${s.tipo}`);
             continue;
         }
 
         const [resultado] = await db.query(
-            'insert into servicios (tipo, duracion_minutos, precio) values (?,?,?)',
-            [s.tipo, s.duracionMinutos, s.precio]
+            'insert into servicios (tipo, precio) values (?,?)',
+            [s.tipo, s.precio]
         );
 
-        mapTipo.set(s.tipo, { id: resultado.insertId, precio: s.precio, duracionMinutos: s.duracionMinutos });
-        console.log(`Servicio creado: ${s.tipo} (${s.duracionMinutos} min, $${s.precio})`);
+        mapTipo.set(s.tipo, { id: resultado.insertId, precio: s.precio });
+        console.log(`Servicio creado: ${s.tipo} ($${s.precio})`);
     }
 
     return mapTipo;
@@ -181,11 +181,10 @@ async function seedTurnos(usuarios, servicios) {
         const [hh, mm] = HORAS_INICIO[i].split(':').map(Number);
         const inicio = new Date(fechas[i]);
         inicio.setHours(hh, mm, 0, 0);
-        const fin = new Date(inicio.getTime() + infoServ.duracionMinutos * 60000);
 
         const [resultado] = await db.query(
-            'insert into turnos (id_usuario, id_servicio, fecha_hora_inicio, fecha_hora_fin) values (?,?,?,?)',
-            [idUsuario, infoServ.id, formatearFechaSQL(inicio), formatearFechaSQL(fin)]
+            'insert into turnos (id_usuario, id_servicio, fecha_hora_inicio) values (?,?,?)',
+            [idUsuario, infoServ.id, formatearFechaSQL(inicio)]
         );
 
         console.log(`Turno creado: ${clienteNombre} -> ${SERVICIO_POR_TURNO[i]} ${formatearFechaSQL(inicio)}`);

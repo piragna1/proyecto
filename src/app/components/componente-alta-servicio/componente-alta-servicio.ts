@@ -13,7 +13,6 @@ export class ComponenteAltaServicio {
   fb: FormBuilder = inject(FormBuilder);
   formulario = this.fb.nonNullable.group({
     tipo: ['', [Validators.required]],
-    duracionMinutos: [0, [Validators.required, Validators.min(30)]],
     precio: [0, [Validators.required, Validators.min(15000)]],
   });
   ss: ServicioService = inject(ServicioService);

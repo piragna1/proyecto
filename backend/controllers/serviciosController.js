@@ -1,6 +1,6 @@
 export function insertarServicio(db) {
     return (req, res) => {
-        const { tipo, duracionMinutos, precio } = req.body;
+        const { tipo, precio } = req.body;
         
         // Validar entrada
         if (!tipo || typeof tipo !== 'string' || tipo.trim().length === 0) {
@@ -10,21 +10,17 @@ export function insertarServicio(db) {
             return res.status(400).json({ mensaje: "Tipo de servicio muy largo" });
         }
         
-        if (typeof duracionMinutos !== 'number' || duracionMinutos <= 0) {
-            return res.status(400).json({ mensaje: "Duración debe ser número positivo" });
-        }
-        
         if (typeof precio !== 'number' || precio < 0) {
             return res.status(400).json({ mensaje: "Precio debe ser número no negativo" });
         }
         
-        db.query("insert into servicios (tipo, duracion_minutos, precio) values (?,?,?)", 
-            [tipo.trim(), duracionMinutos, precio],
+        db.query("insert into servicios (tipo, precio) values (?,?)", 
+            [tipo.trim(), precio],
             (err, result) => {
                 if (err) {
                     return res.status(500).json({ mensaje: "Error al crear servicio" });
                 }
-                return res.status(201).json({ id: result.insertId, tipo, duracionMinutos, precio });
+                return res.status(201).json({ id: result.insertId, tipo, precio });
             }
         );
     };
@@ -65,7 +61,7 @@ export function obtenerServicioPorId(db) {
 export function actualizarServicio(db) {
     return (req, res) => {
         const { id } = req.params;
-        const { tipo, duracionMinutos, precio } = req.body;
+        const { tipo, precio } = req.body;
         
         // Validar id
         if (!id || isNaN(id)) {
@@ -76,15 +72,12 @@ export function actualizarServicio(db) {
         if (!tipo || typeof tipo !== 'string' || tipo.trim().length === 0) {
             return res.status(400).json({ mensaje: "Tipo de servicio requerido" });
         }
-        if (typeof duracionMinutos !== 'number' || duracionMinutos <= 0) {
-            return res.status(400).json({ mensaje: "Duración debe ser número positivo" });
-        }
         if (typeof precio !== 'number' || precio < 0) {
             return res.status(400).json({ mensaje: "Precio debe ser número no negativo" });
         }
         
-        db.query('update servicios set tipo = ?, duracion_minutos = ?, precio = ? where id = ?',
-            [tipo.trim(), duracionMinutos, precio, id],
+        db.query('update servicios set tipo = ?, precio = ? where id = ?',
+            [tipo.trim(), precio, id],
             (err, result) => {
                 if (err) {
                     return res.status(500).json({ mensaje: "Error al actualizar servicio" });
