@@ -29,8 +29,10 @@
                     @if (!item.pagado) {
                     <button class="cobrar" (click)="abrirCobro(item)">Cobrar</button>
                     }
+                    @if (!item.pagado) {
                     <button [routerLink]="['/modificar-turno-administrador',item.id]">Editar</button>
                     <button (click)="eliminarTurno(item.id!)">Eliminar</button>
+                    }
                 </td>
             </tr>
             } @empty {
