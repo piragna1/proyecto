@@ -45,6 +45,10 @@ table {
     margin-top: 1rem;
 }
 
+td {
+    color: #000000;
+}
+
 th,
 td {
     border: 1px solid #ddd;
@@ -55,6 +59,20 @@ td {
 
 th {
     background-color: #f2f2f2;
+}
+
+th.sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+th.sortable:hover {
+    background-color: #e8e8e8;
+}
+
+th .arrow {
+    font-size: 0.7rem;
+    color: #4b6cb7;
 }
 
 @media (max-width: 650px) {

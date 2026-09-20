@@ -25,6 +25,9 @@ export class ComponenteNotificacionesAdministrador implements OnInit, OnDestroy 
     estado: signal(''),
   };
 
+  orden = signal<string>('');
+  direccion = signal<'asc' | 'desc'>('desc');
+
   private debounceTimer: ReturnType<typeof setTimeout> | undefined;
 
   ngOnInit(): void {
@@ -44,6 +47,8 @@ export class ComponenteNotificacionesAdministrador implements OnInit, OnDestroy 
       telefono: this.filtros.telefono().trim() || undefined,
       mensaje: this.filtros.mensaje().trim() || undefined,
       estado: this.filtros.estado() || undefined,
+      orden: this.orden() || undefined,
+      direccion: this.orden() ? this.direccion() : undefined,
     }).subscribe({
       next: (lista: any[]) => {
         this.ns.limpiarNotificacionesSignal();
@@ -76,6 +81,17 @@ export class ComponenteNotificacionesAdministrador implements OnInit, OnDestroy 
   verTodos() {
     if (this.debounceTimer) clearTimeout(this.debounceTimer);
     (Object.keys(this.filtros) as CampoFiltro[]).forEach((campo) => this.filtros[campo].set(''));
+    this.cargarNotificaciones();
+  };
+
+  accionOrdenar(campo: CampoFiltro) {
+    if (this.orden() === campo) {
+      this.direccion.set(this.direccion() === 'asc' ? 'desc' : 'asc');
+    } else {
+      this.orden.set(campo);
+      this.direccion.set('asc');
+    }
+    if (this.debounceTimer) clearTimeout(this.debounceTimer);
     this.cargarNotificaciones();
   };
 }

@@ -1,10 +1,32 @@
 //notificacionesController.js
 export function obtenerNotificaciones(db) {
     return (req, res) => {
-        const { fecha, usuario, tipo, motivo, telefono, mensaje, estado } = req.query;
+        const { fecha, usuario, tipo, motivo, telefono, mensaje, estado, orden, direccion } = req.query;
 
         const condiciones = [];
         const params = [];
+
+        const columnasOrden = {
+            fecha: 'n.fecha_envio',
+            usuario: 'u.nombre',
+            tipo: 'n.tipo',
+            motivo: 'n.motivo',
+            telefono: 'n.telefono',
+            mensaje: 'n.mensaje',
+            estado: 'n.estado',
+        };
+
+        let orderBy = 'order by n.id desc';
+        if (orden !== undefined && orden !== '') {
+            if (!columnasOrden[orden]) {
+                return res.status(400).json({ mensaje: "Campo de orden inválido" });
+            }
+            const dir = direccion === undefined || direccion === '' ? 'asc' : direccion;
+            if (dir !== 'asc' && dir !== 'desc') {
+                return res.status(400).json({ mensaje: "Dirección de orden inválida (asc o desc)" });
+            }
+            orderBy = `order by ${columnasOrden[orden]} ${dir}`;
+        }
 
         if (fecha !== undefined) {
             if (typeof fecha !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
@@ -51,7 +73,7 @@ export function obtenerNotificaciones(db) {
         if (condiciones.length > 0) {
             query += ' where ' + condiciones.join(' and ');
         }
-        query += ' order by n.id desc';
+        query += ' ' + orderBy;
 
         db.query(query, params, (err, result) => {
             if (err) {

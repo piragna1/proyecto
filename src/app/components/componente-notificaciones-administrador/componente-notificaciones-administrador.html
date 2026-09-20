@@ -29,13 +29,13 @@
     <table>
         <thead>
             <tr>
-                <th>Fecha</th>
-                <th>Usuario</th>
-                <th>Tipo</th>
-                <th>Motivo</th>
-                <th>Teléfono</th>
-                <th>Mensaje</th>
-                <th>Estado</th>
+                <th (click)="accionOrdenar('fecha')" class="sortable">Fecha <span class="arrow">{{ (orden() === 'fecha' && direccion() === 'asc') ? '▲' : (orden() === 'fecha') ? '▼' : '' }}</span></th>
+                <th (click)="accionOrdenar('usuario')" class="sortable">Usuario <span class="arrow">{{ (orden() === 'usuario' && direccion() === 'asc') ? '▲' : (orden() === 'usuario') ? '▼' : '' }}</span></th>
+                <th (click)="accionOrdenar('tipo')" class="sortable">Tipo <span class="arrow">{{ (orden() === 'tipo' && direccion() === 'asc') ? '▲' : (orden() === 'tipo') ? '▼' : '' }}</span></th>
+                <th (click)="accionOrdenar('motivo')" class="sortable">Motivo <span class="arrow">{{ (orden() === 'motivo' && direccion() === 'asc') ? '▲' : (orden() === 'motivo') ? '▼' : '' }}</span></th>
+                <th (click)="accionOrdenar('telefono')" class="sortable">Teléfono <span class="arrow">{{ (orden() === 'telefono' && direccion() === 'asc') ? '▲' : (orden() === 'telefono') ? '▼' : '' }}</span></th>
+                <th (click)="accionOrdenar('mensaje')" class="sortable">Mensaje <span class="arrow">{{ (orden() === 'mensaje' && direccion() === 'asc') ? '▲' : (orden() === 'mensaje') ? '▼' : '' }}</span></th>
+                <th (click)="accionOrdenar('estado')" class="sortable">Estado <span class="arrow">{{ (orden() === 'estado' && direccion() === 'asc') ? '▲' : (orden() === 'estado') ? '▼' : '' }}</span></th>
             </tr>
         </thead>
         <tbody>

@@ -11,6 +11,8 @@ export interface NotificacionFiltros {
   telefono?: string;
   mensaje?: string;
   estado?: string;
+  orden?: string;
+  direccion?: string;
 }
 
 @Injectable({
