@@ -60,10 +60,12 @@ export class ComponenteNuevoTurno implements OnInit {
   }
   /**
    * El usuario confirmó que quiere descartar los cambios: cierra el aviso y navega.
+   * La navegación se retrasa hasta que termine la animación de salida del aviso
+   * (150ms), ya que si ocurre en el mismo tick el componente se destruye y la animación no se ve.
    */
   confirmarSalida() {
     this.alertaSalida.set(false);
-    this.r.navigateByUrl(this.rutaPendiente);
+    setTimeout(() => this.r.navigateByUrl(this.rutaPendiente), 180);
   }
   /**
    * El usuario decidió quedarse editando: solo cierra el aviso.

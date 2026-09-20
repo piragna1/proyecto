@@ -54,9 +54,16 @@ button[type="submit"] {
     transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
-button[type="submit"]:hover {
+button[type="submit"]:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 8px 22px rgba(24, 40, 72, 0.14);
+}
+
+button[type="submit"]:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 @media (max-width: 520px) {

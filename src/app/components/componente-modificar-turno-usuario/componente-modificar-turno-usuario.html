@@ -10,7 +10,7 @@
         </select>
         <label for="horario">Horario: </label>
         <input type="datetime-local" name="horario" id="horario" formControlName="fechaHoraInicio" />
-        <button type="submit">Guardar</button>
+        <button type="submit" [disabled]="!puedeEnviar()">Guardar</button>
     </form>
 </section>
 

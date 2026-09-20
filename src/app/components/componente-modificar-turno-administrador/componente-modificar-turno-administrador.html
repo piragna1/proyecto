@@ -2,6 +2,7 @@
     <a class="volver" (click)="intentarSalir($event, '/turnos-admin')">Volver</a>
     <h2>Modificar turno:</h2>
     <form (ngSubmit)="modificarTurno()" [formGroup]="formulario">
+        <label for="servicio">Servicio</label>
         <select name="servicio" id="servicio" formControlName="servicio" [compareWith]="compararServicios">
             @for (item of servicios(); track $index) {
             <option [ngValue]="item">{{ item.tipo }}</option>
@@ -10,8 +11,11 @@
         <label for="horario">Horario: </label>
         <input type="datetime-local" name="horario" id="horario" formControlName="fechaHoraInicio" />
         <label for="motivo">Motivo de la modificación: </label>
-        <textarea name="motivo" id="motivo" rows="3" formControlName="motivo" placeholder="Ej: cambio de horario por pedido del cliente"></textarea>
-        <button type="submit">Guardar</button>
+        <textarea name="motivo" id="motivo" rows="3" formControlName="motivo" [class.invalido]="hayError('motivo')" placeholder="Ej: cambio de horario por pedido del cliente"></textarea>
+        @if (hayError('motivo')) {
+        <span class="field-error">{{ mensajeCampo('motivo') }}</span>
+        }
+        <button type="submit" [disabled]="!puedeEnviar()">Guardar</button>
     </form>
 </section>
 

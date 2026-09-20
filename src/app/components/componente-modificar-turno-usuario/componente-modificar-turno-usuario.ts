@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from "@angular/router";
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ServicioService } from '../../servicio/services/servicio-service';
 import { Turno } from '../../turno/interface/turno.interface';
 import { Servicio } from '../../servicio/interface/servicio.interface';
@@ -33,6 +34,25 @@ export class ComponenteModificarTurnoUsuario implements OnInit {
   toastService: ToastService = inject(ToastService);
   as:AuthService= inject(AuthService);
   us:UsuarioService=inject(UsuarioService);
+  formVersion = toSignal(this.formulario.valueChanges, { initialValue: null });
+  servicioOriginal: Servicio | null = null;
+  fechaOriginal = '';
+  /**
+   * Considera que hay una modificación real si cambió el servicio o la fecha/hora
+   * respecto del estado original del turno.
+   */
+  hayModificaciones(): boolean {
+    return this.formulario.controls.servicio.value?.id !== this.servicioOriginal?.id ||
+      this.formulario.controls.fechaHoraInicio.value !== this.fechaOriginal;
+  }
+  /**
+   * Permite enviar la edición únicamente cuando el formulario es válido y el turno cambió.
+   * El botón "Guardar" queda deshabilitado en caso contrario.
+   */
+  puedeEnviar(): boolean {
+    this.formVersion();
+    return this.formulario.valid && this.hayModificaciones();
+  }
   /**
    * Dinámica de ruteo diferente al resto de la app: el "Volver" ya no usa [routerLink].
    * Acá se intercepta el clic para avisar al usuario si hay cambios sin guardar antes de salir.
@@ -65,10 +85,12 @@ export class ComponenteModificarTurnoUsuario implements OnInit {
   }
   /**
    * El usuario confirmó que quiere descartar los cambios: cierra el aviso y navega.
+   * La navegación se retrasa hasta que termine la animación de salida del aviso
+   * (150ms), ya que si ocurre en el mismo tick el componente se destruye y la animación no se ve.
    */
   confirmarSalida() {
     this.alertaSalida.set(false);
-    this.r.navigateByUrl(this.rutaPendiente);
+    setTimeout(() => this.r.navigateByUrl(this.rutaPendiente), 180);
   }
   /**
    * El usuario decidió quedarse editando: solo cierra el aviso.
@@ -104,6 +126,10 @@ export class ComponenteModificarTurnoUsuario implements OnInit {
   }
 
   modificarTurno() {
+    if (!this.hayModificaciones()) {
+      this.toastService.mostrarMensaje('No hay modificaciones para guardar', true);
+      return;
+    }
     if (this.formulario.invalid) return;
     const payload = this.as.obtenerPayload();
     if (!payload.id) return;
@@ -159,6 +185,8 @@ export class ComponenteModificarTurnoUsuario implements OnInit {
 
             this.formulario.controls.fechaHoraInicio.setValue(fechaLocal);
             this.formulario.controls.servicio.setValue(serv);
+            this.servicioOriginal = serv;
+            this.fechaOriginal = this.formulario.controls.fechaHoraInicio.value;
             this.snapshot = JSON.stringify(this.formulario.value);
           }, error: (err) => {
             console.log(err);

@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from "@angular/router";
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ServicioService } from '../../servicio/services/servicio-service';
 import { formatearServicio } from '../../servicio/utils/utils';
 import { TurnoService } from '../../turno/services/turno-service';
@@ -32,6 +33,43 @@ export class ComponenteModificarTurnoAdministrador implements OnInit {
   us: UsuarioService = inject(UsuarioService);
   r: Router = inject(Router);
   toastService: ToastService = inject(ToastService);
+  enviado = signal(false);
+  formVersion = toSignal(this.formulario.valueChanges, { initialValue: null });
+  servicioOriginal: Servicio | null = null;
+  fechaOriginal = '';
+  /**
+   * Considera que hay una modificación real si cambió el servicio o la fecha/hora
+   * respecto del estado original del turno. Sólo agregar un motivo no cuenta como edición.
+   */
+  hayModificaciones(): boolean {
+    return this.formulario.controls.servicio.value?.id !== this.servicioOriginal?.id ||
+      this.formulario.controls.fechaHoraInicio.value !== this.fechaOriginal;
+  }
+  /**
+   * Permite enviar la edición únicamente cuando el formulario es válido (motivo incluido)
+   * y el turno cambió de verdad. El botón "Guardar" queda deshabilitado en caso contrario.
+   */
+  puedeEnviar(): boolean {
+    this.formVersion();
+    return this.formulario.valid && this.hayModificaciones();
+  }
+  /**
+   * Error en vivo del campo motivo: se marca apenas hay modificaciones con motivo vacío,
+   * sin esperar a que se presione "Guardar".
+   */
+  hayError(campo: 'motivo'): boolean {
+    this.formVersion();
+    return this.hayModificaciones() && this.formulario.controls[campo].invalid;
+  }
+  /**
+   * Mensaje mostrado bajo el campo que esté faltante.
+   */
+  mensajeCampo(campo: 'motivo'): string {
+    if (this.formulario.controls[campo].invalid && this.formulario.controls[campo].hasError('required')) {
+      return 'Completá el motivo de la modificación';
+    }
+    return '';
+  }
   /**
    * Dinámica de ruteo diferente al resto de la app: el "Volver" ya no usa [routerLink].
    * Acá se intercepta el clic para avisar al usuario si hay cambios sin guardar antes de salir.
@@ -64,10 +102,12 @@ export class ComponenteModificarTurnoAdministrador implements OnInit {
   }
   /**
    * El usuario confirmó que quiere descartar los cambios: cierra el aviso y navega.
+   * La navegación se retrasa hasta que termine la animación de salida del aviso
+   * (150ms), ya que si ocurre en el mismo tick el componente se destruye y la animación no se ve.
    */
   confirmarSalida() {
     this.alertaSalida.set(false);
-    this.r.navigateByUrl(this.rutaPendiente);
+    setTimeout(() => this.r.navigateByUrl(this.rutaPendiente), 180);
   }
   /**
    * El usuario decidió quedarse editando: solo cierra el aviso.
@@ -102,7 +142,15 @@ export class ComponenteModificarTurnoAdministrador implements OnInit {
   }
 
   modificarTurno() {
-    if (this.formulario.invalid) return;
+    if (!this.hayModificaciones()) {
+      this.toastService.mostrarMensaje('No hay modificaciones para guardar', true);
+      return;
+    }
+    if (this.formulario.invalid) {
+      this.enviado.set(true);
+      this.toastService.mostrarMensaje('Completá el motivo de la modificación', true);
+      return;
+    }
     this.ts.getTurnoById(this.id).subscribe({
       next: (value: any) => {
         this.us.getUsuarioById(value.id_usuario).subscribe({
@@ -121,7 +169,7 @@ export class ComponenteModificarTurnoAdministrador implements OnInit {
               fechaHoraInicio: inicio,
               usuario: u,
               servicio,
-              motivo: this.formulario.controls.motivo.value,
+              motivo: this.formulario.controls.motivo.value.trim(),
             };
             console.log('turno armado:', t);
             this.ts.putTurno(t, this.id).subscribe({
@@ -156,6 +204,8 @@ export class ComponenteModificarTurnoAdministrador implements OnInit {
               .toISOString()
               .slice(0, 16);
             this.formulario.controls.fechaHoraInicio.setValue(fechaLocal);
+            this.servicioOriginal = serv;
+            this.fechaOriginal = this.formulario.controls.fechaHoraInicio.value;
             this.snapshot = JSON.stringify(this.formulario.value);
           },
           error: (err) => {

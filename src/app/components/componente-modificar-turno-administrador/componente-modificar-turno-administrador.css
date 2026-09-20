@@ -26,7 +26,8 @@ form {
 }
 
 select,
-input[type="datetime-local"] {
+input[type="datetime-local"],
+textarea {
     width: 100%;
     padding: 12px 14px;
     border-radius: 10px;
@@ -37,6 +38,11 @@ input[type="datetime-local"] {
     transition: border-color 160ms ease, box-shadow 160ms ease;
 }
 
+textarea {
+    resize: vertical;
+    font-family: inherit;
+}
+
 label {
     font-size: 14px;
     color: #16325c;
@@ -44,10 +50,22 @@ label {
 }
 
 select:focus,
-input[type="datetime-local"]:focus {
+input[type="datetime-local"]:focus,
+textarea:focus {
     outline: none;
     border-color: #4b6cb7;
     box-shadow: 0 6px 16px rgba(75, 108, 183, 0.14);
+}
+
+textarea.invalido {
+    border-color: #c02626;
+    background: #fff7f7;
+}
+
+.field-error {
+    color: #c02626;
+    font-size: 13px;
+    font-weight: 600;
 }
 
 button[type="submit"] {
@@ -63,9 +81,16 @@ button[type="submit"] {
     transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
-button[type="submit"]:hover {
+button[type="submit"]:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 10px 24px rgba(24, 40, 72, 0.18);
+}
+
+button[type="submit"]:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 @media (max-width: 540px) {
