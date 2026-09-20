@@ -1,0 +1,12 @@
+@if (visible()) {
+<div class="modal-overlay" [@fondo]>
+    <div class="modal" [@aparecer]>
+        <h3>Cambios sin guardar</h3>
+        <p class="modal-texto">{{ mensaje() }}</p>
+        <div class="modal-acciones">
+            <button class="btn-quedarse" (click)="quedarse.emit()">Seguir editando</button>
+            <button class="btn-descartar" (click)="continuar.emit()">Descartar y salir</button>
+        </div>
+    </div>
+</div>
+}

@@ -1,5 +1,5 @@
 <section>
-  <a class="volver" [routerLink]="destinoVolver">Volver</a>
+  <a class="volver" (click)="intentarSalir($event, destinoVolver)">Volver</a>
   <h2>Nuevo turno (mostrador):</h2>
   <form (ngSubmit)="generarTurno()" [formGroup]="formulario">
     <label for="servicio">Servicio</label>
@@ -29,3 +29,5 @@
     <button type="submit">Solicitar turno</button>
   </form>
 </section>
+
+<app-aviso-cambios-sin-guardar [visible]="alertaSalida()" [mensaje]="mensajeAlerta" (continuar)="confirmarSalida()" (quedarse)="cancelarSalida()"></app-aviso-cambios-sin-guardar>

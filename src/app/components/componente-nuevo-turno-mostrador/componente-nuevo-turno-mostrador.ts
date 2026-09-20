@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { ServicioService } from '../../servicio/services/servicio-service';
 import { Servicio } from '../../servicio/interface/servicio.interface';
 import { TurnoService } from '../../turno/services/turno-service';
@@ -10,10 +10,11 @@ import { formatearFechaSQL } from '../../shared/utils/dateHelpers';
 import { ToastService } from '../../shared/services/toast-service';
 import { AuthService } from '../../auth/services/auth-service';
 import { telefonoValidator } from '../../shared/utils/validators';
+import { AvisoCambiosSinGuardar } from '../../shared/components/aviso-cambios-sin-guardar/aviso-cambios-sin-guardar';
 
 @Component({
   selector: 'app-componente-nuevo-turno-mostrador',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, AvisoCambiosSinGuardar],
   templateUrl: './componente-nuevo-turno-mostrador.html',
   styleUrl: './componente-nuevo-turno-mostrador.css',
 })
@@ -34,6 +35,46 @@ export class ComponenteNuevoTurnoMostrador implements OnInit {
   destinoVolver = this.as.obtenerRolUsuario() === 'administrador' ? '/home-admin' : '/home-peluquero';
   enviado = signal(false);
   formVersion = toSignal(this.formulario.valueChanges, { initialValue: null });
+  /**
+   * Estado inicial del formulario en formato JSON. Al tocar "Volver" se compara con
+   * el valor actual para saber si hay cambios sin guardar.
+   */
+  snapshot = JSON.stringify(this.formulario.value);
+  /**
+   * Dinámica de ruteo diferente al resto de la app: el "Volver" ya no usa [routerLink].
+   * Acá se intercepta el clic para avisar al usuario si hay cambios sin guardar antes de salir.
+   */
+  alertaSalida = signal(false);
+  rutaPendiente = '';
+  mensajeAlerta = 'Se perderán los cambios realizados y el turno no será creado.';
+  /**
+   * Intercepta el clic del "Volver". Si el formulario cambió respecto del estado inicial,
+   * cancela la navegación y muestra el aviso; si no, navega directo a la ruta pedida.
+   * @param evento el evento de clic del enlace
+   * @param ruta destino al que se quería volver
+   */
+  intentarSalir(evento: Event, ruta: string) {
+    if (JSON.stringify(this.formulario.value) !== this.snapshot) {
+      evento.preventDefault();
+      this.rutaPendiente = ruta;
+      this.alertaSalida.set(true);
+      return;
+    }
+    this.r.navigateByUrl(ruta);
+  }
+  /**
+   * El usuario confirmó que quiere descartar los cambios: cierra el aviso y navega.
+   */
+  confirmarSalida() {
+    this.alertaSalida.set(false);
+    this.r.navigateByUrl(this.rutaPendiente);
+  }
+  /**
+   * El usuario decidió quedarse editando: solo cierra el aviso.
+   */
+  cancelarSalida() {
+    this.alertaSalida.set(false);
+  }
   ngOnInit(): void {
     this.ss.limpiarServiciosSignal();
     this.ss.getServicios().subscribe({
