@@ -6,22 +6,6 @@ section {
     padding: 24px 16px;
 }
 
-section>a {
-    align-self: flex-start;
-    color: #4b6cb7;
-    text-decoration: none;
-    font-weight: 600;
-    padding: 10px 14px;
-    border-radius: 10px;
-    background: rgba(75, 108, 183, 0.1);
-    transition: background-color 150ms ease, transform 120ms ease;
-}
-
-section>a:hover {
-    background: rgba(75, 108, 183, 0.16);
-    transform: translateY(-1px);
-}
-
 .table-wrapper {
     width: 100%;
     max-width: 1100px;
@@ -40,6 +24,20 @@ table {
 thead {
     background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
     color: #ffffff;
+}
+
+th.sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+th.sortable:hover {
+    filter: brightness(1.1);
+}
+
+th .arrow {
+    font-size: 0.7rem;
+    opacity: 0.9;
 }
 
 td {

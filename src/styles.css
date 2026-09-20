@@ -5,6 +5,27 @@ a {
     color: #485785;
 }
 
+.volver {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+    color: #ffffff !important;
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgba(24, 40, 72, 0.18);
+    transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.volver:hover,
+.volver:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(24, 40, 72, 0.25);
+}
+
 html,
 body {
     margin: 0;

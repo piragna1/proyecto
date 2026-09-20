@@ -5,6 +5,7 @@ export interface Turno {
   id?: string;
   usuario: Usuario | null;
   fechaHoraInicio: string;
+  fechaHoraInicioRaw?: string;
   servicio: Servicio;
   motivo?: string;
   pagado?: boolean;

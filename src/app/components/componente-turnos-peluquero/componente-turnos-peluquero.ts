@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { FormsModule } from '@angular/forms';
 import { TurnoService } from '../../turno/services/turno-service';
@@ -25,8 +25,46 @@ export class ComponenteTurnosPeluquero implements OnInit {
   cobrarTurno: Turno | null = null;
   metodo: string = 'efectivo';
   monto: number | null = null;
+
+  orden = signal<'cliente' | 'telefono' | 'servicio' | 'horario' | 'pago'>('horario');
+  direccion = signal<'asc' | 'desc'>('asc');
+  turnosOrdenados = computed(() => {
+    const dir = this.direccion() === 'asc' ? 1 : -1;
+    return this.turnos()
+      .slice()
+      .sort((a, b) => {
+        let r = 0;
+        switch (this.orden()) {
+          case 'cliente':
+            r = (a.usuario?.nombre ?? '').localeCompare(b.usuario?.nombre ?? '', 'es');
+            break;
+          case 'telefono':
+            r = (a.usuario?.telefono ?? '').localeCompare(b.usuario?.telefono ?? '');
+            break;
+          case 'servicio':
+            r = a.servicio.tipo.localeCompare(b.servicio.tipo, 'es');
+            break;
+          case 'pago':
+            r = Number(a.pagado ?? false) - Number(b.pagado ?? false);
+            break;
+          default:
+            r = (a.fechaHoraInicioRaw ?? a.fechaHoraInicio).localeCompare(b.fechaHoraInicioRaw ?? b.fechaHoraInicio);
+        }
+        return r * dir;
+      });
+  });
+
   ngOnInit(): void {
     this.cargarTurnos();
+  }
+
+  accionOrdenar(campo: 'cliente' | 'telefono' | 'servicio' | 'horario' | 'pago') {
+    if (this.orden() === campo) {
+      this.direccion.set(this.direccion() === 'asc' ? 'desc' : 'asc');
+    } else {
+      this.orden.set(campo);
+      this.direccion.set('asc');
+    }
   }
 
   cargarTurnos(fecha?: string) {
@@ -42,6 +80,7 @@ export class ComponenteTurnosPeluquero implements OnInit {
                     id: element.id,
                     usuario: u,
                     fechaHoraInicio: new Date(element.fecha_hora_inicio).toLocaleString('es'),
+                    fechaHoraInicioRaw: element.fecha_hora_inicio,
                     servicio: s,
                     pagado: Number(element.pagado) === 1
                   };

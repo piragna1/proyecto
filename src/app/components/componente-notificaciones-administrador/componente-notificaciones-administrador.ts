@@ -29,6 +29,8 @@ export class ComponenteNotificacionesAdministrador implements OnInit, OnDestroy 
   direccion = signal<'asc' | 'desc'>('desc');
 
   private debounceTimer: ReturnType<typeof setTimeout> | undefined;
+  private refreshTimer: ReturnType<typeof setInterval> | undefined;
+  private cargando = false;
 
   ngOnInit(): void {
     this.cargarNotificaciones();
@@ -36,9 +38,15 @@ export class ComponenteNotificacionesAdministrador implements OnInit, OnDestroy 
 
   ngOnDestroy(): void {
     if (this.debounceTimer) clearTimeout(this.debounceTimer);
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+      this.refreshTimer = undefined;
+    }
   };
 
   cargarNotificaciones() {
+    if (this.cargando) return;
+    this.cargando = true;
     this.ns.getNotificaciones({
       fecha: this.filtros.fecha() || undefined,
       usuario: this.filtros.usuario().trim() || undefined,
@@ -51,8 +59,11 @@ export class ComponenteNotificacionesAdministrador implements OnInit, OnDestroy 
       direccion: this.orden() ? this.direccion() : undefined,
     }).subscribe({
       next: (lista: any[]) => {
+        this.cargando = false;
         this.ns.limpiarNotificacionesSignal();
+        let hayPendientes = false;
         lista.forEach((n) => {
+          if (n.estado === 'pendiente') hayPendientes = true;
           this.ns.setNotificacionesSignal({
             id: n.id,
             tipo: n.tipo,
@@ -64,8 +75,17 @@ export class ComponenteNotificacionesAdministrador implements OnInit, OnDestroy 
             usuario_nombre: n.usuario_nombre
           });
         });
+        if (hayPendientes) {
+          if (!this.refreshTimer) {
+            this.refreshTimer = setInterval(() => this.cargarNotificaciones(), 4000);
+          }
+        } else if (this.refreshTimer) {
+          clearInterval(this.refreshTimer);
+          this.refreshTimer = undefined;
+        }
       },
       error: (err) => {
+        this.cargando = false;
         console.log(err);
       }
     });

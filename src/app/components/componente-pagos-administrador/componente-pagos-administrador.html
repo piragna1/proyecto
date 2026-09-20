@@ -1,5 +1,5 @@
 <section>
-    <a [routerLink]="'/home-admin'">Volver</a>
+    <a class="volver" [routerLink]="'/home-admin'">Volver</a>
     <h2>Historial de pagos</h2>
     <div class="filtros">
         <label>Fecha: <input type="date" [value]="filtros.fecha()" (change)="actualizarFiltro('fecha', $event)"></label>

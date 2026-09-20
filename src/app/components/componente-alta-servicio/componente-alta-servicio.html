@@ -1,5 +1,5 @@
 <section>
-  <a [routerLink]="'/servicios-admin'">Volver</a>
+  <a class="volver" [routerLink]="'/servicios-admin'">Volver</a>
   <form action="" [formGroup]="formulario" (ngSubmit)="generarServicio()">
     <label for="tipo">Tipo: </label>
     <input type="text" name="tipo" id="tipo" formControlName="tipo" />

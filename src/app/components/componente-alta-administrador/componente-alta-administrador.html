@@ -1,5 +1,5 @@
 <section>
-    <a [routerLink]="'/administradores-admin'">Volver</a>
+    <a class="volver" [routerLink]="'/administradores-admin'">Volver</a>
     <form [formGroup]="formulario" (ngSubmit)="generarAdministrador()">
         <label for="email">Email: </label>
         <input type="email" name="email" id="email" formControlName="email">

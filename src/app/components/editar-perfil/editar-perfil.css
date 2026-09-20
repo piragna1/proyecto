@@ -6,15 +6,6 @@ section {
     align-items: center;
 }
 
-section>a {
-    align-self: flex-start;
-    color: #4b6cb7;
-    text-decoration: none;
-    font-weight: 600;
-    padding: 6px 10px;
-    border-radius: 8px;
-}
-
 .perfil-card {
     width: 100%;
     max-width: 520px;

@@ -1,21 +1,23 @@
 <section>
-    <a [routerLink]="'/home-peluquero'">Volver</a>
+    <a class="volver" [routerLink]="'/home-peluquero'">Volver</a>
     <div>
         <label>Filtrar por día: <input type="date" [value]="fecha" (change)="filtrarPorDia($event)"></label>
         <button (click)="verTodos()">Ver todos</button>
     </div>
     <table>
         <thead>
-            <th>Cliente</th>
-            <th>Servicio</th>
-            <th>Horario</th>
-            <th>Pago</th>
+            <th class="sortable" (click)="accionOrdenar('cliente')">Cliente <span class="arrow">{{ (orden() === 'cliente' && direccion() === 'asc') ? '▲' : (orden() === 'cliente') ? '▼' : '' }}</span></th>
+            <th class="sortable" (click)="accionOrdenar('telefono')">Teléfono <span class="arrow">{{ (orden() === 'telefono' && direccion() === 'asc') ? '▲' : (orden() === 'telefono') ? '▼' : '' }}</span></th>
+            <th class="sortable" (click)="accionOrdenar('servicio')">Servicio <span class="arrow">{{ (orden() === 'servicio' && direccion() === 'asc') ? '▲' : (orden() === 'servicio') ? '▼' : '' }}</span></th>
+            <th class="sortable" (click)="accionOrdenar('horario')">Horario <span class="arrow">{{ (orden() === 'horario' && direccion() === 'asc') ? '▲' : (orden() === 'horario') ? '▼' : '' }}</span></th>
+            <th class="sortable" (click)="accionOrdenar('pago')">Pago <span class="arrow">{{ (orden() === 'pago' && direccion() === 'asc') ? '▲' : (orden() === 'pago') ? '▼' : '' }}</span></th>
             <th>Acciones</th>
         </thead>
         <tbody>
-            @for (item of turnos(); track $index) {
+            @for (item of turnosOrdenados(); track $index) {
             <tr>
-                <td data-label="Cliente"><span class="td-valor">{{item.usuario?.nombre}} - {{item.usuario?.telefono}}</span></td>
+                <td data-label="Cliente"><span class="td-valor">{{item.usuario?.nombre}}</span></td>
+                <td data-label="Teléfono"><span class="td-valor">{{item.usuario?.telefono || '-'}}</span></td>
                 <td data-label="Servicio"><span class="td-valor">{{item.servicio.tipo}} - ${{item.servicio.precio}}</span></td>
                 <td data-label="Horario"><span class="td-valor">{{ item.fechaHoraInicio }}</span></td>
                 <td data-label="Pago">
@@ -33,7 +35,7 @@
             </tr>
             } @empty {
             <tr>
-                <td colspan="5">Sin turnos para el día seleccionado</td>
+                <td colspan="6">Sin turnos para el día seleccionado</td>
             </tr>
             }
         </tbody>

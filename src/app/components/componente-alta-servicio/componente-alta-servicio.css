@@ -6,22 +6,6 @@ section {
     padding: 24px 16px;
 }
 
-section>a {
-    align-self: flex-start;
-    color: #4b6cb7;
-    text-decoration: none;
-    font-weight: 600;
-    padding: 10px 14px;
-    border-radius: 10px;
-    background: rgba(75, 108, 183, 0.1);
-    transition: background-color 150ms ease, transform 150ms ease;
-}
-
-section>a:hover {
-    background: rgba(75, 108, 183, 0.16);
-    transform: translateY(-1px);
-}
-
 form {
     width: 100%;
     max-width: 540px;
