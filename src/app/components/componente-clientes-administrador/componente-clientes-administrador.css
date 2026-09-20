@@ -33,6 +33,10 @@ td {
     border-bottom: 1px solid rgba(15, 23, 42, 0.08);
 }
 
+td {
+    color: #000000;
+}
+
 tbody tr:hover {
     background: rgba(75, 108, 183, 0.08);
 }

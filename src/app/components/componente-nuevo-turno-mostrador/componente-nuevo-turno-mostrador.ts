@@ -1,5 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { ServicioService } from '../../servicio/services/servicio-service';
 import { Servicio } from '../../servicio/interface/servicio.interface';
@@ -31,6 +32,8 @@ export class ComponenteNuevoTurnoMostrador implements OnInit {
   as: AuthService = inject(AuthService);
   r: Router = inject(Router);
   destinoVolver = this.as.obtenerRolUsuario() === 'administrador' ? '/home-admin' : '/home-peluquero';
+  enviado = signal(false);
+  formVersion = toSignal(this.formulario.valueChanges, { initialValue: null });
   ngOnInit(): void {
     this.ss.limpiarServiciosSignal();
     this.ss.getServicios().subscribe({
@@ -45,7 +48,16 @@ export class ComponenteNuevoTurnoMostrador implements OnInit {
     });
   }
   generarTurno() {
-    if (this.formulario.invalid) return;
+    if (this.formulario.invalid) {
+      this.enviado.set(true);
+      const faltantes: string[] = [];
+      if (this.formulario.controls.servicio.invalid) faltantes.push('un servicio');
+      if (this.formulario.controls.fechaHoraInicio.invalid) faltantes.push('un horario');
+      if (this.formulario.controls.nombre.invalid) faltantes.push('el nombre del cliente');
+      if (this.formulario.controls.telefono.invalid) faltantes.push('el teléfono');
+      this.toasts.mostrarMensaje('Completá ' + faltantes.join(' y '), true);
+      return;
+    }
 
     const servicio: Servicio = this.formulario.controls.servicio.value!;
     const fechaHoraInicioRaw = this.formulario.controls.fechaHoraInicio.value;
@@ -71,5 +83,28 @@ export class ComponenteNuevoTurnoMostrador implements OnInit {
         this.toasts.mostrarMensaje(e.error?.mensaje || 'Error al crear turno', true);
       },
     });
+  }
+
+  hayError(campo: 'servicio' | 'fechaHoraInicio' | 'nombre' | 'telefono'): boolean {
+    this.formVersion();
+    return this.enviado() && this.formulario.controls[campo].invalid;
+  }
+
+  mensajeCampo(campo: 'servicio' | 'fechaHoraInicio' | 'nombre' | 'telefono'): string {
+    const c = this.formulario.controls[campo];
+    if (c.invalid && c.hasError('required')) {
+      switch (campo) {
+        case 'servicio':
+          return 'Seleccioná un servicio';
+        case 'fechaHoraInicio':
+          return 'Seleccioná un horario';
+        case 'nombre':
+          return 'Ingresá el nombre del cliente';
+        case 'telefono':
+          return 'Ingresá el teléfono del cliente';
+      }
+    }
+    if (c.invalid && c.hasError('telefono')) return 'El teléfono no es válido';
+    return '';
   }
 }

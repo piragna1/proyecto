@@ -51,6 +51,20 @@ input[type="tel"] {
     font-size: 14px;
 }
 
+select.invalido,
+input[type="datetime-local"].invalido,
+input[type="text"].invalido,
+input[type="tel"].invalido {
+    border-color: #c02626;
+    background: #fff7f7;
+}
+
+.field-error {
+    color: #c02626;
+    font-size: 13px;
+    font-weight: 600;
+}
+
 button[type="submit"] {
     align-self: flex-end;
     background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);

@@ -3,17 +3,29 @@
   <h2>Nuevo turno (mostrador):</h2>
   <form (ngSubmit)="generarTurno()" [formGroup]="formulario">
     <label for="servicio">Servicio</label>
-    <select name="servicio" id="servicio" formControlName="servicio">
+    <select name="servicio" id="servicio" formControlName="servicio" [class.invalido]="hayError('servicio')">
       @for (item of servicios(); track $index) {
       <option [ngValue]="item">{{ item.tipo }}</option>
       }
     </select>
+    @if (hayError('servicio')) {
+    <span class="field-error">{{ mensajeCampo('servicio') }}</span>
+    }
     <label for="horario">Horario: </label>
-    <input type="datetime-local" name="horario" id="horario" formControlName="fechaHoraInicio" />
+    <input type="datetime-local" name="horario" id="horario" formControlName="fechaHoraInicio" [class.invalido]="hayError('fechaHoraInicio')" />
+    @if (hayError('fechaHoraInicio')) {
+    <span class="field-error">{{ mensajeCampo('fechaHoraInicio') }}</span>
+    }
     <label for="nombre">Nombre del cliente: </label>
-    <input type="text" name="nombre" id="nombre" formControlName="nombre" />
+    <input type="text" name="nombre" id="nombre" formControlName="nombre" [class.invalido]="hayError('nombre')" />
+    @if (hayError('nombre')) {
+    <span class="field-error">{{ mensajeCampo('nombre') }}</span>
+    }
     <label for="telefono">Teléfono: </label>
-    <input type="tel" name="telefono" id="telefono" formControlName="telefono" />
+    <input type="tel" name="telefono" id="telefono" formControlName="telefono" [class.invalido]="hayError('telefono')" />
+    @if (hayError('telefono')) {
+    <span class="field-error">{{ mensajeCampo('telefono') }}</span>
+    }
     <button type="submit">Solicitar turno</button>
   </form>
 </section>
