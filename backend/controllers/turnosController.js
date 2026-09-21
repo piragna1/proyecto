@@ -104,7 +104,7 @@ export function obtenerTurnos(db) {
             }
         }
 
-        let query = "select t.*, case when p.id is null then 0 else 1 end as pagado from turnos t left join pagos p on p.id_turno = t.id";
+        let query = "select t.*, case when p.id is null then 0 else 1 end as pagado, p.monto as monto_pagado from turnos t left join pagos p on p.id_turno = t.id";
         const params = [];
 
         if (req.user.rol === 'cliente') {

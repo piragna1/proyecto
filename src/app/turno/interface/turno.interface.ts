@@ -9,4 +9,5 @@ export interface Turno {
   servicio: Servicio;
   motivo?: string;
   pagado?: boolean;
+  monto?: number;
 }

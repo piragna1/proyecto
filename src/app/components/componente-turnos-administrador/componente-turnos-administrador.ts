@@ -122,7 +122,8 @@ export class ComponenteTurnosAdministrador implements OnInit {
                     fechaHoraInicio: new Date(element.fecha_hora_inicio).toLocaleString('es'),
                     fechaHoraInicioRaw: element.fecha_hora_inicio,
                     servicio: s,
-                    pagado: Number(element.pagado) === 1
+                    pagado: Number(element.pagado) === 1,
+                    monto: element.monto_pagado != null ? Number(element.monto_pagado) : undefined
                   };
                   console.log('turno recuperado: ', turno);
                   this.ts.setTurnosSignal(turno);

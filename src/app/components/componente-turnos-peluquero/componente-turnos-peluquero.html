@@ -18,7 +18,7 @@
             <tr>
                 <td data-label="Cliente"><span class="td-valor">{{item.usuario?.nombre}}</span></td>
                 <td data-label="Teléfono"><span class="td-valor">{{item.usuario?.telefono || '-'}}</span></td>
-                <td data-label="Servicio"><span class="td-valor">{{item.servicio.tipo}} - ${{item.servicio.precio}}</span></td>
+                <td data-label="Servicio"><span class="td-valor">{{item.servicio.tipo}} - ${{ item.pagado && item.monto != null ? item.monto : item.servicio.precio }}</span></td>
                 <td data-label="Horario"><span class="td-valor">{{ item.fechaHoraInicio }}</span></td>
                 <td data-label="Pago">
                     @if (item.pagado) {
@@ -54,7 +54,7 @@
             </select>
         </label>
         <label>Monto:
-            <input type="number" [(ngModel)]="monto" min="1" step="0.01">
+            <input type="text" [value]="'$' + monto" readonly>
         </label>
         <div class="modal-acciones">
             <button class="confirmar" (click)="confirmarCobro()">Confirmar pago</button>
