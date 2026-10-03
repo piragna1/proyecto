@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { PaginaInicial } from './pages/pagina-inicial/pagina-inicial';
 import { PaginaLogin } from './pages/pagina-login/pagina-login';
 import { PaginaRegistro } from './pages/pagina-registro/pagina-registro';
-import { PaginaAdmin } from './pages/pagina-admin/pagina-admin';
 import { PaginaHome } from './pages/pagina-home/pagina-home';
 import { PaginaNuevoTurno } from './pages/pagina-nuevo-turno/pagina-nuevo-turno';
 import { PaginaNuevoTurnoMostrador } from './pages/pagina-nuevo-turno-mostrador/pagina-nuevo-turno-mostrador';
@@ -27,7 +26,6 @@ import { adminGuard } from './guards/adminGuard';
 import { superAdminGuard } from './guards/superAdminGuard';
 import { peluqueroGuard } from './guards/peluqueroGuard';
 import { mostradorGuard } from './guards/mostradorGuard';
-import { PaginaPeluquero } from './pages/pagina-peluquero/pagina-peluquero';
 import { PaginaEditarPerfil } from './pages/pagina-editar-perfil/pagina-editar-perfil';
 import { PaginaEditarPerfilAdministrador } from './pages/pagina-editar-perfil-administrador/pagina-editar-perfil-administrador';
 import { PaginaEditarPerfilPeluquero } from './pages/pagina-editar-perfil-peluquero/pagina-editar-perfil-peluquero';
@@ -51,10 +49,13 @@ export const routes: Routes = [
         path: 'registro', component: PaginaRegistro, canActivate: [guestGuard]
     },
     {
-        path: 'admin', component: PaginaAdmin, canActivate: [guestGuard]
+        // El login vive en la home (path: ''). Estas dos paginas eran copias del
+        // mismo formulario con el destino hardcodeado, y nada en la app las enlazaba.
+        // Se redirigen para no romper marcadores viejos.
+        path: 'admin', redirectTo: '', pathMatch: 'full'
     },
     {
-        path: 'peluquero', component: PaginaPeluquero, canActivate: [guestGuard]
+        path: 'peluquero', redirectTo: '', pathMatch: 'full'
     },
     {
         path: 'home', component: PaginaHome, canActivate: [authGuard]

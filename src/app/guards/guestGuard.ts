@@ -1,31 +1,23 @@
 import { inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { AuthService } from "../auth/services/auth-service";
+import { rutaInicioPorRol } from "../shared/utils/rutasPorRol";
 
 export function guestGuard() {
-    console.log('guestGuard ejecutado');
     const authService = inject(AuthService);
     const router:Router = inject(Router);
-
-    const rol = authService.obtenerRolUsuario();
-    console.log('rol:', rol);
 
     if (!authService.esTokenValido()){
         authService.cerrarSesion();
         return true;
     }
 
-    switch(rol){
-        case 'cliente':
-            router.navigateByUrl('/home')
-            return false;
-        case 'administrador':
-            router.navigateByUrl('/home-admin')
-            return false;
-        case 'peluquero':
-            router.navigateByUrl('/home-peluquero')
-            return false;
-        default:
-            return true;
+    // Si ya hay sesion iniciada, cada rol va a su home.
+    const ruta = rutaInicioPorRol(authService.obtenerRolUsuario());
+    if (ruta) {
+        router.navigateByUrl(ruta);
+        return false;
     }
+
+    return true;
 }

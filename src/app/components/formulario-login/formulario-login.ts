@@ -7,6 +7,7 @@ import { AuthService } from '../../auth/services/auth-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { emailValidator } from '../../shared/utils/validators';
 import { mensajeDeError } from '../../shared/utils/errorMessages';
+import { rutaInicioPorRol } from '../../shared/utils/rutasPorRol';
 
 @Component({
   selector: 'app-formulario-login',
@@ -28,7 +29,8 @@ export class FormularioLogin {
   toasts: ToastService = inject(ToastService);
   mensajeError = signal('');
   /**
-   * Metodo para iniciar sesion como cliente.
+   * Metodo para iniciar sesion. El destino depende del rol: el mismo
+   * formulario sirve para cliente, administrador y peluquero.
    * @returns void
    */
   iniciarSesion() {
@@ -44,7 +46,9 @@ export class FormularioLogin {
         const token = val.token;
         localStorage.setItem('token', token);
         this.as.logIn();
-        this.r.navigateByUrl('/home');
+        // El rol se lee del JWT recien guardado, no de la respuesta del login.
+        // Si el token viniera sin rol, cae a /home como antes.
+        this.r.navigateByUrl(rutaInicioPorRol(this.as.obtenerRolUsuario()) ?? '/home');
       },
       error: (e) => {
         console.log(e);
