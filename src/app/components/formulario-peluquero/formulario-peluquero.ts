@@ -6,6 +6,7 @@ import { AuthService } from '../../auth/services/auth-service';
 import { LoginService } from '../../login/services/login-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { emailValidator } from '../../shared/utils/validators';
+import { mensajeDeError } from '../../shared/utils/errorMessages';
 
 @Component({
   selector: 'app-formulario-peluquero',
@@ -17,7 +18,7 @@ export class FormularioPeluquero {
   fb: FormBuilder = inject(FormBuilder);
   formulario = this.fb.nonNullable.group({
     email: ['', [Validators.required, emailValidator]],
-    clave: ['', [Validators.required, Validators.minLength(8)]],
+    clave: ['', [Validators.required]],
   });
   formVersion = toSignal(this.formulario.valueChanges, { initialValue: null });
   enviado = signal(false);
@@ -25,12 +26,14 @@ export class FormularioPeluquero {
   ls: LoginService = inject(LoginService);
   r: Router = inject(Router);
   toasts: ToastService = inject(ToastService);
+  mensajeError = signal('');
   onLogin() {
     if (this.formulario.invalid) {
       this.enviado.set(true);
       this.toasts.mostrarMensaje('Los datos ingresados no son válidos. Revisá los campos marcados.', true);
       return;
     }
+    this.mensajeError.set('');
     const { email, clave } = this.formulario.value;
     this.ls.login(email, clave).subscribe({
       next: (res) => {
@@ -41,7 +44,9 @@ export class FormularioPeluquero {
       },
       error: (err) => {
         console.error(err);
-        this.toasts.mostrarMensaje(err.error?.mensaje || 'Error al iniciar sesión', true);
+        const mensaje = mensajeDeError(err, 'Error al iniciar sesión');
+        this.mensajeError.set(mensaje);
+        this.toasts.mostrarMensaje(mensaje, true);
       }
     })
   }
@@ -55,7 +60,6 @@ export class FormularioPeluquero {
     const c = this.formulario.controls[campo];
     if (c.invalid && c.hasError('required')) return campo === 'email' ? 'El email es requerido' : 'La clave es requerida';
     if (c.invalid && c.hasError('email')) return 'El email no es válido';
-    if (c.invalid && c.hasError('minlength')) return 'La clave debe tener al menos 8 caracteres';
     return '';
   }
 }

@@ -11,6 +11,9 @@
       <p class="field-error">{{ mensajeCampo('clave') }}</p>
     }
     <button type="submit">LogIn</button>
+    @if (mensajeError()) {
+      <p class="error-message">{{ mensajeError() }}</p>
+    }
     <p>No tienes una cuenta? <a [routerLink]="'/registro'">Registrate!</a></p>
   </form>
 </section>

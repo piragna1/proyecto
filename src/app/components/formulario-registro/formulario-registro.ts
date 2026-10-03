@@ -2,7 +2,8 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
-import { emailValidator, telefonoValidator } from '../../shared/utils/validators';
+import { emailValidator, telefonoValidator, passwordValidator, mensajeClave, MAX_LENGTH_CLAVE } from '../../shared/utils/validators';
+import { mensajeDeError } from '../../shared/utils/errorMessages';
 import { UsuarioService } from '../../usuario/services/usuario-service';
 import { LoginService } from '../../login/services/login-service';
 import { AuthService } from '../../auth/services/auth-service';
@@ -20,7 +21,7 @@ export class FormularioRegistro {
     nombre: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
     email: ['', [Validators.required, emailValidator, Validators.maxLength(255)]],
     telefono: ['', [Validators.required, telefonoValidator]],
-    clave: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(255)]],
+    clave: ['', [Validators.required, passwordValidator, Validators.maxLength(MAX_LENGTH_CLAVE)]],
   });
   formVersion = toSignal(this.formulario.valueChanges, { initialValue: null });
   enviado = signal(false);
@@ -29,7 +30,7 @@ export class FormularioRegistro {
   as: AuthService = inject(AuthService);
   toasts: ToastService = inject(ToastService);
   r: Router = inject(Router);
-  mensajeError: string = '';
+  mensajeError = signal('');
   
   generarUsuario() {
     if (this.formulario.invalid) {
@@ -38,7 +39,7 @@ export class FormularioRegistro {
       return;
     }
     this.enviado.set(true);
-    this.mensajeError = '';
+    this.mensajeError.set('');
 
     this.us.registrarUsuario(this.formulario.getRawValue()).subscribe({
       next: (value) => {
@@ -62,8 +63,9 @@ export class FormularioRegistro {
         });
       },
       error: (err) => {
-        
-        this.mensajeError = err.error?.mensaje || 'Error al registrar usuario';
+        const mensaje = mensajeDeError(err, 'Error al registrar usuario');
+        this.mensajeError.set(mensaje);
+        this.toasts.mostrarMensaje(mensaje, true);
       },
     });
 
@@ -76,6 +78,7 @@ export class FormularioRegistro {
 
   mensajeCampo(campo: 'nombre' | 'email' | 'telefono' | 'clave'): string {
     const c = this.formulario.controls[campo];
+    if (campo === 'clave') return mensajeClave(c);
     if (c.invalid && c.hasError('required')) return 'Este campo es requerido';
     if (c.invalid && c.hasError('email')) return 'El email no es válido';
     if (c.invalid && c.hasError('telefono')) return 'El teléfono debe ser un número de Argentina (ej. +549223XXXXXXX o 223XXXXXXX)';

@@ -59,12 +59,6 @@ input[type="tel"].invalido {
     background: #fff7f7;
 }
 
-.field-error {
-    color: #c02626;
-    font-size: 13px;
-    font-weight: 600;
-}
-
 button[type="submit"] {
     align-self: flex-end;
     background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);

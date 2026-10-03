@@ -6,6 +6,7 @@ import { LoginService } from '../../login/services/login-service';
 import { AuthService } from '../../auth/services/auth-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { emailValidator } from '../../shared/utils/validators';
+import { mensajeDeError } from '../../shared/utils/errorMessages';
 
 @Component({
   selector: 'app-formulario-login',
@@ -25,6 +26,7 @@ export class FormularioLogin {
   ls: LoginService = inject(LoginService);
   r: Router = inject(Router);
   toasts: ToastService = inject(ToastService);
+  mensajeError = signal('');
   /**
    * Metodo para iniciar sesion como cliente.
    * @returns void
@@ -35,6 +37,7 @@ export class FormularioLogin {
       this.toasts.mostrarMensaje('Los datos ingresados no son válidos. Revisá los campos marcados.', true);
       return;
     }
+    this.mensajeError.set('');
     const { email, clave } = this.formulario.value;
     this.ls.login(email, clave).subscribe({
       next: (val) => {
@@ -45,7 +48,9 @@ export class FormularioLogin {
       },
       error: (e) => {
         console.log(e);
-        this.toasts.mostrarMensaje(e.error?.mensaje || 'Error al iniciar sesión', true);
+        const mensaje = mensajeDeError(e, 'Error al iniciar sesión');
+        this.mensajeError.set(mensaje);
+        this.toasts.mostrarMensaje(mensaje, true);
       },
     });
   }

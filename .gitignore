@@ -45,3 +45,6 @@ Thumbs.db
 
 .env
 .wwebjs_cache
+
+# Notas personales, nunca versionar
+todo.txt

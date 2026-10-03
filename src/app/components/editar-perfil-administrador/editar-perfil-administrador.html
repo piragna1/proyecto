@@ -39,10 +39,13 @@
                         @if (errorClaveAnterior()) {
                         <span class="field-error">{{ errorClaveAnterior() }}</span>
                         }
-                        <label for="clave-nueva">Nueva clave (mínimo 10 caracteres)</label>
+                        <label for="clave-nueva">Nueva clave</label>
                         <input type="password" id="clave-nueva" formControlName="nueva" />
                         @if (formClave.controls.nueva.invalid && formClave.controls.nueva.touched) {
-                        <span class="field-error">La nueva clave debe tener al menos 10 caracteres</span>
+                        <span class="field-error">{{ mensajeClaveNueva() }}</span>
+                        }
+                        @if (errorClaveNueva()) {
+                        <span class="field-error">{{ errorClaveNueva() }}</span>
                         }
                         @if (claveIgualError()) {
                         <span class="field-error">{{ claveIgualError() }}</span>

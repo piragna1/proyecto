@@ -5,7 +5,8 @@ import { ActivatedRoute, RouterLink } from "@angular/router";
 import { Usuario } from '../../usuario/interface/usuario.interface';
 import { UsuarioService } from '../../usuario/services/usuario-service';
 import { ToastService } from '../../shared/services/toast-service';
-import { emailValidator, telefonoValidator } from '../../shared/utils/validators';
+import { emailValidator, telefonoValidator, passwordValidator, mensajeClave, MAX_LENGTH_CLAVE } from '../../shared/utils/validators';
+import { mensajeDeError } from '../../shared/utils/errorMessages';
 
 @Component({
   selector: 'app-editar-perfil-peluquero',
@@ -23,7 +24,7 @@ export class EditarPerfilPeluquero implements OnInit {
   });
   formClave = this.fb.nonNullable.group({
     anterior: ['', [Validators.required]],
-    nueva: ['', [Validators.required, Validators.minLength(10)]],
+    nueva: ['', [Validators.required, passwordValidator, Validators.maxLength(MAX_LENGTH_CLAVE)]],
   }, {
     validators: (grupo: AbstractControl) => {
       const anterior = grupo.get('anterior')?.value;
@@ -40,6 +41,7 @@ export class EditarPerfilPeluquero implements OnInit {
   campoEditando = signal<string | null>(null);
   mostrandoCambioClave = signal<boolean>(false);
   errorClaveAnterior = signal<string | null>(null);
+  errorClaveNueva = signal<string | null>(null);
   procesandoClave = signal<boolean>(false);
 
   camposVisibles = computed(() => {
@@ -130,6 +132,7 @@ export class EditarPerfilPeluquero implements OnInit {
   abrirCambioClave() {
     if (this.campoEditando()) this.cancelarEdicion();
     this.errorClaveAnterior.set(null);
+    this.errorClaveNueva.set(null);
     this.formClave.reset();
     this.mostrandoCambioClave.set(true);
   };
@@ -137,6 +140,7 @@ export class EditarPerfilPeluquero implements OnInit {
   cancelarCambioClave() {
     this.formClave.reset();
     this.errorClaveAnterior.set(null);
+    this.errorClaveNueva.set(null);
     this.procesandoClave.set(false);
     this.mostrandoCambioClave.set(false);
   };
@@ -153,6 +157,7 @@ export class EditarPerfilPeluquero implements OnInit {
     if (this.formClave.invalid) return;
     this.procesandoClave.set(true);
     this.errorClaveAnterior.set(null);
+    this.errorClaveNueva.set(null);
     this.us.cambiarClave(this.id, this.formClave.controls.anterior.value, this.formClave.controls.nueva.value).subscribe({
       next: () => {
         this.toasts.mostrarMensaje('Clave actualizada.');
@@ -164,9 +169,13 @@ export class EditarPerfilPeluquero implements OnInit {
         if (err.status === 401) {
           this.errorClaveAnterior.set('La clave anterior es incorrecta');
         } else if (err.error?.errores) {
-          this.toasts.mostrarMensaje(err.error.errores.join(', '), true);
+          const detalle = err.error.errores.join(', ');
+          this.errorClaveNueva.set(detalle);
+          this.toasts.mostrarMensaje(detalle, true);
         } else {
-          this.toasts.mostrarMensaje(err.error?.mensaje || 'No se pudo cambiar la clave', true);
+          const mensaje = mensajeDeError(err, 'No se pudo cambiar la clave');
+          this.errorClaveNueva.set(mensaje);
+          this.toasts.mostrarMensaje(mensaje, true);
         }
       }
     });
@@ -176,5 +185,10 @@ export class EditarPerfilPeluquero implements OnInit {
     this.formClaveVersion();
     if (this.formClave.hasError('claveIgual')) return 'No puedes utilizar la misma clave que antes';
     return '';
+  }
+
+  mensajeClaveNueva(): string {
+    this.formClaveVersion();
+    return mensajeClave(this.formClave.controls.nueva);
   }
 };

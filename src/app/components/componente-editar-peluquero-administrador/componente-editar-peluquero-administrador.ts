@@ -1,9 +1,19 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { UsuarioService } from '../../usuario/services/usuario-service';
 import { Usuario } from '../../usuario/interface/usuario.interface';
-import { emailValidator, telefonoValidator } from '../../shared/utils/validators';
+import { ToastService } from '../../shared/services/toast-service';
+import {
+  emailValidator,
+  telefonoValidator,
+  passwordValidator,
+  mensajeCampo as mensajeCampoDe,
+  MAX_LENGTH_CLAVE,
+} from '../../shared/utils/validators';
+
+type CampoEditarPeluquero = 'nombre' | 'email' | 'telefono' | 'clave' | 'direccion';
 
 @Component({
   selector: 'app-componente-editar-peluquero-administrador',
@@ -17,9 +27,12 @@ export class ComponenteEditarPeluqueroAdministrador implements OnInit {
     nombre: ['', [Validators.required]],
     email: ['', [Validators.required, emailValidator]],
     telefono: ['', [Validators.required, telefonoValidator]],
-    clave: ['', [(ctrl: AbstractControl) => (ctrl.value && ctrl.value.trim() !== '' && ctrl.value.length < 10) ? { minlength: { requiredLength: 10 } } : null]],
+    clave: ['', [passwordValidator, Validators.maxLength(MAX_LENGTH_CLAVE)]],
     direccion: ['', [Validators.required, Validators.minLength(8)]]
   });
+  formVersion = toSignal(this.formulario.valueChanges, { initialValue: null });
+  enviado = signal(false);
+  toasts: ToastService = inject(ToastService);
   ar: ActivatedRoute = inject(ActivatedRoute);
   us: UsuarioService = inject(UsuarioService);
   id: string | null = null;
@@ -36,7 +49,11 @@ export class ComponenteEditarPeluqueroAdministrador implements OnInit {
     });
   };
   editarPeluquero() {
-    if (this.formulario.invalid) return;
+    this.enviado.set(true);
+    if (this.formulario.invalid) {
+      this.toasts.mostrarMensaje('Completá correctamente los campos marcados en rojo.', true);
+      return;
+    }
     const u: Usuario = {
       nombre: this.formulario.controls.nombre.value,
       email: this.formulario.controls.email.value,
@@ -69,5 +86,14 @@ export class ComponenteEditarPeluqueroAdministrador implements OnInit {
         console.log(err);
       }
     });
+  }
+
+  hayError(campo: CampoEditarPeluquero): boolean {
+    this.formVersion();
+    return this.enviado() && this.formulario.controls[campo].invalid;
+  }
+
+  mensajeCampo(campo: CampoEditarPeluquero): string {
+    return mensajeCampoDe(this.formulario.controls[campo], campo);
   }
 }

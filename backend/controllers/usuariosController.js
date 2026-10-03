@@ -2,6 +2,42 @@ import bcrypt from 'bcrypt';
 
 const ROLES_VALIDOS = ['administrador', 'peluquero', 'cliente'];
 
+const MIN_LENGTH_CLAVE = 10;
+const MAX_LENGTH_CLAVE = 255;
+
+// Reglas de formato de clave.
+// DEBE COINCIDIR con src/app/shared/utils/validators.ts (paquetes separados, no se puede compartir codigo).
+// Ojo: la flag /u es obligatoria. Sin ella \p{Ll} no lanza error, compila como texto literal y la regla deja de funcionar.
+const REQUISITOS_CLAVE = [
+    { etiqueta: 'una minúscula', test: /\p{Ll}/u },
+    { etiqueta: 'una mayúscula', test: /\p{Lu}/u },
+    { etiqueta: 'un número', test: /\p{Nd}/u },
+    { etiqueta: 'un símbolo', test: /[^\p{L}\p{N}\s]/u },
+];
+
+function validarClave(clave) {
+    if (!clave || typeof clave !== 'string') return ['Contraseña requerida'];
+
+    const errores = [];
+    const valor = clave.trim();
+
+    if (valor.length < MIN_LENGTH_CLAVE) {
+        errores.push(`Contraseña muy corta (mínimo ${MIN_LENGTH_CLAVE} caracteres)`);
+    }
+    if (valor.length > MAX_LENGTH_CLAVE) {
+        errores.push('Contraseña muy larga');
+    }
+
+    const faltantes = REQUISITOS_CLAVE.filter((requisito) => !requisito.test.test(valor)).map((requisito) => requisito.etiqueta);
+    if (faltantes.length === 1) {
+        errores.push(`Falta: ${faltantes[0]}`);
+    } else if (faltantes.length > 1) {
+        errores.push(`Faltan: ${faltantes.join(', ')}`);
+    }
+
+    return errores;
+}
+
 function esSuperAdmin(usuario) {
     return usuario?.superadmin === 1 || usuario?.superadmin === true;
 }
@@ -36,13 +72,7 @@ function validarUsuario(usuario, esCreacion = true) {
     
     // Validar clave solo en creación o si se proporciona en actualización
     if (esCreacion || (usuario.clave && usuario.clave.trim() !== '')) {
-        if (!usuario.clave || typeof usuario.clave !== 'string') {
-            errores.push("Contraseña requerida");
-        } else if (usuario.clave.length < 10) {
-            errores.push("Contraseña muy corta (mínimo 10 caracteres)");
-        } else if (usuario.clave.length > 255) {
-            errores.push("Contraseña muy larga");
-        }
+        errores.push(...validarClave(usuario.clave));
     }
     
     if (!usuario.rol || !ROLES_VALIDOS.includes(usuario.rol)) {
@@ -373,14 +403,7 @@ export function cambiarClave(db) {
                 return res.status(400).json({ mensaje: "Clave anterior requerida" });
             }
 
-            const errores = [];
-            if (!nuevaClave || typeof nuevaClave !== 'string') {
-                errores.push("Contraseña requerida");
-            } else if (nuevaClave.length < 10) {
-                errores.push("Contraseña muy corta (mínimo 10 caracteres)");
-            } else if (nuevaClave.length > 255) {
-                errores.push("Contraseña muy larga");
-            }
+            const errores = validarClave(nuevaClave);
             if (errores.length > 0) {
                 return res.status(400).json({ mensaje: "Datos inválidos", errores });
             }

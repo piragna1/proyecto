@@ -11,5 +11,8 @@
             <p class="field-error">{{ mensajeCampo('clave') }}</p>
         }
         <button type="button" (click)="onLogin()">LogIn</button>
+        @if (mensajeError()) {
+            <p class="error-message">{{ mensajeError() }}</p>
+        }
     </form>
 </section>

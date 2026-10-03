@@ -6,6 +6,7 @@ import { LoginService } from '../../login/services/login-service';
 import { Router } from "@angular/router";
 import { ToastService } from '../../shared/services/toast-service';
 import { emailValidator } from '../../shared/utils/validators';
+import { mensajeDeError } from '../../shared/utils/errorMessages';
 
 @Component({
   selector: 'app-formulario-admin',
@@ -25,6 +26,7 @@ export class FormularioAdmin {
   enviado = signal(false);
   r: Router = inject(Router);
   toasts: ToastService = inject(ToastService);
+  mensajeError = signal('');
   onLogin() {
 
     if (this.formulario.invalid) {
@@ -33,6 +35,7 @@ export class FormularioAdmin {
       return;
     }
 
+    this.mensajeError.set('');
     const { email, clave } = this.formulario.value;
     this.ls.loginAdmin(email, clave).subscribe({
       next: (response) => {
@@ -43,7 +46,9 @@ export class FormularioAdmin {
       },
       error: (err) => {
         console.log('Error en login:', err);
-        this.toasts.mostrarMensaje(err.error?.mensaje || 'Error al iniciar sesión', true);
+        const mensaje = mensajeDeError(err, 'Error al iniciar sesión');
+        this.mensajeError.set(mensaje);
+        this.toasts.mostrarMensaje(mensaje, true);
       }
     })
   }

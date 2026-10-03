@@ -15,32 +15,33 @@ const db = mysql.createConnection({
 }).promise();
 
 const ADMINISTRADORES = [
-    { nombre: 'Laura Gomez', email: 'laura.gomez@barberia.local', telefono: '2234490001', clavePlano: 'lauragomez123', direccion: 'Juncal 200' },
-    { nombre: 'Martin Diaz', email: 'martin.diaz@barberia.local', telefono: '2234490002', clavePlano: 'martindiaz123', direccion: 'Juncal 201' }
+    { nombre: 'Laura Gomez', email: 'laura.gomez@barberia.local', telefono: '2234490001', clavePlano: 'LauraGomez#26', direccion: 'Juncal 200' },
+    { nombre: 'Martin Diaz', email: 'martin.diaz@barberia.local', telefono: '2234490002', clavePlano: 'MartinDiaz#26', direccion: 'Juncal 201' }
 ];
 
 const PELUQUEROS = [
-    { nombre: 'Pepe Mujica', email: 'pepe.mujica@barberia.local', telefono: '2234490003', clavePlano: 'pepmujica123', direccion: 'Juncal 100' },
-    { nombre: 'Sofia Rios', email: 'sofia.rios@barberia.local', telefono: '2234490004', clavePlano: 'sofiarios123', direccion: 'Juncal 101' },
-    { nombre: 'Nico Ferreyra', email: 'nico.ferreyra@barberia.local', telefono: '2234490005', clavePlano: 'nicoferreyra123', direccion: 'Juncal 102' }
+    { nombre: 'Pepe Mujica', email: 'pepe.mujica@barberia.local', telefono: '2234490003', clavePlano: 'PepeMujica#26', direccion: 'Juncal 100' },
+    { nombre: 'Sofia Rios', email: 'sofia.rios@barberia.local', telefono: '2234490004', clavePlano: 'SofiaRios#26', direccion: 'Juncal 101' },
+    { nombre: 'Nico Ferreyra', email: 'nico.ferreyra@barberia.local', telefono: '2234490005', clavePlano: 'NicoFerreyra#26', direccion: 'Juncal 102' }
 ];
 
 const CLIENTES = [
-    { nombre: 'Maria Sanchez', email: 'maria.sanchez@correo.com', telefono: '2234468141', clavePlano: 'msanchez123' },
-    { nombre: 'Juan Perez', email: 'juan.perez@correo.com', telefono: '2234468142', clavePlano: 'juanperez123' },
-    { nombre: 'Carla Lopez', email: 'carla.lopez@correo.com', telefono: '2234468143', clavePlano: 'carlalopez123' },
-    { nombre: 'Diego Martinez', email: 'diego.martinez@correo.com', telefono: '2234468144', clavePlano: 'diegomartinez123' },
-    { nombre: 'Ana Gomez', email: 'ana.gomez@correo.com', telefono: '2234468145', clavePlano: 'anagomez123' },
-    { nombre: 'Bruno Silva', email: 'bruno.silva@correo.com', telefono: '2234468146', clavePlano: 'brunosilva123' },
-    { nombre: 'Lucia Torres', email: 'lucia.torres@correo.com', telefono: '2234468147', clavePlano: 'luciatorres123' },
-    { nombre: 'Nadia Suarez', email: 'nadia.suarez@correo.com', telefono: '2234468148', clavePlano: 'nadiasuarez123' }
+    { nombre: 'Maria Sanchez', email: 'maria.sanchez@correo.com', telefono: '2234468141', clavePlano: 'MariaSanchez#26' },
+    { nombre: 'Juan Perez', email: 'juan.perez@correo.com', telefono: '2234468142', clavePlano: 'JuanPerez#26' },
+    { nombre: 'Carla Lopez', email: 'carla.lopez@correo.com', telefono: '2234468143', clavePlano: 'CarlaLopez#26' },
+    { nombre: 'Diego Martinez', email: 'diego.martinez@correo.com', telefono: '2234468144', clavePlano: 'DiegoMartinez#26' },
+    { nombre: 'Ana Gomez', email: 'ana.gomez@correo.com', telefono: '2234468145', clavePlano: 'AnaGomez#26' },
+    { nombre: 'Bruno Silva', email: 'bruno.silva@correo.com', telefono: '2234468146', clavePlano: 'BrunoSilva#26' },
+    { nombre: 'Lucia Torres', email: 'lucia.torres@correo.com', telefono: '2234468147', clavePlano: 'LuciaTorres#26' },
+    { nombre: 'Nadia Suarez', email: 'nadia.suarez@correo.com', telefono: '2234468148', clavePlano: 'NadiaSuarez#26' }
 ];
 
 // Clientes creados desde mostrador: rol 'cliente' con mostrador = true.
+// No tienen clave: se define cuando el cliente se registra (ver usuariosController.js).
 // El email sigue el mismo patrón que genera la app (turnosController.js).
 const CLIENTES_MOSTRADOR = [
-    { nombre: 'Cliente Mostrador Uno', telefono: '2234480001', clavePlano: 'mostrador123' },
-    { nombre: 'Cliente Mostrador Dos', telefono: '2234480002', clavePlano: 'mostrador123' }
+    { nombre: 'Cliente Mostrador Uno', telefono: '2234480001' },
+    { nombre: 'Cliente Mostrador Dos', telefono: '2234480002' }
 ];
 
 const SERVICIOS = [
@@ -118,7 +119,8 @@ async function resetDatabase() {
 }
 
 async function crearUsuario({ nombre, email, telefono, clavePlano, rol, superadmin, direccion, mostrador }) {
-    const hash = await bcrypt.hash(clavePlano, 10);
+    // Sin clavePlano (clientes de mostrador) se guarda vacía: se define al registrarse.
+    const hash = clavePlano ? await bcrypt.hash(clavePlano, 10) : '';
     const [resultado] = await db.query(
         'insert into usuarios (nombre, email, telefono, clave, rol, superadmin, direccion, mostrador) values (?,?,?,?,?,?,?,?)',
         [nombre, email, telefono, hash, rol, superadmin, direccion || null, mostrador ? 1 : 0]
@@ -163,7 +165,7 @@ async function seedUsuarios() {
     for (const c of CLIENTES_MOSTRADOR) {
         const email = emailMostrador(c.telefono);
         const id = await crearUsuario({ ...c, email, rol: 'cliente', superadmin: false, mostrador: true });
-        porNombre.set(c.nombre, { id, email, telefono: c.telefono, clave: c.clavePlano });
+        porNombre.set(c.nombre, { id, email, telefono: c.telefono, clave: 'sin clave (se define al registrarse)' });
     }
 
     return porNombre;

@@ -1,4 +1,8 @@
 import { Injectable, signal } from '@angular/core';
+
+const DURACION_VISIBLE = 4000;
+const DURACION_FADE = 300;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -16,7 +20,7 @@ export class ToastService {
       this.ocultando.set(true);
       setTimeout(() => {
         this.visible.set(false);
-      }, 300);
-    }, 3000);
+      }, DURACION_FADE);
+    }, DURACION_VISIBLE);
   };
 };

@@ -1,4 +1,3 @@
-import bcrypt from 'bcrypt';
 import { enviarNotificacionTurno } from '../services/notificacionesService.js';
 
 function validarFechasTurno(body, res) {
@@ -250,31 +249,25 @@ export function insertarTurnoMostrador(db) {
                         return res.status(500).json({ mensaje: "Error al crear cliente" });
                     }
 
-                    const claveRandom = Math.random().toString(36).slice(2) + Date.now().toString(36);
-                    bcrypt.hash(claveRandom, 10, (errHash, hash) => {
-                        if (errHash) {
-                            return res.status(500).json({ mensaje: "Error al crear cliente" });
-                        }
-
-                        db.query(
-                            'INSERT INTO usuarios (nombre, email, telefono, clave, rol, superadmin, direccion, mostrador) VALUES (?,?,?,?,?,?,?,?)',
-                            [nombre.trim(), email, telefono.trim(), hash, 'cliente', false, null, true],
-                            (errInsert, result) => {
-                                if (errInsert) {
-                                    console.error('Error al crear cliente de mostrador:', errInsert.message);
-                                    return res.status(500).json({ mensaje: "Error al crear cliente: " + errInsert.message });
-                                }
-
-                                return insertarTurnoConCliente(db, res, {
-                                    idUsuario: result.insertId,
-                                    idServicio: idServicioNum,
-                                    ...validacionFechas,
-                                    respuesta: { fechaHoraInicio, nombre, telefono },
-                                    mensajeExisteTurno: "El usuario ya tiene un turno reservado para ese día",
-                                });
+                    // El cliente de mostrador no recibe clave: se define al registrarse
+                    db.query(
+                        'INSERT INTO usuarios (nombre, email, telefono, clave, rol, superadmin, direccion, mostrador) VALUES (?,?,?,?,?,?,?,?)',
+                        [nombre.trim(), email, telefono.trim(), '', 'cliente', false, null, true],
+                        (errInsert, result) => {
+                            if (errInsert) {
+                                console.error('Error al crear cliente de mostrador:', errInsert.message);
+                                return res.status(500).json({ mensaje: "Error al crear cliente: " + errInsert.message });
                             }
-                        );
-                    });
+
+                            return insertarTurnoConCliente(db, res, {
+                                idUsuario: result.insertId,
+                                idServicio: idServicioNum,
+                                ...validacionFechas,
+                                respuesta: { fechaHoraInicio, nombre, telefono },
+                                mensajeExisteTurno: "El usuario ya tiene un turno reservado para ese día",
+                            });
+                        }
+                    );
                 });
             });
         });

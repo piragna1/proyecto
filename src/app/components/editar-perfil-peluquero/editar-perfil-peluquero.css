@@ -202,13 +202,6 @@ section {
     box-shadow: 0 6px 16px rgba(75, 108, 183, 0.14);
 }
 
-.field-error {
-    display: block;
-    margin-top: -4px;
-    font-size: 13px;
-    color: #d32f2f;
-}
-
 @media (max-width: 540px) {
     section {
         padding: 20px 12px;

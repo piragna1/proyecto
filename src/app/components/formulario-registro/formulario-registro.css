@@ -42,17 +42,6 @@ input:focus {
     box-shadow: 0 4px 12px rgba(75, 108, 183, 0.12);
 }
 
-input.invalid {
-    border-color: #d32f2f;
-    box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.12);
-}
-
-.field-error {
-    font-size: 13px;
-    color: #d32f2f;
-    margin: -6px 0 0 0;
-}
-
 button[type="submit"] {
     background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
     color: #fff;
@@ -67,16 +56,6 @@ button[type="submit"] {
 button[type="submit"]:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 22px rgba(24, 40, 72, 0.18);
-}
-
-.error-message {
-    color: #dc2626;
-    font-size: 13px;
-    margin: 8px 0 0 0;
-    padding: 10px 12px;
-    background: #fee2e2;
-    border-radius: 6px;
-    border-left: 3px solid #dc2626;
 }
 
 form p:last-child {
