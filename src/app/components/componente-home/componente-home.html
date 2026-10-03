@@ -1,7 +1,21 @@
 <section>
-    <h2>Hola, {{usuario()}}</h2>
-    <div>
-        <a [routerLink]="'/mis-turnos'">Ver mis turnos</a>
-        <a [routerLink]="'/nuevo-turno'">Nuevo turno</a>
+    <header class="encabezado">
+        <h2>Hola, {{ usuario() }}</h2>
+        <p>Elegí qué querés hacer</p>
+    </header>
+
+    <div class="acciones">
+        <a class="accion" [routerLink]="'/nuevo-turno'">
+            <span class="titulo">Nuevo turno</span>
+            <span class="detalle">Reservá tu horario en la peluquería</span>
+        </a>
+        <a class="accion" [routerLink]="'/mis-turnos'">
+            <span class="titulo">Mis turnos</span>
+            <span class="detalle">Consultá y modificá tus reservas</span>
+        </a>
+        <button type="button" class="accion" (click)="editarPerfil()">
+            <span class="titulo">Mi perfil</span>
+            <span class="detalle">Actualizá tus datos y tu clave</span>
+        </button>
     </div>
 </section>

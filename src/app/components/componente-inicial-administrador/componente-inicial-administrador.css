@@ -5,45 +5,75 @@ section {
     justify-content: center;
     min-height: calc(100vh - 140px);
     padding: 30px 16px;
-    gap: 24px;
+    gap: 26px;
 }
 
-section div {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    justify-content: center;
-    width: 100%;
-    max-width: 900px;
+.encabezado {
+    text-align: center;
 }
 
-section a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 170px;
-    padding: 14px 18px;
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #fff;
-    text-decoration: none;
-    border-radius: 10px;
-    font-weight: 700;
-    box-shadow: 0 8px 22px rgba(24, 40, 72, 0.14);
-    transition: transform 120ms ease, box-shadow 120ms ease;
-}
-
-section a:hover,
-section a:focus {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(24, 40, 72, 0.2);
-}
-
-h2 {
+.encabezado h2 {
     margin: 0;
     font-size: 28px;
     color: #0b2447;
     font-weight: 700;
-    text-align: center;
+}
+
+.encabezado p {
+    margin: 8px 0 0 0;
+    font-size: 15px;
+    color: #485785;
+}
+
+.acciones {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
+    width: 100%;
+    /* 7 tarjetas: con 1000px entran 4 por fila, queda 4+3 y no una fila de 1 sola. */
+    max-width: 1000px;
+}
+
+/* Tarjeta de accion. Es la misma clase para los <a> y para el <button> de perfil,
+   asi que hay que resetear los estilos por defecto del button. */
+.accion {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 22px 20px;
+    background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+    border: 1px solid rgba(16, 44, 91, 0.08);
+    border-radius: 12px;
+    text-align: left;
+    text-decoration: none;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(18, 38, 84, 0.08);
+    transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+}
+
+.accion:hover,
+.accion:focus-visible {
+    transform: translateY(-3px);
+    border-color: rgba(75, 108, 184, 0.35);
+    box-shadow: 0 14px 32px rgba(24, 40, 72, 0.16);
+}
+
+.accion:focus-visible {
+    outline: 3px solid rgba(75, 108, 184, 0.35);
+    outline-offset: 2px;
+}
+
+.accion .titulo {
+    font-size: 17px;
+    font-weight: 700;
+    color: #16325c;
+}
+
+.accion .detalle {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.45;
 }
 
 @media (max-width: 640px) {
@@ -51,14 +81,11 @@ h2 {
         padding: 20px 12px;
     }
 
-    section a {
-        min-width: auto;
-        width: 100%;
-        padding: 12px 14px;
-        font-size: 15px;
+    .acciones {
+        grid-template-columns: minmax(0, 1fr);
     }
 
-    h2 {
+    .encabezado h2 {
         font-size: 22px;
     }
 }

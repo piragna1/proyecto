@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { AuthService } from '../../auth/services/auth-service';
 import { UsuarioService } from '../../usuario/services/usuario-service';
 
@@ -12,7 +12,14 @@ import { UsuarioService } from '../../usuario/services/usuario-service';
 export class ComponenteHome implements OnInit {
   as: AuthService = inject(AuthService);
   us: UsuarioService = inject(UsuarioService);
+  r: Router = inject(Router);
   usuario = signal<string>('Usuario');
+
+  editarPerfil() {
+    const payload = this.as.obtenerPayload();
+    if (!payload?.id) return;
+    this.r.navigateByUrl(`/editar-perfil/${payload.id}`);
+  }
 
   ngOnInit(): void {
     const payload = this.as.obtenerPayload();

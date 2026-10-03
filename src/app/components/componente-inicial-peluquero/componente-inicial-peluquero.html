@@ -1,9 +1,29 @@
 <section>
-    <div>
-        <a [routerLink]="'/clientes-peluquero'">Clientes</a>
-        <a [routerLink]="'/turnos-peluquero'">Turnos</a>
-        <a [routerLink]="'/nuevo-turno-mostrador'">Nuevo turno</a>
-        <a [routerLink]="'/servicios-peluquero'">Servicios</a>
-        <a (click)="irAPerfil()">Perfil</a>
+    <header class="encabezado">
+        <h2>Hola, {{ usuario() }}</h2>
+        <p>Elegí qué querés hacer</p>
+    </header>
+
+    <div class="acciones">
+        <a class="accion" [routerLink]="'/turnos-peluquero'">
+            <span class="titulo">Turnos</span>
+            <span class="detalle">Mirá y gestioná tu agenda</span>
+        </a>
+        <a class="accion" [routerLink]="'/clientes-peluquero'">
+            <span class="titulo">Clientes</span>
+            <span class="detalle">Consultá los clientes que atendiste</span>
+        </a>
+        <a class="accion" [routerLink]="'/nuevo-turno-mostrador'">
+            <span class="titulo">Nuevo turno</span>
+            <span class="detalle">Cargá un turno desde el mostrador</span>
+        </a>
+        <a class="accion" [routerLink]="'/servicios-peluquero'">
+            <span class="titulo">Servicios</span>
+            <span class="detalle">Tus servicios y sus precios</span>
+        </a>
+        <button type="button" class="accion" (click)="irAPerfil()">
+            <span class="titulo">Mi perfil</span>
+            <span class="detalle">Actualizá tus datos y tu clave</span>
+        </button>
     </div>
 </section>

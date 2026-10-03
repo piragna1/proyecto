@@ -3,48 +3,90 @@ section {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 32px 16px;
-    gap: 18px;
+    /* Igual que la home de administrador: sin esto el contenido queda pegado
+       arriba y en pantallas altas queda un vacio enorme abajo. */
+    min-height: calc(100vh - 140px);
+    padding: 30px 16px;
+    gap: 26px;
 }
 
-h2 {
+.encabezado {
+    text-align: center;
+}
+
+.encabezado h2 {
     margin: 0;
-    font-size: 24px;
+    font-size: 28px;
     color: #0b2447;
     font-weight: 700;
 }
 
-section div {
+.encabezado p {
+    margin: 8px 0 0 0;
+    font-size: 15px;
+    color: #485785;
+}
+
+.acciones {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Tarjeta de accion. Es la misma clase para los <a> y para el <button> de perfil,
+   asi que hay que resetear los estilos por defecto del button. */
+.accion {
     display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-section a {
-    display: inline-block;
-    padding: 10px 16px;
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #fff;
+    flex-direction: column;
+    gap: 6px;
+    padding: 22px 20px;
+    background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+    border: 1px solid rgba(16, 44, 91, 0.08);
+    border-radius: 12px;
+    text-align: left;
     text-decoration: none;
-    border-radius: 8px;
-    font-weight: 700;
-    box-shadow: 0 6px 16px rgba(24, 40, 72, 0.12);
-    transition: transform 120ms ease, box-shadow 120ms ease;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(18, 38, 84, 0.08);
+    transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
 }
 
-section a:hover {
+.accion:hover,
+.accion:focus-visible {
     transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(24, 40, 72, 0.18);
+    border-color: rgba(75, 108, 184, 0.35);
+    box-shadow: 0 14px 32px rgba(24, 40, 72, 0.16);
 }
 
-@media (max-width: 520px) {
-    h2 {
-        font-size: 20px;
+.accion:focus-visible {
+    outline: 3px solid rgba(75, 108, 184, 0.35);
+    outline-offset: 2px;
+}
+
+.accion .titulo {
+    font-size: 17px;
+    font-weight: 700;
+    color: #16325c;
+}
+
+.accion .detalle {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.45;
+}
+
+@media (max-width: 640px) {
+    section {
+        padding: 20px 12px;
     }
 
-    section a {
-        padding: 8px 12px;
-        font-size: 14px;
+    .acciones {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .encabezado h2 {
+        font-size: 22px;
     }
 }

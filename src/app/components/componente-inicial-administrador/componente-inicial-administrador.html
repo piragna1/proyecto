@@ -1,10 +1,37 @@
 <section>
-    <div>
-        <a [routerLink]="'/usuarios-admin'">Usuarios</a>
-        <a [routerLink]="'/turnos-admin'">Turnos</a>
-        <a [routerLink]="'/nuevo-turno-mostrador'">Nuevo turno</a>
-        <a [routerLink]="'/servicios-admin'">Servicios</a>
-        <a [routerLink]="'/notificaciones-admin'">Notificaciones</a>
-        <a [routerLink]="'/pagos-admin'">Pagos</a>
+    <header class="encabezado">
+        <h2>Hola, {{ usuario() }}</h2>
+        <p>Elegí qué querés hacer</p>
+    </header>
+
+    <div class="acciones">
+        <a class="accion" [routerLink]="'/turnos-admin'">
+            <span class="titulo">Turnos</span>
+            <span class="detalle">Mirá el calendario de turnos</span>
+        </a>
+        <a class="accion" [routerLink]="'/usuarios-admin'">
+            <span class="titulo">Usuarios</span>
+            <span class="detalle">Gestioná clientes, peluqueros y administradores</span>
+        </a>
+        <a class="accion" [routerLink]="'/nuevo-turno-mostrador'">
+            <span class="titulo">Nuevo turno</span>
+            <span class="detalle">Cargá un turno desde el mostrador</span>
+        </a>
+        <a class="accion" [routerLink]="'/servicios-admin'">
+            <span class="titulo">Servicios</span>
+            <span class="detalle">Alta, edición y precios de servicios</span>
+        </a>
+        <a class="accion" [routerLink]="'/pagos-admin'">
+            <span class="titulo">Pagos</span>
+            <span class="detalle">Historial por método o monto</span>
+        </a>
+        <a class="accion" [routerLink]="'/notificaciones-admin'">
+            <span class="titulo">Notificaciones</span>
+            <span class="detalle">Revisá el historial y los estados</span>
+        </a>
+        <button type="button" class="accion" (click)="irAPerfil()">
+            <span class="titulo">Mi perfil</span>
+            <span class="detalle">Actualizá tus datos y tu clave</span>
+        </button>
     </div>
 </section>
