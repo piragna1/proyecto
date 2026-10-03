@@ -1,0 +1,17 @@
+/* El host crece para ocupar el espacio entre el navbar y el footer (app-root es
+   flex column con min-height 100vh y app-footer con margin-top: auto), y centra
+   el contenido del login verticalmente. */
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    background: linear-gradient(180deg, #f7fbff 0%, #e9f0fa 100%);
+}
+
+/* Centra la section del formulario en el medio del espacio disponible. */
+app-formulario-login {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

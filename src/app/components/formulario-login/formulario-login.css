@@ -1,8 +1,47 @@
 section {
-    display: flex;
-    align-items: center;
+    /* Dos columnas en pantallas anchas: banner a la izquierda, form a la derecha.
+       El encabezado ocupa las dos columnas con grid-column: 1 / -1.
+       Se usa grid (y no flex) porque el encabezado tiene que atravesar ambas columnas. */
+    display: grid;
+    grid-template-columns: minmax(0, 420px) minmax(0, 420px);
     justify-content: center;
-    padding: 28px 16px;
+    align-items: center;
+    gap: 32px 48px;
+    padding: 40px 24px;
+}
+
+.encabezado {
+    grid-column: 1 / -1;
+    text-align: center;
+}
+
+.encabezado h1 {
+    margin: 0;
+    font-size: 34px;
+    line-height: 1.1;
+    color: #182848;
+    letter-spacing: -0.5px;
+}
+
+.encabezado p {
+    margin: 8px 0 0 0;
+    font-size: 15px;
+    color: #485785;
+}
+
+/* Banner del login. La original es de 736x883 (vertical): a 420px de ancho
+   quedaria de 420x504, que junto al form empujaba la pagina a ~940px de alto y
+   el boton de login caia fuera de pantalla en notebooks de 768px. Por eso va
+   al costado del form y no apilado arriba. */
+.banner {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    /* Si el enlace externo deja de responder, se ve un bloque neutro en vez de
+       la imagen rota. */
+    background: #f1f5f9;
+    box-shadow: 0 18px 40px rgba(24, 40, 72, 0.18);
 }
 
 form {
@@ -66,6 +105,26 @@ form p {
 form a {
     color: #4b6cb7;
     font-weight: 600;
+}
+
+@media (max-width: 900px) {
+    /* Una sola columna: el encabezado, el banner y el form se apilan.
+       El banner se recorta porque a 420px de ancho, sin recortar, mide 504px
+       de alto y no entra junto al form en un celular. */
+    section {
+        grid-template-columns: minmax(0, 420px);
+        gap: 24px;
+        padding: 28px 16px;
+    }
+
+    .encabezado h1 {
+        font-size: 28px;
+    }
+
+    .banner {
+        max-height: 240px;
+        object-fit: cover;
+    }
 }
 
 @media (max-width: 480px) {

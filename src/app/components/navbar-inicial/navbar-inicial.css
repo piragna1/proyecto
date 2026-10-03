@@ -1,13 +1,23 @@
 nav {
+    display: flex;
+    align-items: center;
     background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
     padding: 10px 16px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
     position: relative;
 }
 
+/* La marca va a la izquierda y el menu a la derecha (margin-left:auto en el ul). */
+.marca {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+}
+
 nav ul {
     list-style: none;
-    margin: 0;
+    margin: 0 0 0 auto;
     padding: 0;
     display: flex;
     gap: 12px;

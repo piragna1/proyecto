@@ -1,11 +1,11 @@
 <nav>
+    <span class="marca">TurnerApp</span>
     <button class="menu-btn" (click)="alternar()" [attr.aria-expanded]="abierto()" aria-label="Abrir menú">
         <span></span>
         <span></span>
         <span></span>
     </button>
     <ul [class.menu-abierto]="abierto()">
-        <li><a [routerLink]="'/login'" (click)="cerrar()">LogIn</a></li>
         <li><a [routerLink]="'/registro'" (click)="cerrar()">Registro</a></li>
     </ul>
 </nav>

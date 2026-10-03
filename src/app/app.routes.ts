@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { PaginaInicial } from './pages/pagina-inicial/pagina-inicial';
-import { PaginaLogin } from './pages/pagina-login/pagina-login';
 import { PaginaRegistro } from './pages/pagina-registro/pagina-registro';
 import { PaginaHome } from './pages/pagina-home/pagina-home';
 import { PaginaNuevoTurno } from './pages/pagina-nuevo-turno/pagina-nuevo-turno';
@@ -43,7 +42,10 @@ export const routes: Routes = [
         path: '', component: PaginaInicial, canActivate: [guestGuard]
     },
     {
-        path: 'login', component: PaginaLogin, canActivate: [guestGuard]
+        // El login se muestra en la home (path: ''). Se redirige en vez de borrar
+        // la ruta porque 4 lugares la enlazan (formulario-registro x2, navbar
+        // inicial y navbar de registro).
+        path: 'login', redirectTo: '', pathMatch: 'full'
     },
     {
         path: 'registro', component: PaginaRegistro, canActivate: [guestGuard]
