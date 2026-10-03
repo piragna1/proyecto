@@ -1,3 +1,7 @@
+//usersSeed.js
+// Seed de datos de prueba. DESTRUCTIVO: borra y regenera las tablas
+// usuarios, servicios, turnos, notificaciones y pagos.
+// Uso: node backend/scripts/usersSeed.js
 import mysql from 'mysql2';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
@@ -10,38 +14,70 @@ const db = mysql.createConnection({
     database: process.env.DB_NAME
 }).promise();
 
-const CLIENTES = [
-    { nombre: 'Maria Sanchez', telefono: '2234468141', clavePlano: 'msanchez123' },
-    { nombre: 'Juan Perez', telefono: '2234468143', clavePlano: 'juanperez123' },
-    { nombre: 'Carla Lopez', telefono: '2234468144', clavePlano: 'carlalopez123' },
-    { nombre: 'Diego Martinez', telefono: '2234468145', clavePlano: 'diegomartinez123' },
-    { nombre: 'Ana Gomez', telefono: '2234468146', clavePlano: 'anagomez123' }
+const ADMINISTRADORES = [
+    { nombre: 'Laura Gomez', email: 'laura.gomez@barberia.local', telefono: '2234490001', clavePlano: 'lauragomez123', direccion: 'Juncal 200' },
+    { nombre: 'Martin Diaz', email: 'martin.diaz@barberia.local', telefono: '2234490002', clavePlano: 'martindiaz123', direccion: 'Juncal 201' }
 ];
 
 const PELUQUEROS = [
-    { nombre: 'Pepe Mujica', telefono: '2234468142', clavePlano: 'pmujica123', direccion: 'Juncal 100' }
+    { nombre: 'Pepe Mujica', email: 'pepe.mujica@barberia.local', telefono: '2234490003', clavePlano: 'pepmujica123', direccion: 'Juncal 100' },
+    { nombre: 'Sofia Rios', email: 'sofia.rios@barberia.local', telefono: '2234490004', clavePlano: 'sofiarios123', direccion: 'Juncal 101' },
+    { nombre: 'Nico Ferreyra', email: 'nico.ferreyra@barberia.local', telefono: '2234490005', clavePlano: 'nicoferreyra123', direccion: 'Juncal 102' }
+];
+
+const CLIENTES = [
+    { nombre: 'Maria Sanchez', email: 'maria.sanchez@correo.com', telefono: '2234468141', clavePlano: 'msanchez123' },
+    { nombre: 'Juan Perez', email: 'juan.perez@correo.com', telefono: '2234468142', clavePlano: 'juanperez123' },
+    { nombre: 'Carla Lopez', email: 'carla.lopez@correo.com', telefono: '2234468143', clavePlano: 'carlalopez123' },
+    { nombre: 'Diego Martinez', email: 'diego.martinez@correo.com', telefono: '2234468144', clavePlano: 'diegomartinez123' },
+    { nombre: 'Ana Gomez', email: 'ana.gomez@correo.com', telefono: '2234468145', clavePlano: 'anagomez123' },
+    { nombre: 'Bruno Silva', email: 'bruno.silva@correo.com', telefono: '2234468146', clavePlano: 'brunosilva123' },
+    { nombre: 'Lucia Torres', email: 'lucia.torres@correo.com', telefono: '2234468147', clavePlano: 'luciatorres123' },
+    { nombre: 'Nadia Suarez', email: 'nadia.suarez@correo.com', telefono: '2234468148', clavePlano: 'nadiasuarez123' }
+];
+
+// Clientes creados desde mostrador: rol 'cliente' con mostrador = true.
+// El email sigue el mismo patrón que genera la app (turnosController.js).
+const CLIENTES_MOSTRADOR = [
+    { nombre: 'Cliente Mostrador Uno', telefono: '2234480001', clavePlano: 'mostrador123' },
+    { nombre: 'Cliente Mostrador Dos', telefono: '2234480002', clavePlano: 'mostrador123' }
 ];
 
 const SERVICIOS = [
     { tipo: 'Corte', precio: 29000 },
     { tipo: 'Barba', precio: 20000 },
-    { tipo: 'Color', precio: 35000 }
+    { tipo: 'Color', precio: 35000 },
+    { tipo: 'Corte + Barba', precio: 45000 },
+    { tipo: 'Alisado', precio: 55000 },
+    { tipo: 'Lavado', precio: 15000 }
 ];
 
-const TURNOS_POR_CLIENTE = ['Maria Sanchez', 'Juan Perez', 'Carla Lopez', 'Diego Martinez', 'Ana Gomez'];
-const SERVICIO_POR_TURNO = ['Corte', 'Barba', 'Color', 'Corte', 'Barba'];
-const HORAS_INICIO = ['10:00', '11:00', '12:00', '15:00', '10:30'];
+// Turnos en días hábiles futuros. La app no permite dos turnos del mismo
+// cliente el mismo día, ni dos turnos con el mismo servicio y horario.
+const TURNOS = [
+    { cliente: 'Maria Sanchez', servicio: 'Corte', dia: 1, hora: '10:00' },
+    { cliente: 'Juan Perez', servicio: 'Barba', dia: 1, hora: '11:00' },
+    { cliente: 'Carla Lopez', servicio: 'Color', dia: 1, hora: '12:00' },
+    { cliente: 'Cliente Mostrador Uno', servicio: 'Corte', dia: 1, hora: '19:00' },
+    { cliente: 'Diego Martinez', servicio: 'Corte + Barba', dia: 2, hora: '15:00' },
+    { cliente: 'Ana Gomez', servicio: 'Lavado', dia: 2, hora: '16:00' },
+    { cliente: 'Bruno Silva', servicio: 'Barba', dia: 2, hora: '17:00' },
+    { cliente: 'Maria Sanchez', servicio: 'Color', dia: 3, hora: '09:30' },
+    { cliente: 'Juan Perez', servicio: 'Alisado', dia: 3, hora: '14:00' },
+    { cliente: 'Lucia Torres', servicio: 'Corte + Barba', dia: 3, hora: '18:00' }
+];
 
+// Pagos sobre los turnos ya creados (índice dentro de TURNOS) con los
+// métodos válidos del backend (efectivo/transferencia).
 const PAGOS = [
-    { cliente: 'Maria Sanchez', metodo: 'efectivo' },
-    { cliente: 'Juan Perez', metodo: 'transferencia' }
+    { indiceTurno: 0, metodo: 'efectivo' },
+    { indiceTurno: 1, metodo: 'transferencia' },
+    { indiceTurno: 4, metodo: 'efectivo' },
+    { indiceTurno: 8, metodo: 'transferencia' }
 ];
 
-const telefonoPorCliente = new Map(CLIENTES.map((c) => [c.nombre, c.telefono]));
-
-function emailGmail(nombre) {
-    const partes = nombre.trim().toLowerCase().split(/\s+/);
-    return partes[0][0] + partes.slice(1).join('') + '@gmail.com';
+function emailMostrador(telefono) {
+    return `turno-mostrador.${telefono}@barberia.local`;
 }
 
 function formatearFechaSQL(fecha) {
@@ -54,206 +90,184 @@ function formatearFechaSQL(fecha) {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-function proximosDiasHabiles(cantidad) {
-    const fechas = [];
-    const dia = new Date();
-    dia.setDate(dia.getDate() + 1);
-    while (fechas.length < cantidad) {
-        const diaSemana = dia.getDay();
+// Devuelve la fecha del día hábil N contado desde hoy (hoy no se usa).
+function fechaHabil(dia) {
+    const fecha = new Date();
+    fecha.setDate(fecha.getDate() + 1);
+    let restantes = dia;
+    while (restantes > 0) {
+        const diaSemana = fecha.getDay();
         if (diaSemana !== 0 && diaSemana !== 6) {
-            fechas.push(new Date(dia));
+            restantes--;
         }
-        dia.setDate(dia.getDate() + 1);
+        if (restantes > 0) {
+            fecha.setDate(fecha.getDate() + 1);
+        }
     }
-    return fechas;
+    return fecha;
+}
+
+async function resetDatabase() {
+    await db.query('set foreign_key_checks = 0');
+    for (const tabla of ['pagos', 'notificaciones', 'turnos', 'servicios', 'usuarios']) {
+        await db.query(`delete from ${tabla}`);
+        await db.query(`alter table ${tabla} auto_increment = 1`);
+    }
+    await db.query('set foreign_key_checks = 1');
+    console.log('Base de datos reiniciada');
+}
+
+async function crearUsuario({ nombre, email, telefono, clavePlano, rol, superadmin, direccion, mostrador }) {
+    const hash = await bcrypt.hash(clavePlano, 10);
+    const [resultado] = await db.query(
+        'insert into usuarios (nombre, email, telefono, clave, rol, superadmin, direccion, mostrador) values (?,?,?,?,?,?,?,?)',
+        [nombre, email, telefono, hash, rol, superadmin, direccion || null, mostrador ? 1 : 0]
+    );
+    console.log(`Usuario creado: ${nombre} (${rol}${mostrador ? ' mostrador' : ''})`);
+    return resultado.insertId;
 }
 
 async function seedUsuarios() {
-    const creados = [];
-    const mapEmail = new Map();
+    const porNombre = new Map();
 
-    const todos = [
-        {
-            nombre: 'Super Admin',
-            email: process.env.SUPERADMIN_EMAIL,
-            telefono: '2230000000',
-            clavePlano: process.env.SUPERADMIN_PASSWORD,
-            rol: 'administrador',
-            superadmin: true,
-            direccion: 'Sistema'
-        },
-        ...CLIENTES.map((c) => ({
-            nombre: c.nombre,
-            email: emailGmail(c.nombre),
-            telefono: c.telefono,
-            clavePlano: c.clavePlano,
-            rol: 'cliente',
-            superadmin: false,
-            direccion: null
-        })),
-        ...PELUQUEROS.map((p) => ({
-            nombre: p.nombre,
-            email: emailGmail(p.nombre),
-            telefono: p.telefono,
-            clavePlano: p.clavePlano,
-            rol: 'peluquero',
-            superadmin: false,
-            direccion: p.direccion
-        }))
-    ];
-
-    for (const u of todos) {
-        if (!u.email || !u.clavePlano) {
-            creados.push('Faltan credenciales del superadmin en el .env (SUPERADMIN_EMAIL/SUPERADMIN_PASSWORD)');
-            continue;
-        }
-
-        const [existentes] = await db.query(
-            'select id from usuarios where email = ? or telefono = ?',
-            [u.email, u.telefono]
-        );
-
-        if (existentes.length > 0) {
-            mapEmail.set(u.email, existentes[0].id);
-            creados.push(`Ya existe: ${u.nombre} (${u.email})`);
-            continue;
-        }
-
-        const hash = await bcrypt.hash(u.clavePlano, 10);
-        const [resultado] = await db.query(
-            'insert into usuarios (nombre, email, telefono, clave, rol, superadmin, direccion) values (?,?,?,?,?,?,?)',
-            [u.nombre, u.email, u.telefono, hash, u.rol, u.superadmin, u.direccion]
-        );
-
-        mapEmail.set(u.email, resultado.insertId);
-        creados.push(`Usuario creado: ${u.nombre} (${u.rol})`);
+    if (!process.env.SUPERADMIN_EMAIL || !process.env.SUPERADMIN_PASSWORD) {
+        throw new Error('Faltan SUPERADMIN_EMAIL / SUPERADMIN_PASSWORD en el .env');
     }
 
-    creados.forEach((m) => console.log(m));
-    return mapEmail;
+    const idSuperadmin = await crearUsuario({
+        nombre: 'Super Admin',
+        email: process.env.SUPERADMIN_EMAIL,
+        telefono: '2230000000',
+        clavePlano: process.env.SUPERADMIN_PASSWORD,
+        rol: 'administrador',
+        superadmin: true,
+        direccion: 'Sistema'
+    });
+    porNombre.set('Super Admin', { id: idSuperadmin, email: process.env.SUPERADMIN_EMAIL, telefono: '2230000000', clave: process.env.SUPERADMIN_PASSWORD });
+
+    for (const a of ADMINISTRADORES) {
+        const id = await crearUsuario({ ...a, rol: 'administrador', superadmin: false, mostrador: false });
+        porNombre.set(a.nombre, { id, email: a.email, telefono: a.telefono, clave: a.clavePlano });
+    }
+
+    for (const p of PELUQUEROS) {
+        const id = await crearUsuario({ ...p, rol: 'peluquero', superadmin: false, mostrador: false });
+        porNombre.set(p.nombre, { id, email: p.email, telefono: p.telefono, clave: p.clavePlano });
+    }
+
+    for (const c of CLIENTES) {
+        const id = await crearUsuario({ ...c, rol: 'cliente', superadmin: false, mostrador: false });
+        porNombre.set(c.nombre, { id, email: c.email, telefono: c.telefono, clave: c.clavePlano });
+    }
+
+    for (const c of CLIENTES_MOSTRADOR) {
+        const email = emailMostrador(c.telefono);
+        const id = await crearUsuario({ ...c, email, rol: 'cliente', superadmin: false, mostrador: true });
+        porNombre.set(c.nombre, { id, email, telefono: c.telefono, clave: c.clavePlano });
+    }
+
+    return porNombre;
 }
 
 async function seedServicios() {
-    const mapTipo = new Map();
+    const porTipo = new Map();
 
     for (const s of SERVICIOS) {
-        const [existentes] = await db.query('select id, precio from servicios where tipo = ?', [s.tipo]);
-
-        if (existentes.length > 0) {
-            mapTipo.set(s.tipo, { id: existentes[0].id, precio: Number(existentes[0].precio) });
-            console.log(`Ya existe servicio: ${s.tipo}`);
-            continue;
-        }
-
         const [resultado] = await db.query(
             'insert into servicios (tipo, precio) values (?,?)',
             [s.tipo, s.precio]
         );
-
-        mapTipo.set(s.tipo, { id: resultado.insertId, precio: s.precio });
+        porTipo.set(s.tipo, { id: resultado.insertId, precio: s.precio });
         console.log(`Servicio creado: ${s.tipo} ($${s.precio})`);
     }
 
-    return mapTipo;
+    return porTipo;
 }
 
 async function seedTurnos(usuarios, servicios) {
     const turnos = [];
-    const fechas = proximosDiasHabiles(TURNOS_POR_CLIENTE.length);
 
-    for (let i = 0; i < TURNOS_POR_CLIENTE.length; i++) {
-        const clienteNombre = TURNOS_POR_CLIENTE[i];
-        const email = emailGmail(clienteNombre);
-        const idUsuario = usuarios.get(email);
-        const infoServ = servicios.get(SERVICIO_POR_TURNO[i]);
+    for (const t of TURNOS) {
+        const usuario = usuarios.get(t.cliente);
+        const servicio = servicios.get(t.servicio);
 
-        if (!idUsuario || !infoServ) {
-            console.log(`Sin datos para el turno de: ${clienteNombre}`);
+        if (!usuario || !servicio) {
+            console.log(`Sin datos para el turno de: ${t.cliente}`);
+            turnos.push(null);
             continue;
         }
 
-        const [existentes] = await db.query('select id from turnos where id_usuario = ?', [idUsuario]);
-        if (existentes.length > 0) {
-            console.log(`Ya existe turno para: ${clienteNombre}`);
-            continue;
-        }
-
-        const [hh, mm] = HORAS_INICIO[i].split(':').map(Number);
-        const inicio = new Date(fechas[i]);
+        const [hh, mm] = t.hora.split(':').map(Number);
+        const inicio = fechaHabil(t.dia);
         inicio.setHours(hh, mm, 0, 0);
+        const horario = formatearFechaSQL(inicio);
 
         const [resultado] = await db.query(
             'insert into turnos (id_usuario, id_servicio, fecha_hora_inicio) values (?,?,?)',
-            [idUsuario, infoServ.id, formatearFechaSQL(inicio)]
+            [usuario.id, servicio.id, horario]
         );
 
-        console.log(`Turno creado: ${clienteNombre} -> ${SERVICIO_POR_TURNO[i]} ${formatearFechaSQL(inicio)}`);
-
+        console.log(`Turno creado: ${t.cliente} -> ${t.servicio} ${horario}`);
         turnos.push({
             idTurno: resultado.insertId,
-            idUsuario,
-            clienteNombre,
-            email,
-            telefonoCliente: telefonoPorCliente.get(clienteNombre),
-            servicioTipo: SERVICIO_POR_TURNO[i],
-            precio: infoServ.precio,
-            horario: formatearFechaSQL(inicio)
+            idUsuario: usuario.id,
+            cliente: t.cliente,
+            telefono: usuario.telefono,
+            servicio: t.servicio,
+            precio: servicio.precio,
+            horario
         });
     }
 
     return turnos;
 }
 
-async function seedPagos(usuarios) {
+async function seedPagos(turnos) {
     for (const p of PAGOS) {
-        const email = emailGmail(p.cliente);
-        const idUsuario = usuarios.get(email);
-        if (!idUsuario) {
-            console.log(`Sin usuario para pagar de: ${p.cliente}`);
-            continue;
-        }
+        const turno = turnos[p.indiceTurno];
 
-        const [turnos] = await db.query(
-            `select t.id as id_turno, t.id_usuario, t.fecha_hora_inicio as horario,
-                    s.tipo as servicio_tipo, s.precio, u.nombre as nombre_cliente, u.telefono as telefono_cliente
-             from turnos t
-             join servicios s on s.id = t.id_servicio
-             join usuarios u on u.id = t.id_usuario
-             where t.id_usuario = ?
-             order by t.fecha_hora_inicio desc
-             limit 1`,
-            [idUsuario]
-        );
-
-        if (turnos.length === 0) {
-            console.log(`Sin turno para pagar de: ${p.cliente}`);
-            continue;
-        }
-
-        const turno = turnos[0];
-        const [existentes] = await db.query('select id from pagos where id_turno = ?', [turno.id_turno]);
-        if (existentes.length > 0) {
-            console.log(`Ya está pagado: ${p.cliente} (${p.metodo})`);
+        if (!turno) {
+            console.log(`No se pudo generar el pago en la posición ${p.indiceTurno}`);
             continue;
         }
 
         await db.query(
             'insert into pagos (id_turno, id_usuario, monto, metodo, nombre_cliente, servicio_tipo, horario_turno, telefono_cliente) values (?,?,?,?,?,?,?,?)',
-            [turno.id_turno, turno.id_usuario, Number(turno.precio), p.metodo, turno.nombre_cliente, turno.servicio_tipo, turno.horario, turno.telefono_cliente || null]
+            [turno.idTurno, turno.idUsuario, Number(turno.precio), p.metodo, turno.cliente, turno.servicio, turno.horario, turno.telefono]
         );
 
-        console.log(`Pago registrado: ${p.cliente} (${p.metodo}) - $${Number(turno.precio)}`);
+        console.log(`Pago registrado: ${turno.cliente} (${p.metodo}) - $${Number(turno.precio)}`);
+    }
+}
+
+async function resumen(usuarios, turnos) {
+    const [[{ total }]] = await db.query('select count(*) as total from usuarios');
+    console.log('\n===== Resumen del seed =====');
+    console.log(`Usuarios: ${total} (1 superadmin, ${ADMINISTRADORES.length} administradores, ${PELUQUEROS.length} peluqueros, ${CLIENTES.length} clientes, ${CLIENTES_MOSTRADOR.length} clientes de mostrador)`);
+    console.log(`Servicios: ${SERVICIOS.length}`);
+    console.log(`Turnos: ${turnos.filter((t) => t !== null).length}`);
+    console.log(`Pagos: ${PAGOS.length}`);
+    console.log('\nCredenciales de prueba:');
+    console.log(`  Super admin: ${process.env.SUPERADMIN_EMAIL} / ${process.env.SUPERADMIN_PASSWORD}`);
+    for (const nombre of usuarios.keys()) {
+        if (nombre === 'Super Admin') continue;
+        const u = usuarios.get(nombre);
+        console.log(`  ${nombre} (${u.email}) / ${u.clave}`);
     }
 }
 
 async function seed() {
     try {
+        await resetDatabase();
         const usuarios = await seedUsuarios();
         const servicios = await seedServicios();
         const turnos = await seedTurnos(usuarios, servicios);
-        await seedPagos(usuarios);
+        await seedPagos(turnos);
+        await resumen(usuarios, turnos);
+        console.log('\nSeed completado');
     } catch (error) {
-        console.log('Error en el seed:', error.message);
+        const detalle = error.message || error.code || 'error desconocido';
+        console.log('Error en el seed:', detalle);
     } finally {
         await db.end();
     }
