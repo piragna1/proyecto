@@ -111,12 +111,19 @@ form a {
 
 @media (max-width: 900px) {
     /* Una sola columna: el encabezado, el banner y el form se apilan.
-       El banner no necesita ajustes aca porque height: auto ya conserva su
-       proporcion. */
+       El banner se achica al 80% para ocupa 20% menos vertical: como height es
+       auto, el alto baja en la misma proporcion y la foto ni se recorta ni se
+       deforma. Se centra con margin-inline porque el ancho explicito evita el
+       estirado por defecto de la grilla. */
     section {
         grid-template-columns: minmax(0, 420px);
         gap: 24px;
         padding: 28px 16px;
+    }
+
+    .banner {
+        width: 80%;
+        margin-inline: auto;
     }
 
     .encabezado h1 {
