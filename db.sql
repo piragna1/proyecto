@@ -5,13 +5,14 @@ drop table if exists usuarios;
 create table if not exists usuarios(
 	id int auto_increment primary key,
     nombre varchar(100) not null,
-    email varchar(255) not null unique,
+    email varchar(255) null unique,
     telefono varchar(14) not null unique,
-    clave varchar(255) not null,
+    clave varchar(255) null,
     rol varchar(25) not null,
     superadmin boolean not null,
     direccion varchar(100),
-    mostrador boolean not null default false
+    mostrador boolean not null default false,
+    constraint chk_datos_segun_mostrador check (mostrador = 1 or (email is not null and clave is not null))
 );
 drop table if exists servicios;
 create table if not exists servicios(

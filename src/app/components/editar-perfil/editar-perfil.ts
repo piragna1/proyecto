@@ -73,7 +73,7 @@ export class EditarPerfil implements OnInit {
         this.usuarioActual.set(u);
         this.formulario.patchValue({
           nombre: u.nombre,
-          email: u.email,
+          email: u.email ?? '',
           telefono: u.telefono,
         });
       },

@@ -81,7 +81,7 @@ export class ComponenteEditarAdministradorAdministrador implements OnInit {
       next: (value) => {
         console.log('admin encontrado:', value);
         this.adminActual = value;
-        this.formulario.controls.email.setValue(value.email);
+        this.formulario.controls.email.setValue(value.email ?? '');
         this.formulario.controls.telefono.setValue(value.telefono);
       },
       error: (err) => {

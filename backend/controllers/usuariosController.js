@@ -43,13 +43,23 @@ function esSuperAdmin(usuario) {
 }
 
 // Función auxiliar de validación
-function validarUsuario(usuario, esCreacion = true) {
+// esMostrador: los clientes creados desde mostrador no tienen email ni clave;
+// se completan al registrarse, así que no se exigen en su edición.
+function validarUsuario(usuario, esCreacion = true, esMostrador = false) {
     const errores = [];
     
     if (!usuario.nombre || typeof usuario.nombre !== 'string' || usuario.nombre.trim().length === 0) {
         errores.push("Nombre requerido");
     } else if (usuario.nombre.length > 100) {
         errores.push("Nombre muy largo");
+    }
+    
+    if (esMostrador) {
+        // Sin email ni clave: solo se validan los datos que sí tienen.
+        if (usuario.rol && !ROLES_VALIDOS.includes(usuario.rol)) {
+            errores.push("Rol inválido");
+        }
+        return { valido: errores.length === 0, errores };
     }
     
     if (!usuario.email || typeof usuario.email !== 'string') {
@@ -300,7 +310,7 @@ export function actualizarUsuario(db) {
                 return res.status(403).json({ mensaje: "No autorizado" });
             }
 
-            db.query("SELECT rol, superadmin FROM usuarios WHERE id = ?", [idNum], async (err, resultado) => {
+            db.query("SELECT rol, superadmin, mostrador FROM usuarios WHERE id = ?", [idNum], async (err, resultado) => {
                 try {
                     if (err) {
                         return res.status(500).json({ mensaje: "Error al actualizar usuario" });
@@ -332,9 +342,18 @@ export function actualizarUsuario(db) {
                         }
                     }
 
+                    // Un cliente de mostrador no tiene email ni clave: se completan al registrarse.
+                    // Esta vía solo edita datos de contacto, así que no admite cargarlos.
+                    const esMostrador = destino.mostrador === 1 || destino.mostrador === true;
+                    if (esMostrador && ((email && email.trim() !== '') || (clave && clave.trim() !== ''))) {
+                        return res.status(400).json({
+                            mensaje: "Un cliente de mostrador no admite email ni clave: se definen cuando se registra"
+                        });
+                    }
+
                     // Validar entrada
                     const usuario = { nombre, email, telefono, clave: clave || '', rol: rolFinal, superadmin: superadminFinal, direccion };
-                    const validacion = validarUsuario(usuario, false);
+                    const validacion = validarUsuario(usuario, false, esMostrador);
 
                     if (!validacion.valido) {
                         return res.status(400).json({ 
@@ -343,8 +362,10 @@ export function actualizarUsuario(db) {
                         });
                     }
 
+                    // Para mostrador el email queda en NULL: un string vacío violaría el UNIQUE
+                    const emailFinal = esMostrador ? null : email.trim().toLowerCase();
                     let query = 'UPDATE usuarios SET nombre = ?, email = ?, telefono = ?, rol = ?, superadmin = ?, direccion = ?';
-                    let params = [nombre.trim(), email.trim().toLowerCase(), telefono.trim(), rolFinal, superadminFinal, direccion?.trim() || null];
+                    let params = [nombre.trim(), emailFinal, telefono.trim(), rolFinal, superadminFinal, direccion?.trim() || null];
 
                     // Si hay clave nueva, agregar a query
                     if (clave && clave.trim() !== '') {

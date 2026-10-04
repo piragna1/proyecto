@@ -71,7 +71,7 @@ export class EditarPerfilAdministrador implements OnInit {
       next: (u) => {
         this.usuarioActual.set(u);
         this.formulario.patchValue({
-          email: u.email,
+          email: u.email ?? '',
           telefono: u.telefono,
         });
       },

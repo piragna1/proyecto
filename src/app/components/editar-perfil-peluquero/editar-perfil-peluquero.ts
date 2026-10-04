@@ -75,7 +75,7 @@ export class EditarPerfilPeluquero implements OnInit {
         this.usuarioActual.set(u);
         this.formulario.patchValue({
           nombre: u.nombre,
-          email: u.email,
+          email: u.email ?? '',
           telefono: u.telefono,
           direccion: u.direccion || '',
         });

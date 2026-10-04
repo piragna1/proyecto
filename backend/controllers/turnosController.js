@@ -78,21 +78,6 @@ function insertarTurnoConCliente(db, res, { idUsuario, idServicio, inicioStr, re
     }, mensajeExisteTurno);
 }
 
-// Genera un email único para clientes de mostrador (derivado del teléfono)
-function obtenerEmailMostrador(db, telefono, callback, intento = 0) {
-    const base = 'turno-mostrador.' + telefono + '@barberia.local';
-    const email = intento === 0 ? base : base.replace('@', '-' + intento + '@');
-
-    db.query('select id from usuarios where email = ?', [email], (err, filas) => {
-        if (err) return callback(null);
-        if (filas && filas.length > 0) {
-            if (intento < 10) return obtenerEmailMostrador(db, telefono, callback, intento + 1);
-            return callback(null);
-        }
-        callback(email);
-    });
-}
-
 export function obtenerTurnos(db) {
     return (req, res) => {
         const { fecha } = req.query;
@@ -243,32 +228,26 @@ export function insertarTurnoMostrador(db) {
                     });
                 }
 
-                // Crear cliente de mostrador
-                obtenerEmailMostrador(db, telefono.trim(), (email) => {
-                    if (!email) {
-                        return res.status(500).json({ mensaje: "Error al crear cliente" });
-                    }
-
-                    // El cliente de mostrador no recibe clave: se define al registrarse
-                    db.query(
-                        'INSERT INTO usuarios (nombre, email, telefono, clave, rol, superadmin, direccion, mostrador) VALUES (?,?,?,?,?,?,?,?)',
-                        [nombre.trim(), email, telefono.trim(), '', 'cliente', false, null, true],
-                        (errInsert, result) => {
-                            if (errInsert) {
-                                console.error('Error al crear cliente de mostrador:', errInsert.message);
-                                return res.status(500).json({ mensaje: "Error al crear cliente: " + errInsert.message });
-                            }
-
-                            return insertarTurnoConCliente(db, res, {
-                                idUsuario: result.insertId,
-                                idServicio: idServicioNum,
-                                ...validacionFechas,
-                                respuesta: { fechaHoraInicio, nombre, telefono },
-                                mensajeExisteTurno: "El usuario ya tiene un turno reservado para ese día",
-                            });
+                // Crear cliente de mostrador: queda solo con nombre y teléfono.
+                // El email y la clave se definen cuando el cliente se registra.
+                db.query(
+                    'INSERT INTO usuarios (nombre, email, telefono, clave, rol, superadmin, direccion, mostrador) VALUES (?,?,?,?,?,?,?,?)',
+                    [nombre.trim(), null, telefono.trim(), null, 'cliente', false, null, true],
+                    (errInsert, result) => {
+                        if (errInsert) {
+                            console.error('Error al crear cliente de mostrador:', errInsert.message);
+                            return res.status(500).json({ mensaje: "Error al crear cliente: " + errInsert.message });
                         }
-                    );
-                });
+
+                        return insertarTurnoConCliente(db, res, {
+                            idUsuario: result.insertId,
+                            idServicio: idServicioNum,
+                            ...validacionFechas,
+                            respuesta: { fechaHoraInicio, nombre, telefono },
+                            mensajeExisteTurno: "El usuario ya tiene un turno reservado para ese día",
+                        });
+                    }
+                );
             });
         });
     };

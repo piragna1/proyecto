@@ -7,23 +7,29 @@
         @if (hayError('nombre')) {
             <p class="field-error">{{ mensajeCampo('nombre') }}</p>
         }
-        <label for="email">Email: </label>
-        <input type="email" name="email" id="email" formControlName="email" [class.invalid]="hayError('email')" />
-        @if (hayError('email')) {
-            <p class="field-error">{{ mensajeCampo('email') }}</p>
+        @if (!esMostrador()) {
+            <label for="email">Email: </label>
+            <input type="email" name="email" id="email" formControlName="email" [class.invalid]="hayError('email')" />
+            @if (hayError('email')) {
+                <p class="field-error">{{ mensajeCampo('email') }}</p>
+            }
+        } @else {
+            <p class="campo-info">Este cliente se creo en mostrador: no tiene email ni clave. Se definen cuando el cliente se registre.</p>
         }
         <label for="telefono">Telefono:</label>
         <input type="tel" name="telefono" id="telefono" formControlName="telefono" [class.invalid]="hayError('telefono')" />
         @if (hayError('telefono')) {
             <p class="field-error">{{ mensajeCampo('telefono') }}</p>
         }
-        <label for="password">Clave: </label>
-        <input type="password" name="password" id="password" formControlName="clave" [class.invalid]="hayError('clave')" />
-        @if (claveValor()) {
-        <app-requisitos-clave [valor]="claveValor()" />
-        }
-        @if (hayError('clave')) {
-            <p class="field-error">{{ mensajeCampo('clave') }}</p>
+        @if (!esMostrador()) {
+            <label for="password">Clave: </label>
+            <input type="password" name="password" id="password" formControlName="clave" [class.invalid]="hayError('clave')" />
+            @if (claveValor()) {
+            <app-requisitos-clave [valor]="claveValor()" />
+            }
+            @if (hayError('clave')) {
+                <p class="field-error">{{ mensajeCampo('clave') }}</p>
+            }
         }
         <button type="submit">Editar</button>
     </form>

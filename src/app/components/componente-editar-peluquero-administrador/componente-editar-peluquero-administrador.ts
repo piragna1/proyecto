@@ -80,7 +80,7 @@ export class ComponenteEditarPeluqueroAdministrador implements OnInit {
       next: (value) => {
         console.log('value', value);
         this.formulario.controls.nombre.setValue(value.nombre);
-        this.formulario.controls.email.setValue(value.email);
+        this.formulario.controls.email.setValue(value.email ?? '');
         this.formulario.controls.telefono.setValue(value.telefono);
         this.formulario.controls.direccion.setValue(value.direccion!);
       },

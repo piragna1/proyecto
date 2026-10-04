@@ -10,7 +10,13 @@
             @for (item of clientes(); track $index) {
             <tr>
                 <td>{{item.nombre}}</td>
-                <td>{{item.email}}</td>
+                <td>
+                    @if (item.email) {
+                        {{item.email}}
+                    } @else {
+                        <span class="sin-dato">Sin email</span>
+                    }
+                </td>
                 <td>{{item.telefono}}</td>
             </tr>
             }

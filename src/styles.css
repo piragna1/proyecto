@@ -43,6 +43,22 @@ a {
     margin: -6px 0 0 0;
 }
 
+.campo-info {
+    display: block;
+    font-size: 13px;
+    color: #555;
+    background: #f3f4f6;
+    border-left: 3px solid #9ca3af;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin: 0 0 4px 0;
+}
+
+.sin-dato {
+    color: #9ca3af;
+    font-style: italic;
+}
+
 input.invalid {
     border-color: #d32f2f;
     box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.12);

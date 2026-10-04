@@ -35,6 +35,7 @@ export class ComponenteEditarClienteAdministrador implements OnInit {
   formVersion = toSignal(this.formulario.valueChanges, { initialValue: null });
   claveValor = toSignal(this.formulario.controls.clave.valueChanges, { initialValue: '' });
   enviado = signal(false);
+  esMostrador = signal(false);
   toasts: ToastService = inject(ToastService);
   ar: ActivatedRoute = inject(ActivatedRoute);
   id: string | null = null;
@@ -55,9 +56,18 @@ export class ComponenteEditarClienteAdministrador implements OnInit {
   getUsuarioById(id: string | null) {
     this.us.getUsuarioById(id).subscribe({
       next: (value) => {
+        // MySQL devuelve tinyint(1) como número: usar Boolean() y no === true
+        const mostrador = Boolean(value.mostrador);
+        this.esMostrador.set(mostrador);
         this.formulario.controls.nombre.setValue(value.nombre);
-        this.formulario.controls.email.setValue(value.email);
+        // El email llega null para clientes de mostrador
+        this.formulario.controls.email.setValue(value.email ?? '');
         this.formulario.controls.telefono.setValue(value.telefono);
+        if (mostrador) {
+          // El campo queda oculto: sin Validators.required bloquearía el envío
+          this.formulario.controls.email.clearValidators();
+          this.formulario.controls.email.updateValueAndValidity();
+        }
       },
       error: (err) => {
         console.log(err);

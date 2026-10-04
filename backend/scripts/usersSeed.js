@@ -37,8 +37,8 @@ const CLIENTES = [
 ];
 
 // Clientes creados desde mostrador: rol 'cliente' con mostrador = true.
-// No tienen clave: se define cuando el cliente se registra (ver usuariosController.js).
-// El email sigue el mismo patrón que genera la app (turnosController.js).
+// Quedan solo con nombre y teléfono: el email y la clave se definen
+// cuando el cliente se registra (ver usuariosController.js).
 const CLIENTES_MOSTRADOR = [
     { nombre: 'Cliente Mostrador Uno', telefono: '2234480001' },
     { nombre: 'Cliente Mostrador Dos', telefono: '2234480002' }
@@ -76,10 +76,6 @@ const PAGOS = [
     { indiceTurno: 4, metodo: 'efectivo' },
     { indiceTurno: 8, metodo: 'transferencia' }
 ];
-
-function emailMostrador(telefono) {
-    return `turno-mostrador.${telefono}@barberia.local`;
-}
 
 function formatearFechaSQL(fecha) {
     const year = fecha.getFullYear();
@@ -119,8 +115,8 @@ async function resetDatabase() {
 }
 
 async function crearUsuario({ nombre, email, telefono, clavePlano, rol, superadmin, direccion, mostrador }) {
-    // Sin clavePlano (clientes de mostrador) se guarda vacía: se define al registrarse.
-    const hash = clavePlano ? await bcrypt.hash(clavePlano, 10) : '';
+    // Sin clavePlano (clientes de mostrador) se guarda en NULL: se define al registrarse.
+    const hash = clavePlano ? await bcrypt.hash(clavePlano, 10) : null;
     const [resultado] = await db.query(
         'insert into usuarios (nombre, email, telefono, clave, rol, superadmin, direccion, mostrador) values (?,?,?,?,?,?,?,?)',
         [nombre, email, telefono, hash, rol, superadmin, direccion || null, mostrador ? 1 : 0]
@@ -163,9 +159,8 @@ async function seedUsuarios() {
     }
 
     for (const c of CLIENTES_MOSTRADOR) {
-        const email = emailMostrador(c.telefono);
-        const id = await crearUsuario({ ...c, email, rol: 'cliente', superadmin: false, mostrador: true });
-        porNombre.set(c.nombre, { id, email, telefono: c.telefono, clave: 'sin clave (se define al registrarse)' });
+        const id = await crearUsuario({ ...c, email: null, rol: 'cliente', superadmin: false, mostrador: true });
+        porNombre.set(c.nombre, { id, email: 'sin email', telefono: c.telefono, clave: 'sin clave (se define al registrarse)' });
     }
 
     return porNombre;
