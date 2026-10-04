@@ -31,23 +31,18 @@ section {
 
 /* Banner del login. Se sirve desde el proyecto (src/app/assets) y no desde un
    CDN: la imagen remota de Pinterest puede caerse y dejaba un bloque gris.
-   La url es relativa a proposito, para que Angular la reescriba en el build y no
-   quede una ruta absoluta que rompa con outputHashing. */
+   La foto es de 736x883 (vertical), o sea 420x504 a 420px de ancho. Por eso va
+   al costado del form y no apilado arriba: asi la seccion entra en un viewport
+   de 768px de alto. height: auto conserva la proporcion de la imagen, asi que no
+   hay forma de que el banner se recorte. En celular queda mas alto y hay que
+   hacer scroll para llegar al boton. */
 .banner {
     display: block;
     width: 100%;
-    /* La imagen es de 224x115. Fijar la misma proporcion hace que la caja
-       siga al ancho disponible en cualquier pantalla, en vez de cambiar de
-       alto (antes iba de 154px a 216px segun el viewport). Como el aspecto de
-       la caja coincide con el de la foto, background-size: cover llena de borde
-       a borde sin recortar ni deformar. */
-    aspect-ratio: 224 / 115;
+    height: auto;
     border-radius: 14px;
-    background-color: #f1f5f9;
-    background-image: url('../../assets/banner-login.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    /* Si el archivo no llega a cargar, se ve un bloque neutro en vez del hueco. */
+    background: #f1f5f9;
     box-shadow: 0 18px 40px rgba(24, 40, 72, 0.18);
 }
 
@@ -116,7 +111,8 @@ form a {
 
 @media (max-width: 900px) {
     /* Una sola columna: el encabezado, el banner y el form se apilan.
-       El banner no necesita ajustes aca porque aspect-ratio ya lo escala. */
+       El banner no necesita ajustes aca porque height: auto ya conserva su
+       proporcion. */
     section {
         grid-template-columns: minmax(0, 420px);
         gap: 24px;

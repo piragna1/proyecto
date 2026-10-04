@@ -3,7 +3,7 @@
     <h1>TurnerApp</h1>
     <p>Ingresá a tu cuenta para gestionar tus turnos</p>
   </header>
-  <div class="banner" role="img" aria-label="Peluquería"></div>
+  <img class="banner" src="/assets/banner-login.jpg" alt="Peluquería" />
   <form action="" [formGroup]="formulario" (ngSubmit)="iniciarSesion()">
     <label for="email">Email: </label>
     <input type="email" name="email" id="email" formControlName="email" [class.invalid]="hayError('email')" />
