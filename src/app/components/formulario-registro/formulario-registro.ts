@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { emailValidator, telefonoValidator, passwordValidator, mensajeClave, MAX_LENGTH_CLAVE } from '../../shared/utils/validators';
+import { RequisitosClave } from '../../shared/components/requisitos-clave/requisitos-clave';
 import { mensajeDeError } from '../../shared/utils/errorMessages';
 import { UsuarioService } from '../../usuario/services/usuario-service';
 import { LoginService } from '../../login/services/login-service';
@@ -11,7 +12,7 @@ import { ToastService } from '../../shared/services/toast-service';
 
 @Component({
   selector: 'app-formulario-registro',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, RequisitosClave],
   templateUrl: './formulario-registro.html',
   styleUrl: './formulario-registro.css',
 })
@@ -24,6 +25,7 @@ export class FormularioRegistro {
     clave: ['', [Validators.required, passwordValidator, Validators.maxLength(MAX_LENGTH_CLAVE)]],
   });
   formVersion = toSignal(this.formulario.valueChanges, { initialValue: null });
+  claveValor = toSignal(this.formulario.controls.clave.valueChanges, { initialValue: '' });
   enviado = signal(false);
   us: UsuarioService = inject(UsuarioService);
   ls: LoginService = inject(LoginService);

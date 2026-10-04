@@ -1,0 +1,9 @@
+<ul class="requisitos" role="list" aria-label="Requisitos de la clave">
+    @for (requisito of requisitos(); track requisito.etiqueta) {
+        <li [class.cumple]="requisito.cumple" [class.falta]="!requisito.cumple">
+            <span class="marker" aria-hidden="true">{{ requisito.cumple ? '✓' : '✗' }}</span>
+            <span class="texto">{{ requisito.etiqueta }}</span>
+            <span class="visually-hidden">{{ requisito.cumple ? 'Cumple' : 'Falta' }}</span>
+        </li>
+    }
+</ul>

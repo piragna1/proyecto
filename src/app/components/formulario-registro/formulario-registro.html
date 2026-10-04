@@ -17,6 +17,9 @@
     }
     <label for="password">Clave: </label>
     <input type="password" name="password" id="password" formControlName="clave" [class.invalid]="hayError('clave')" />
+    @if (claveValor()) {
+      <app-requisitos-clave [valor]="claveValor()" />
+    }
     @if (hayError('clave')) {
       <p class="field-error">{{ mensajeCampo('clave') }}</p>
     }

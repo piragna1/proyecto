@@ -1,0 +1,28 @@
+.requisitos {
+    list-style: none;
+    margin: -2px 0 6px 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.requisitos li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.requisitos .marker {
+    font-weight: 700;
+}
+
+.requisitos .cumple {
+    color: #2e7d32;
+}
+
+.requisitos .falta {
+    color: #d32f2f;
+}

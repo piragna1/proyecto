@@ -7,10 +7,11 @@ import { UsuarioService } from '../../usuario/services/usuario-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { emailValidator, telefonoValidator, passwordValidator, mensajeClave, MAX_LENGTH_CLAVE } from '../../shared/utils/validators';
 import { mensajeDeError } from '../../shared/utils/errorMessages';
+import { RequisitosClave } from '../../shared/components/requisitos-clave/requisitos-clave';
 
 @Component({
   selector: 'app-editar-perfil',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, RequisitosClave],
   templateUrl: './editar-perfil.html',
   styleUrl: './editar-perfil.css',
 })
@@ -32,6 +33,7 @@ export class EditarPerfil implements OnInit {
     },
   });
   formClaveVersion = toSignal(this.formClave.valueChanges, { initialValue: null });
+  nuevaClaveValor = toSignal(this.formClave.controls.nueva.valueChanges, { initialValue: '' });
   ar: ActivatedRoute = inject(ActivatedRoute);
   id: string | null = null;
   us: UsuarioService = inject(UsuarioService);

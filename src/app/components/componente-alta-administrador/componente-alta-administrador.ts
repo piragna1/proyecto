@@ -12,12 +12,13 @@ import {
   mensajeCampo as mensajeCampoDe,
   MAX_LENGTH_CLAVE,
 } from '../../shared/utils/validators';
+import { RequisitosClave } from '../../shared/components/requisitos-clave/requisitos-clave';
 
 type CampoAltaAdministrador = 'email' | 'telefono' | 'clave';
 
 @Component({
   selector: 'app-componente-alta-administrador',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule, RequisitosClave],
   templateUrl: './componente-alta-administrador.html',
   styleUrl: './componente-alta-administrador.css',
 })
@@ -29,6 +30,7 @@ export class ComponenteAltaAdministrador {
     clave: ['', [Validators.required, passwordValidator, Validators.maxLength(MAX_LENGTH_CLAVE)]]
   });
   formVersion = toSignal(this.formulario.valueChanges, { initialValue: null });
+  claveValor = toSignal(this.formulario.controls.clave.valueChanges, { initialValue: '' });
   enviado = signal(false);
   toasts: ToastService = inject(ToastService);
   us: UsuarioService = inject(UsuarioService);

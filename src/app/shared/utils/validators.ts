@@ -68,6 +68,19 @@ function requisitosFaltantes(valor: unknown): string[] {
         .map((requisito) => requisito.etiqueta);
 }
 
+export interface RequisitoClave {
+    etiqueta: string;
+    cumple: boolean;
+}
+
+export function evaluarRequisitosClave(valor: unknown): RequisitoClave[] {
+    const clave = typeof valor === 'string' ? valor.trim() : '';
+    return [
+        { etiqueta: `Al menos ${MIN_LENGTH_CLAVE} caracteres`, cumple: clave.length >= MIN_LENGTH_CLAVE },
+        ...REQUISITOS_CLAVE.map((requisito) => ({ etiqueta: requisito.etiqueta, cumple: requisito.test.test(clave) })),
+    ];
+}
+
 export function passwordValidator(control: AbstractControl): ValidationErrors | null {
     const valor = control.value;
     if (typeof valor !== 'string' || valor.trim() === '') return null;
@@ -75,7 +88,7 @@ export function passwordValidator(control: AbstractControl): ValidationErrors | 
     const clave = valor.trim();
     const faltantes = requisitosFaltantes(clave);
     if (clave.length < MIN_LENGTH_CLAVE || faltantes.length > 0) {
-        return { requisitosClave: { faltantes } };
+        return { requisitosClaveFaltantes: { faltantes } };
     }
 
     return null;
@@ -86,12 +99,24 @@ export function mensajeClave(control: AbstractControl): string {
     if (control.hasError('required')) return 'Este campo es requerido';
     if (control.hasError('maxlength')) return `Debe tener como máximo ${MAX_LENGTH_CLAVE} caracteres`;
 
-    const faltantes = requisitosFaltantes(control.value);
-    if (faltantes.length === 0) return '';
+    const valor = control.value;
+    if (typeof valor !== 'string' || valor.trim() === '') return '';
 
-    const minimo = `Debe tener al menos ${MIN_LENGTH_CLAVE} caracteres`;
-    if (faltantes.length === 1) return `${minimo}. Falta: ${faltantes[0]}.`;
-    return `${minimo}. Faltan: ${faltantes.join(', ')}.`;
+    const clave = valor.trim();
+    const partes: string[] = [];
+
+    if (clave.length < MIN_LENGTH_CLAVE) {
+        partes.push(`Debe tener al menos ${MIN_LENGTH_CLAVE} caracteres`);
+    }
+
+    const faltantes = requisitosFaltantes(clave);
+    if (faltantes.length === 1) {
+        partes.push(`Falta: ${faltantes[0]}`);
+    } else if (faltantes.length > 1) {
+        partes.push(`Faltan: ${faltantes.join(', ')}`);
+    }
+
+    return partes.length > 0 ? `${partes.join('. ')}.` : '';
 }
 
 export type CampoValidado = 'nombre' | 'email' | 'telefono' | 'clave' | 'direccion';

@@ -12,12 +12,13 @@ import {
   mensajeCampo as mensajeCampoDe,
   MAX_LENGTH_CLAVE,
 } from '../../shared/utils/validators';
+import { RequisitosClave } from '../../shared/components/requisitos-clave/requisitos-clave';
 
 type CampoEditarPeluquero = 'nombre' | 'email' | 'telefono' | 'clave' | 'direccion';
 
 @Component({
   selector: 'app-componente-editar-peluquero-administrador',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule, RequisitosClave],
   templateUrl: './componente-editar-peluquero-administrador.html',
   styleUrl: './componente-editar-peluquero-administrador.css',
 })
@@ -31,6 +32,7 @@ export class ComponenteEditarPeluqueroAdministrador implements OnInit {
     direccion: ['', [Validators.required, Validators.minLength(8)]]
   });
   formVersion = toSignal(this.formulario.valueChanges, { initialValue: null });
+  claveValor = toSignal(this.formulario.controls.clave.valueChanges, { initialValue: '' });
   enviado = signal(false);
   toasts: ToastService = inject(ToastService);
   ar: ActivatedRoute = inject(ActivatedRoute);

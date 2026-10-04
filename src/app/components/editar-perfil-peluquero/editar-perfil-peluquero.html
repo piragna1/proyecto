@@ -41,6 +41,9 @@
                         }
                         <label for="clave-nueva">Nueva clave</label>
                         <input type="password" id="clave-nueva" formControlName="nueva" />
+                        @if (nuevaClaveValor()) {
+                        <app-requisitos-clave [valor]="nuevaClaveValor()" />
+                        }
                         @if (formClave.controls.nueva.invalid && formClave.controls.nueva.touched) {
                         <span class="field-error">{{ mensajeClaveNueva() }}</span>
                         }
