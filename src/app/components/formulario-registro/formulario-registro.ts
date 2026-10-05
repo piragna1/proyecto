@@ -1,18 +1,20 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { emailValidator, telefonoValidator, passwordValidator, mensajeClave, MAX_LENGTH_CLAVE } from '../../shared/utils/validators';
 import { RequisitosClave } from '../../shared/components/requisitos-clave/requisitos-clave';
 import { mensajeDeError } from '../../shared/utils/errorMessages';
 import { UsuarioService } from '../../usuario/services/usuario-service';
+import { InputComponent } from '../../shared/components/input/input';
+import { ButtonComponent } from '../../shared/components/button/button';
 import { LoginService } from '../../login/services/login-service';
 import { AuthService } from '../../auth/services/auth-service';
 import { ToastService } from '../../shared/services/toast-service';
 
 @Component({
   selector: 'app-formulario-registro',
-  imports: [ReactiveFormsModule, RouterLink, RequisitosClave],
+  imports: [ReactiveFormsModule, RequisitosClave, InputComponent, ButtonComponent],
   templateUrl: './formulario-registro.html',
   styleUrl: './formulario-registro.css',
 })
@@ -33,6 +35,8 @@ export class FormularioRegistro {
   toasts: ToastService = inject(ToastService);
   r: Router = inject(Router);
   mensajeError = signal('');
+  // En true mientras el formulario se funde antes de volver al login.
+  saliendo = signal(false);
   
   generarUsuario() {
     if (this.formulario.invalid) {
@@ -76,6 +80,20 @@ export class FormularioRegistro {
   hayError(campo: 'nombre' | 'email' | 'telefono' | 'clave'): boolean {
     this.formVersion();
     return this.enviado() && this.formulario.controls[campo].invalid;
+  }
+
+  /**
+   * Funde el formulario y despues vuelve al login. El retardo coincide con
+   * la transicion CSS de salida (.saliendo form). Navega directo a '/'
+   * para evitar la redireccion intermedia de '/login'.
+   * @returns void
+   */
+  volverALogin() {
+    if (this.saliendo()) return;
+    this.saliendo.set(true);
+    setTimeout(() => {
+      this.r.navigateByUrl('/');
+    }, 300);
   }
 
   mensajeCampo(campo: 'nombre' | 'email' | 'telefono' | 'clave'): string {

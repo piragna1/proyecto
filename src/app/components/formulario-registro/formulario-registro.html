@@ -1,32 +1,60 @@
-<section>
-  <form [formGroup]="formulario" (ngSubmit)="generarUsuario()">
-    <label for="nombre">Nombre:</label>
-    <input type="text" name="nombre" id="nombre" formControlName="nombre" [class.invalid]="hayError('nombre')" />
-    @if (hayError('nombre')) {
-      <p class="field-error">{{ mensajeCampo('nombre') }}</p>
-    }
-    <label for="email">Email: </label>
-    <input type="email" name="email" id="email" formControlName="email" [class.invalid]="hayError('email')" />
-    @if (hayError('email')) {
-      <p class="field-error">{{ mensajeCampo('email') }}</p>
-    }
-    <label for="telefono">Telefono:</label>
-    <input type="tel" name="telefono" id="telefono" formControlName="telefono" [class.invalid]="hayError('telefono')" />
-    @if (hayError('telefono')) {
-      <p class="field-error">{{ mensajeCampo('telefono') }}</p>
-    }
-    <label for="password">Clave: </label>
-    <input type="password" name="password" id="password" formControlName="clave" [class.invalid]="hayError('clave')" />
-    @if (claveValor()) {
-      <app-requisitos-clave [valor]="claveValor()" />
-    }
-    @if (hayError('clave')) {
-      <p class="field-error">{{ mensajeCampo('clave') }}</p>
-    }
-    <button type="submit">Registrarse</button>
-    @if (mensajeError()) {
-      <p class="error-message">{{ mensajeError() }}</p>
-    }
-    <p>Ya tienes una cuenta? <a [routerLink]="'/login'">Ingresa!</a></p>
-  </form>
+<section class="registro-page" [class.saliendo]="saliendo()">
+  <div class="registro-card">
+    <header class="registro-header">
+      <h1>Crear cuenta</h1>
+      <p>Completá tus datos para empezar a gestionar tus turnos</p>
+    </header>
+    <form [formGroup]="formulario" (ngSubmit)="generarUsuario()">
+      <app-input
+        id="nombre"
+        label="Nombre"
+        type="text"
+        [control]="formulario.controls.nombre"
+        [error]="hayError('nombre') ? mensajeCampo('nombre') : ''"
+        placeholder="Tu nombre"
+        [required]="true"
+        accent="#e8a33d"
+      ></app-input>
+      <app-input
+        id="email"
+        label="Email"
+        type="email"
+        [control]="formulario.controls.email"
+        [error]="hayError('email') ? mensajeCampo('email') : ''"
+        placeholder="tu@email.com"
+        [required]="true"
+        accent="#e8a33d"
+      ></app-input>
+      <app-input
+        id="telefono"
+        label="Teléfono"
+        type="tel"
+        [control]="formulario.controls.telefono"
+        [error]="hayError('telefono') ? mensajeCampo('telefono') : ''"
+        placeholder="+549223XXXXXXX"
+        [required]="true"
+        accent="#e8a33d"
+      ></app-input>
+      <app-input
+        id="password"
+        label="Clave"
+        type="password"
+        [control]="formulario.controls.clave"
+        [error]="hayError('clave') ? mensajeCampo('clave') : ''"
+        placeholder="••••••••"
+        [required]="true"
+        accent="#e8a33d"
+      ></app-input>
+      @if (claveValor()) {
+        <app-requisitos-clave [valor]="claveValor()" />
+      }
+      <app-button type="submit" variant="amber" size="md" class="w-full">
+        Registrarse
+      </app-button>
+      @if (mensajeError()) {
+        <p class="error-message" role="alert">{{ mensajeError() }}</p>
+      }
+      <p class="auth-link">Ya tienes una cuenta? <a (click)="volverALogin()">Ingresa!</a></p>
+    </form>
+  </div>
 </section>

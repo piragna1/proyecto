@@ -1,24 +1,37 @@
-<section>
-  <header class="encabezado">
-    <h1>TurnerApp</h1>
-    <p>Ingresá a tu cuenta para gestionar tus turnos</p>
-  </header>
-  <img class="banner" src="/assets/banner-login.jpg" alt="Peluquería" />
-  <form action="" [formGroup]="formulario" (ngSubmit)="iniciarSesion()">
-    <label for="email">Email: </label>
-    <input type="email" name="email" id="email" formControlName="email" [class.invalid]="hayError('email')" />
-    @if (hayError('email')) {
-      <p class="field-error">{{ mensajeCampo('email') }}</p>
-    }
-    <label for="clave">Clave: </label>
-    <input type="password" name="clave" id="clave" formControlName="clave" [class.invalid]="hayError('clave')" />
-    @if (hayError('clave')) {
-      <p class="field-error">{{ mensajeCampo('clave') }}</p>
-    }
-    <button type="submit">LogIn</button>
-    @if (mensajeError()) {
-      <p class="error-message">{{ mensajeError() }}</p>
-    }
-    <p>No tienes una cuenta? <a [routerLink]="'/registro'">Registrate!</a></p>
-  </form>
+<section class="login-page" [class.saliendo]="saliendo()">
+  <div class="login-card">
+    <header class="login-header">
+      <h1>Bienvenido</h1>
+      <p>Ingresá a tu cuenta para gestionar tus turnos</p>
+    </header>
+    <form [formGroup]="formulario" (ngSubmit)="iniciarSesion()">
+      <app-input
+        id="email"
+        label="Email"
+        type="email"
+        [control]="formulario.controls.email"
+        [error]="hayError('email') ? mensajeCampo('email') : ''"
+        placeholder="tu@email.com"
+        [required]="true"
+        accent="#e8a33d"
+      ></app-input>
+      <app-input
+        id="clave"
+        label="Clave"
+        type="password"
+        [control]="formulario.controls.clave"
+        [error]="hayError('clave') ? mensajeCampo('clave') : ''"
+        placeholder="••••••••"
+        [required]="true"
+        accent="#e8a33d"
+      ></app-input>
+      <app-button type="submit" variant="amber" size="md" class="w-full">
+        Iniciar sesión
+      </app-button>
+      @if (mensajeError()) {
+        <p class="error-message" role="alert">{{ mensajeError() }}</p>
+      }
+      <p class="auth-link">No tienes una cuenta? <a (click)="irARegistro()">Registrate!</a></p>
+    </form>
+  </div>
 </section>

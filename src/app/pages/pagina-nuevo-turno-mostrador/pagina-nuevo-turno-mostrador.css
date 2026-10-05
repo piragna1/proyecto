@@ -1,0 +1,4 @@
+:host { position: relative; display: flex; flex-direction: column; min-height: 100vh; background: url('/assets/Gemini_Generated_Image_wrv3o8wrv3o8wrv3.png') center/cover no-repeat; }
+:host::before { content: ''; position: absolute; inset: 0; background: rgba(12, 8, 4, 0.62); z-index: 0; }
+app-navbar-inicial-admin, app-navbar-inicial-peluquero, app-componente-nuevo-turno-mostrador { position: relative; z-index: 1; }
+app-componente-nuevo-turno-mostrador { flex: 1; display: flex; flex-direction: column; width: 100%; }

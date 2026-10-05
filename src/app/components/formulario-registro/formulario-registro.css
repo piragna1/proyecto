@@ -1,81 +1,132 @@
-section {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 28px 16px;
+/* Mismo estilo que el login: la imagen full-screen vive en el host de la
+   pagina (pagina-registro). Esta seccion solo centra la tarjeta. */
+.registro-page {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
 }
 
+.registro-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  background: rgba(26, 20, 13, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(245, 185, 66, 0.16);
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(245, 185, 66, 0.06) inset;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  transition: opacity 300ms ease, transform 300ms ease;
+  animation: entrada-registro 350ms ease;
+}
+
+/* Salida: la tarjeta se funde y sube antes de volver al login. */
+.saliendo .registro-card {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+
+@keyframes entrada-registro {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+.registro-header {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.registro-header h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #f7ead7;
+  letter-spacing: -0.02em;
+}
+
+.registro-header p {
+  margin: 0;
+  color: rgba(247, 234, 215, 0.65);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.w-full { width: 100%; }
+
+/* El form apila sus hijos con aire entre los campos. */
 form {
-    width: 100%;
-    max-width: 420px;
-    background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
-    padding: 20px 18px;
-    border-radius: 10px;
-    box-shadow: 0 6px 18px rgba(18, 38, 84, 0.08);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-label {
-    font-size: 14px;
-    color: #16325c;
-    font-weight: 600;
+/* Centra el boton de registro. */
+app-button {
+  display: flex;
+  justify-content: center;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="tel"],
-input[type="password"] {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid rgba(16, 44, 91, 0.12);
-    background: #fff;
-    font-size: 14px;
-    transition: box-shadow 150ms ease, border-color 150ms ease;
+/* Requisitos de clave legibles sobre la tarjeta oscura (sin tocar el
+   componente global, que se usa en formularios de tema claro). */
+app-requisitos-clave .cumple {
+  color: #a5d6a7;
 }
 
-input:focus {
-    outline: none;
-    border-color: #4b6cb7;
-    box-shadow: 0 4px 12px rgba(75, 108, 183, 0.12);
+app-requisitos-clave .falta {
+  color: #ef9a9a;
 }
 
-button[type="submit"] {
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #fff;
-    border: none;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 120ms ease, box-shadow 120ms ease;
+.error-message {
+  margin: 0;
+  padding: 0.875rem 1rem;
+  background: rgba(220, 38, 38, 0.2);
+  color: #fca5a5;
+  font-size: 0.875rem;
+  border-radius: 10px;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-left: 3px solid #dc2626;
 }
 
-button[type="submit"]:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 22px rgba(24, 40, 72, 0.18);
+.auth-link {
+  margin: 0.5rem 0 0;
+  font-size: 0.9375rem;
+  color: rgba(247, 234, 215, 0.6);
+  text-align: center;
 }
 
-form p:last-child {
-    margin: 8px 0 0 0;
-    font-size: 13px;
-    color: #334155;
-    text-align: center;
+.auth-link a {
+  color: #f0b45a;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
-form a {
-    color: #4b6cb7;
-    font-weight: 600;
+.auth-link a:hover {
+  color: #f8d9a0;
+  text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .registro-card {
+    animation: none;
+    transition: none;
+  }
 }
 
 @media (max-width: 480px) {
-    section {
-        padding: 18px 10px;
-    }
-
-    form {
-        padding: 14px;
-    }
+  .registro-page { padding: 1rem; }
+  .registro-card { padding: 2rem 1.5rem; }
+  .registro-header h1 { font-size: 1.5rem; }
 }

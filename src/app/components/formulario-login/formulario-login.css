@@ -1,142 +1,122 @@
-section {
-    /* Dos columnas en pantallas anchas: banner a la izquierda, form a la derecha.
-       El encabezado ocupa las dos columnas con grid-column: 1 / -1.
-       Se usa grid (y no flex) porque el encabezado tiene que atravesar ambas columnas. */
-    display: grid;
-    grid-template-columns: minmax(0, 420px) minmax(0, 420px);
-    justify-content: center;
-    align-items: center;
-    gap: 32px 48px;
-    padding: 40px 24px;
+/* Sin fondo propio: la imagen full-screen vive en el host de la pagina
+   (pagina-inicial). Esta seccion solo centra la tarjeta. */
+.login-page {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
 }
 
-.encabezado {
-    grid-column: 1 / -1;
-    text-align: center;
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  background: rgba(26, 20, 13, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(245, 185, 66, 0.16);
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(245, 185, 66, 0.06) inset;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  transition: opacity 300ms ease, transform 300ms ease;
+  animation: entrada-login 350ms ease;
 }
 
-.encabezado h1 {
-    margin: 0;
-    font-size: 34px;
-    line-height: 1.1;
-    color: #182848;
-    letter-spacing: -0.5px;
+/* Salida: la tarjeta se funde y sube antes de navegar al registro. */
+.saliendo .login-card {
+  opacity: 0;
+  transform: translateY(-12px);
 }
 
-.encabezado p {
-    margin: 8px 0 0 0;
-    font-size: 15px;
-    color: #485785;
+@keyframes entrada-login {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
 }
 
-/* Banner del login. Se sirve desde el proyecto (src/app/assets) y no desde un
-   CDN: la imagen remota de Pinterest puede caerse y dejaba un bloque gris.
-   La foto es de 736x883 (vertical), o sea 420x504 a 420px de ancho. Por eso va
-   al costado del form y no apilado arriba: asi la seccion entra en un viewport
-   de 768px de alto. height: auto conserva la proporcion de la imagen, asi que no
-   hay forma de que el banner se recorte. En celular queda mas alto y hay que
-   hacer scroll para llegar al boton. */
-.banner {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 14px;
-    /* Si el archivo no llega a cargar, se ve un bloque neutro en vez del hueco. */
-    background: #f1f5f9;
-    box-shadow: 0 18px 40px rgba(24, 40, 72, 0.18);
+@media (prefers-reduced-motion: reduce) {
+  .login-card {
+    animation: none;
+    transition: none;
+  }
 }
 
+.login-header {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.login-header h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #f7ead7;
+  letter-spacing: -0.02em;
+}
+
+.login-header p {
+  margin: 0;
+  color: rgba(247, 234, 215, 0.65);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.w-full { width: 100%; }
+
+/* El form apila sus hijos con aire: separa el campo de clave del de email. */
 form {
-    width: 100%;
-    max-width: 420px;
-    background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
-    padding: 20px 18px;
-    border-radius: 10px;
-    box-shadow: 0 6px 18px rgba(18, 38, 84, 0.08);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-label {
-    font-size: 14px;
-    color: #16325c;
-    font-weight: 600;
+/* Centra el boton de iniciar sesion. */
+app-button {
+  display: flex;
+  justify-content: center;
 }
 
-input[type="email"],
-input[type="password"] {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid rgba(16, 44, 91, 0.12);
-    background: #fff;
-    font-size: 14px;
-    transition: box-shadow 150ms ease, border-color 150ms ease;
+.error-message {
+  margin: 0;
+  padding: 0.875rem 1rem;
+  background: rgba(220, 38, 38, 0.2);
+  color: #fca5a5;
+  font-size: 0.875rem;
+  border-radius: 10px;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-left: 3px solid #dc2626;
 }
 
-input:focus {
-    outline: none;
-    border-color: #4b6cb7;
-    box-shadow: 0 4px 12px rgba(75, 108, 183, 0.12);
+.auth-link {
+  margin: 0.5rem 0 0;
+  font-size: 0.9375rem;
+  color: rgba(247, 234, 215, 0.6);
+  text-align: center;
 }
 
-button[type="submit"] {
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #fff;
-    border: none;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 120ms ease, box-shadow 120ms ease;
+.auth-link a {
+  color: #f0b45a;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
-button[type="submit"]:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 22px rgba(24, 40, 72, 0.18);
-}
-
-form p {
-    margin: 8px 0 0 0;
-    font-size: 13px;
-    color: #334155;
-    text-align: center;
-}
-
-form a {
-    color: #4b6cb7;
-    font-weight: 600;
-}
-
-@media (max-width: 900px) {
-    /* Una sola columna: el encabezado, el banner y el form se apilan.
-       El banner se achica al 80% para ocupa 20% menos vertical: como height es
-       auto, el alto baja en la misma proporcion y la foto ni se recorta ni se
-       deforma. Se centra con margin-inline porque el ancho explicito evita el
-       estirado por defecto de la grilla. */
-    section {
-        grid-template-columns: minmax(0, 420px);
-        gap: 24px;
-        padding: 28px 16px;
-    }
-
-    .banner {
-        width: 80%;
-        margin-inline: auto;
-    }
-
-    .encabezado h1 {
-        font-size: 28px;
-    }
+.auth-link a:hover {
+  color: #f8d9a0;
+  text-decoration: underline;
 }
 
 @media (max-width: 480px) {
-    section {
-        padding: 18px 10px;
-    }
-
-    form {
-        padding: 14px;
-    }
+  .login-page { padding: 1rem; }
+  .login-card { padding: 2rem 1.5rem; }
+  .login-header h1 { font-size: 1.5rem; }
 }

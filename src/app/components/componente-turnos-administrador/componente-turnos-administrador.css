@@ -4,26 +4,46 @@ section {
     align-items: center;
     gap: 18px;
     padding: 24px 16px;
+    color: rgba(247, 234, 215, 0.85);
+}
+
+.volver {
+    color: #f0b45a;
+    text-decoration: none;
+    font-weight: 700;
+    align-self: flex-start;
+}
+
+.volver:hover {
+    color: #f8d9a0;
 }
 
 .table-wrapper {
     width: 100%;
     max-width: 1100px;
     overflow-x: auto;
-    background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
-    border-radius: 14px;
-    box-shadow: 0 8px 24px rgba(18, 38, 84, 0.08);
+    background: rgba(26, 20, 13, 0.82);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(245, 185, 66, 0.16);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     min-width: 780px;
+    background: rgba(26, 20, 13, 0.82);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(245, 185, 66, 0.16);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
 }
 
 thead {
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #ffffff;
+    background: rgba(245, 185, 66, 0.08);
+    color: #f0b45a;
 }
 
 th.sortable {
@@ -33,6 +53,7 @@ th.sortable {
 
 th.sortable:hover {
     filter: brightness(1.1);
+    color: #f8d9a0;
 }
 
 th .arrow {
@@ -44,15 +65,19 @@ th,
 td {
     padding: 14px 16px;
     text-align: left;
-    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+    border-bottom: 1px solid rgba(245, 185, 66, 0.08);
+}
+
+th {
+    color: #f0b45a;
 }
 
 td {
-    color: #000000;
+    color: rgba(247, 234, 215, 0.85);
 }
 
 tbody tr:hover {
-    background: rgba(75, 108, 183, 0.08);
+    background: rgba(245, 185, 66, 0.07);
 }
 
 button {
@@ -70,23 +95,25 @@ button:hover {
 
 button[routerLink],
 button[ng-reflect-router-link] {
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #eaa93e, #b45309);
+    color: #1d1206;
 }
 
 button.eliminar {
-    background: rgba(220, 38, 38, 0.12);
-    color: #c02626;
+    background: rgba(220, 38, 38, 0.2);
+    color: #fca5a5;
+    border: 1px solid rgba(252, 165, 165, 0.35);
 }
 
 button.cobrar {
-    background: #16a34a;
-    color: #ffffff;
+    background: linear-gradient(135deg, #eaa93e, #b45309);
+    color: #1d1206;
 }
 
 .badge-pagado {
-    background: rgba(22, 163, 74, 0.15);
-    color: #15803d;
+    background: rgba(165, 214, 167, 0.15);
+    color: #a5d6a7;
+    border: 1px solid rgba(165, 214, 167, 0.3);
     padding: 4px 10px;
     border-radius: 999px;
     font-weight: 700;
@@ -94,8 +121,9 @@ button.cobrar {
 }
 
 .badge-pendiente {
-    background: rgba(217, 119, 6, 0.15);
-    color: #b45309;
+    background: rgba(245, 185, 66, 0.15);
+    color: #f8d9a0;
+    border: 1px solid rgba(245, 185, 66, 0.3);
     padding: 4px 10px;
     border-radius: 999px;
     font-weight: 700;
@@ -105,7 +133,7 @@ button.cobrar {
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.55);
+    background: rgba(12, 8, 4, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -113,24 +141,26 @@ button.cobrar {
 }
 
 .modal {
-    background: #ffffff;
-    border-radius: 14px;
+    background: rgba(26, 20, 13, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(245, 185, 66, 0.16);
+    border-radius: 12px;
     padding: 24px;
     min-width: 320px;
     display: flex;
     flex-direction: column;
     gap: 14px;
-    box-shadow: 0 20px 50px rgba(18, 38, 84, 0.25);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
 }
 
 .modal h3 {
     margin: 0;
-    color: #182848;
+    color: #f7ead7;
 }
 
 .modal-datos {
     margin: 0;
-    color: #475569;
+    color: rgba(247, 234, 215, 0.65);
     font-weight: 600;
 }
 
@@ -139,15 +169,28 @@ button.cobrar {
     flex-direction: column;
     gap: 6px;
     font-weight: 600;
-    color: #334155;
+    color: rgba(247, 234, 215, 0.65);
 }
 
 .modal select,
 .modal input {
     padding: 8px 10px;
     border-radius: 8px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
     font-size: 1rem;
+}
+
+.modal select option {
+    background: #1a140d;
+    color: #fff;
+}
+
+.modal select:focus,
+.modal input:focus {
+    outline: none;
+    border-color: #e8a33d;
 }
 
 .modal-acciones {
@@ -157,13 +200,14 @@ button.cobrar {
 }
 
 button.confirmar {
-    background: #16a34a;
-    color: #ffffff;
+    background: linear-gradient(135deg, #eaa93e, #b45309);
+    color: #1d1206;
 }
 
 button.cancelar {
-    background: rgba(100, 116, 139, 0.15);
-    color: #475569;
+    background: transparent;
+    border: 1px solid rgba(245, 185, 66, 0.35);
+    color: #f0b45a;
 }
 
 @media (max-width: 760px) {
@@ -190,6 +234,8 @@ button.cancelar {
     .table-wrapper {
         overflow: visible;
         background: transparent;
+        backdrop-filter: none;
+        border: none;
         box-shadow: none;
     }
 
@@ -202,17 +248,25 @@ button.cancelar {
         display: block;
     }
 
+    table {
+        background: transparent;
+        backdrop-filter: none;
+        border: none;
+        box-shadow: none;
+    }
+
     thead {
         display: none;
     }
 
     tr {
-        border: 1px solid #cbd3e0;
-        border-radius: 10px;
+        border: 1px solid rgba(245, 185, 66, 0.16);
+        border-radius: 12px;
         margin-bottom: 12px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
         overflow: hidden;
-        background: #e8ecf3;
+        background: rgba(26, 20, 13, 0.82);
+        backdrop-filter: blur(12px);
     }
 
     tr,
@@ -226,7 +280,7 @@ button.cancelar {
         gap: 12px;
         flex-wrap: wrap;
         border: none;
-        border-bottom: 1px solid #dde3ee;
+        border-bottom: 1px solid rgba(245, 185, 66, 0.08);
         padding: 8px 10px;
         word-break: break-word;
     }
@@ -238,7 +292,7 @@ button.cancelar {
     td::before {
         content: attr(data-label);
         font-weight: 600;
-        color: #182848;
+        color: #f0b45a;
     }
 
     td[colspan] {
@@ -277,16 +331,18 @@ button.cancelar {
 .calendario {
     width: 100%;
     max-width: 320px;
-    background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
-    border-radius: 14px;
+    background: rgba(26, 20, 13, 0.82);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(245, 185, 66, 0.16);
+    border-radius: 12px;
     padding: 12px;
-    box-shadow: 0 8px 24px rgba(18, 38, 84, 0.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
 }
 
 .cal-cabecera {
     text-align: center;
     font-weight: 700;
-    color: #182848;
+    color: #f7ead7;
     text-transform: capitalize;
     margin-bottom: 8px;
 }
@@ -301,7 +357,7 @@ button.cancelar {
     text-align: center;
     font-size: 0.75rem;
     font-weight: 700;
-    color: #64748b;
+    color: rgba(247, 234, 215, 0.5);
     padding: 4px 0;
 }
 
@@ -311,27 +367,28 @@ button.cal-dia {
     align-items: center;
     justify-content: center;
     padding: 0;
-    background: #ffffff;
-    color: #0b2447;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(247, 234, 215, 0.85);
     border-radius: 8px;
     font-weight: 600;
-    border: 1px solid rgba(15, 23, 42, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 button.cal-dia:hover {
-    background: rgba(75, 108, 183, 0.12);
+    background: rgba(245, 185, 66, 0.12);
     transform: none;
     box-shadow: none;
 }
 
 button.cal-dia.seleccionado {
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #ffffff;
-    box-shadow: 0 6px 14px rgba(24, 40, 72, 0.25);
+    background: linear-gradient(135deg, #eaa93e, #b45309);
+    color: #1d1206;
+    border-color: transparent;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
 }
 
 button.cal-dia.hoy {
-    border-color: #000000;
+    border-color: #e8a33d;
 }
 
 .cal-dia.vacio {
@@ -346,15 +403,15 @@ button.flecha-dia {
     height: 44px;
     padding: 0;
     border-radius: 50%;
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #eaa93e, #b45309);
+    color: #1d1206;
     font-size: 1.1rem;
     flex-shrink: 0;
-    box-shadow: 0 6px 16px rgba(24, 40, 72, 0.18);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
 }
 
 button.flecha-dia:hover {
-    box-shadow: 0 10px 22px rgba(24, 40, 72, 0.25);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55);
 }
 
 .filtro-pie {
@@ -367,16 +424,17 @@ button.flecha-dia:hover {
 
 .etiqueta-dia {
     font-weight: 700;
-    color: #182848;
+    color: #f7ead7;
     text-transform: capitalize;
 }
 
 button.btn-hoy {
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #eaa93e, #b45309);
+    color: #1d1206;
 }
 
 button.ver-todos {
-    background: rgba(75, 108, 183, 0.15);
-    color: #33539e;
+    background: transparent;
+    border: 1px solid rgba(245, 185, 66, 0.35);
+    color: #f0b45a;
 }

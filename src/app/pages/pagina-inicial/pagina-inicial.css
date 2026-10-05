@@ -1,17 +1,30 @@
-/* El host crece para ocupar el espacio entre el navbar y el footer (app-root es
-   flex column con min-height 100vh y app-footer con margin-top: auto), y centra
-   el contenido del login verticalmente. */
+/* La pagina de login es full-screen: el fondo vive en el host para cubrir
+   toda la pantalla (el formulario esta anidado y no puede pintarlo el solo).
+   Sin navbar ni footer: solo la tarjeta centrada sobre la imagen. */
 :host {
+    position: relative;
     display: flex;
     flex-direction: column;
-    flex: 1;
-    background: linear-gradient(180deg, #f7fbff 0%, #e9f0fa 100%);
+    min-height: 100vh;
+    background: url('/assets/Gemini_Generated_Image_wrv3o8wrv3o8wrv3.png') center/cover no-repeat;
 }
 
-/* Centra la section del formulario en el medio del espacio disponible. */
+/* Overlay oscuro con tinte calido para fundirse con la foto y dar legibilidad. */
+:host::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(12, 8, 4, 0.55);
+    z-index: 0;
+}
+
+/* Centra el formulario en la pantalla. */
 app-formulario-login {
+    position: relative;
+    z-index: 1;
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
 }

@@ -4,6 +4,7 @@ section {
     align-items: center;
     gap: 18px;
     padding: 24px 16px;
+    color: rgba(247, 234, 215, 0.85);
 }
 
 @media (max-width: 640px) {
@@ -12,23 +13,34 @@ section {
     }
 }
 
+.volver {
+    color: #f0b45a;
+    text-decoration: none;
+    font-weight: 700;
+    align-self: flex-start;
+}
+
+.volver:hover {
+    color: #f8d9a0;
+}
+
 .btn-seccion {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-width: 160px;
     padding: 12px 16px;
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #eaa93e, #b45309);
+    color: #1d1206;
     text-decoration: none;
     border-radius: 10px;
     font-weight: 700;
-    box-shadow: 0 8px 22px rgba(24, 40, 72, 0.14);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
     transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
 .btn-seccion:hover,
 .btn-seccion:focus {
     transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(24, 40, 72, 0.2);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
 }

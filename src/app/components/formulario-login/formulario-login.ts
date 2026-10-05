@@ -1,17 +1,19 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { LoginService } from '../../login/services/login-service';
 import { AuthService } from '../../auth/services/auth-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { emailValidator } from '../../shared/utils/validators';
 import { mensajeDeError } from '../../shared/utils/errorMessages';
 import { rutaInicioPorRol } from '../../shared/utils/rutasPorRol';
+import { InputComponent } from '../../shared/components/input/input';
+import { ButtonComponent } from '../../shared/components/button/button';
 
 @Component({
   selector: 'app-formulario-login',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [ReactiveFormsModule, InputComponent, ButtonComponent],
   templateUrl: './formulario-login.html',
   styleUrl: './formulario-login.css',
 })
@@ -28,6 +30,8 @@ export class FormularioLogin {
   r: Router = inject(Router);
   toasts: ToastService = inject(ToastService);
   mensajeError = signal('');
+  // En true mientras la tarjeta se funde antes de navegar al registro.
+  saliendo = signal(false);
   /**
    * Metodo para iniciar sesion. El destino depende del rol: el mismo
    * formulario sirve para cliente, administrador y peluquero.
@@ -36,7 +40,7 @@ export class FormularioLogin {
   iniciarSesion() {
     if (this.formulario.invalid) {
       this.enviado.set(true);
-      this.toasts.mostrarMensaje('Los datos ingresados no son válidos. Revisá los campos marcados.', true);
+      this.toasts.error('Los datos ingresados no son válidos. Revisá los campos marcados.');
       return;
     }
     this.mensajeError.set('');
@@ -54,7 +58,7 @@ export class FormularioLogin {
         console.log(e);
         const mensaje = mensajeDeError(e, 'Error al iniciar sesión');
         this.mensajeError.set(mensaje);
-        this.toasts.mostrarMensaje(mensaje, true);
+        this.toasts.error(mensaje);
       },
     });
   }
@@ -69,5 +73,18 @@ export class FormularioLogin {
     if (c.invalid && c.hasError('required')) return campo === 'email' ? 'El email es requerido' : 'La clave es requerida';
     if (c.invalid && c.hasError('email')) return 'El email no es válido';
     return '';
+  }
+
+  /**
+   * Funde la tarjeta y despues navega al registro. El retardo coincide con
+   * la transicion CSS de salida (.saliendo .login-card).
+   * @returns void
+   */
+  irARegistro() {
+    if (this.saliendo()) return;
+    this.saliendo.set(true);
+    setTimeout(() => {
+      this.r.navigateByUrl('/registro');
+    }, 300);
   }
 }

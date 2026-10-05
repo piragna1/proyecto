@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, Input, signal } from '@angular/core';
 import { Router, RouterLink } from "@angular/router";
 import { AuthService } from '../../auth/services/auth-service';
 
@@ -9,6 +9,9 @@ import { AuthService } from '../../auth/services/auth-service';
   styleUrl: './navbar-inicial-admin.css',
 })
 export class NavbarInicialAdmin {
+  // En true renderiza una barra minima transparente con solo LogOut
+  // (para paginas full-screen como la home del admin).
+  @Input() minimal = false;
   as: AuthService = inject(AuthService);
   r: Router = inject(Router);
   mostrarInicio = signal(this.r.url !== '/home-admin');

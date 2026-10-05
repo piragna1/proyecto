@@ -1,0 +1,30 @@
+/* Mismo estilo full-screen que el login: el fondo vive en el host para
+   cubrir toda la pantalla. Sin navbar ni footer: solo la tarjeta centrada
+   sobre la imagen. */
+:host {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: url('/assets/Gemini_Generated_Image_wrv3o8wrv3o8wrv3.png') center/cover no-repeat;
+}
+
+/* Overlay oscuro con tinte calido para fundirse con la foto y dar legibilidad. */
+:host::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(12, 8, 4, 0.55);
+    z-index: 0;
+}
+
+/* Centra el formulario en la pantalla. */
+app-formulario-registro {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}

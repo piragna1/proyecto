@@ -1,9 +1,9 @@
 nav {
     display: flex;
     align-items: center;
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+    /* Transparente: flota sobre la imagen full-screen del login. */
+    background: transparent;
     padding: 10px 16px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
     position: relative;
 }
 

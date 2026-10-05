@@ -1,3 +1,5 @@
 <router-outlet />
 <app-toast></app-toast>
-<app-footer></app-footer>
+@if (!ocultarFooter()) {
+  <app-footer></app-footer>
+}
