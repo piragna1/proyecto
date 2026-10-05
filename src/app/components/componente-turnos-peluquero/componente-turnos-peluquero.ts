@@ -7,6 +7,7 @@ import { UsuarioService } from '../../usuario/services/usuario-service';
 import { Turno } from '../../turno/interface/turno.interface';
 import { PagoService } from '../../pago/services/pago-service';
 import { ToastService } from '../../shared/services/toast-service';
+import { mensajeDeError } from '../../shared/utils/errorMessages';
 
 @Component({
   selector: 'app-componente-turnos-peluquero',
@@ -139,7 +140,7 @@ export class ComponenteTurnosPeluquero implements OnInit {
       },
       error: (err) => {
         console.log(err);
-        this.toast.mostrarMensaje('No se pudo registrar el pago', true);
+        this.toast.mostrarMensaje(mensajeDeError(err, 'No se pudo registrar el pago'), true);
       }
     });
   };

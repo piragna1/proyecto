@@ -117,7 +117,7 @@ export class EditarPerfilAdministrador implements OnInit {
         this.toasts.mostrarMensaje('Perfil actualizado.');
       },
       error: (err) => {
-        this.toasts.mostrarMensaje(err.error?.mensaje || 'No se pudo actualizar el perfil', true);
+        this.toasts.mostrarMensaje(mensajeDeError(err, 'No se pudo actualizar el perfil'), true);
       }
     });
   };
