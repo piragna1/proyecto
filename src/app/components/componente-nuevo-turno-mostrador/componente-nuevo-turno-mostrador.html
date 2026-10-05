@@ -13,6 +13,7 @@
     }
     <label for="horario">Horario: </label>
     <input type="datetime-local" name="horario" id="horario" formControlName="fechaHoraInicio" [class.invalido]="hayError('fechaHoraInicio')" />
+    <span class="field-hint">{{ rangoHorario }}</span>
     @if (hayError('fechaHoraInicio')) {
     <span class="field-error">{{ mensajeCampo('fechaHoraInicio') }}</span>
     }

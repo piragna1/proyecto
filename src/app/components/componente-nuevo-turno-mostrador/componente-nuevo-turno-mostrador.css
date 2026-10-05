@@ -89,3 +89,15 @@ button[type="submit"]:hover {
         font-size: 18px;
     }
 }
+
+.field-error {
+    color: #c02626;
+    font-size: 13px;
+    margin-top: -6px;
+}
+
+.field-hint {
+    color: #5a6b85;
+    font-size: 13px;
+    margin-top: -6px;
+}

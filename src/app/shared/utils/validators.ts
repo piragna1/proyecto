@@ -48,6 +48,31 @@ export function telefonoValidator(control: AbstractControl): ValidationErrors | 
     return TELEFONO_REGEX.test(value.trim()) ? null : { telefono: true };
 }
 
+// Franja horaria para agendar turnos (extremos incluidos).
+// DEBE COINCIDIR con backend/controllers/turnosController.js (paquetes separados, no se puede compartir codigo).
+export const HORARIO_MINIMO = '08:00';
+export const HORARIO_MAXIMO = '19:30';
+export const MENSAJE_HORARIO_FUERA_DE_RANGO = `El horario debe estar entre las ${HORARIO_MINIMO} y las ${HORARIO_MAXIMO}`;
+
+/**
+ * Valida que la hora del turno esté dentro de la franja permitted.
+ * El input datetime-local entrega "YYYY-MM-DDTHH:mm", así que la hora se saca por
+ * slice y se compara como texto: con dos dígitos y cero a la izquierda el orden
+ * lexicográfico coincide con el cronológico, y no hace falta matemática de fechas
+ * ni depender de la zona horaria.
+ */
+export function horarioValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value as string | null | undefined;
+    // Si está vacío o malformado no es asunto de este validator: eso lo cubren
+    // Validators.required y el chequeo de fecha que hace cada componente.
+    if (!value || value.trim() === '') return null;
+
+    const hora = value.trim().slice(11, 16);
+    if (!/^\d{2}:\d{2}$/.test(hora)) return null;
+
+    return hora >= HORARIO_MINIMO && hora <= HORARIO_MAXIMO ? null : { horarioFueraDeRango: true };
+}
+
 export const MIN_LENGTH_CLAVE = 10;
 export const MAX_LENGTH_CLAVE = 255;
 

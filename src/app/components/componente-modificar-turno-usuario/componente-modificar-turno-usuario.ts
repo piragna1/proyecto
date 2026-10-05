@@ -11,6 +11,7 @@ import { formatearFechaSQL } from '../../shared/utils/dateHelpers';
 import { ToastService } from '../../shared/services/toast-service';
 import { AuthService } from '../../auth/services/auth-service';
 import { UsuarioService } from '../../usuario/services/usuario-service';
+import { horarioValidator, HORARIO_MINIMO, HORARIO_MAXIMO, MENSAJE_HORARIO_FUERA_DE_RANGO } from '../../shared/utils/validators';
 import { AvisoCambiosSinGuardar } from '../../shared/components/aviso-cambios-sin-guardar/aviso-cambios-sin-guardar';
 
 @Component({
@@ -20,12 +21,14 @@ import { AvisoCambiosSinGuardar } from '../../shared/components/aviso-cambios-si
   styleUrl: './componente-modificar-turno-usuario.css',
 })
 export class ComponenteModificarTurnoUsuario implements OnInit {
+  /** Ayuda visible junto al input: el rango sale de los mismos constantes que usa el validator. */
+  readonly rangoHorario = `Turnos disponibles de ${HORARIO_MINIMO} a ${HORARIO_MAXIMO}.`;
   ss: ServicioService = inject(ServicioService);
   servicios = this.ss.getServiciosSignal();
   fb: FormBuilder = inject(FormBuilder);
   formulario = this.fb.nonNullable.group({
     servicio: [null as Servicio | null, [Validators.required]],
-    fechaHoraInicio: ['', [Validators.required]],
+    fechaHoraInicio: ['', [Validators.required, horarioValidator]],
   });
   ts: TurnoService = inject(TurnoService);
   ar: ActivatedRoute = inject(ActivatedRoute);
@@ -35,8 +38,28 @@ export class ComponenteModificarTurnoUsuario implements OnInit {
   as:AuthService= inject(AuthService);
   us:UsuarioService=inject(UsuarioService);
   formVersion = toSignal(this.formulario.valueChanges, { initialValue: null });
+  enviado = signal(false);
   servicioOriginal: Servicio | null = null;
   fechaOriginal = '';
+  /**
+   * Marca los errores en línea recién después de intentar guardar, para no
+   * molestar al usuario que todavía está completando el formulario.
+   */
+  hayError(campo: 'servicio' | 'fechaHoraInicio'): boolean {
+    this.formVersion();
+    return this.enviado() && this.formulario.controls[campo].invalid;
+  }
+  /**
+   * Mensaje mostrado bajo el campo inválido.
+   */
+  mensajeCampo(campo: 'servicio' | 'fechaHoraInicio'): string {
+    const control = this.formulario.controls[campo];
+    if (control.invalid && control.hasError('required')) {
+      return campo === 'servicio' ? 'Seleccioná un servicio' : 'Seleccioná un horario';
+    }
+    if (control.invalid && control.hasError('horarioFueraDeRango')) return MENSAJE_HORARIO_FUERA_DE_RANGO;
+    return '';
+  }
   /**
    * Considera que hay una modificación real si cambió el servicio o la fecha/hora
    * respecto del estado original del turno.
@@ -130,7 +153,19 @@ export class ComponenteModificarTurnoUsuario implements OnInit {
       this.toastService.mostrarMensaje('No hay modificaciones para guardar', true);
       return;
     }
-    if (this.formulario.invalid) return;
+    if (this.formulario.invalid) {
+      this.enviado.set(true);
+      // Antes este caso se iba en silencio: con la franja horaria el formulario
+      // puede quedar inválido con todos los campos completos, y el botón no
+      // hacía nada sin explicar por qué.
+      this.toastService.mostrarMensaje(
+        this.formulario.controls.fechaHoraInicio.hasError('horarioFueraDeRango')
+          ? MENSAJE_HORARIO_FUERA_DE_RANGO
+          : 'Revisá los datos del turno',
+        true
+      );
+      return;
+    }
     const payload = this.as.obtenerPayload();
     if (!payload.id) return;
     this.us.getUsuarioById(payload.id).subscribe({

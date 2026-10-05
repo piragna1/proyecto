@@ -1,5 +1,13 @@
 import { enviarNotificacionTurno } from '../services/notificacionesService.js';
 
+// Franja horaria en la que se pueden agendar turnos (extremos incluidos).
+// Los servicios no tienen duración cargada, así que la restricción aplica solo
+// a la hora de inicio.
+const HORARIO_MINIMO = '08:00';
+const HORARIO_MAXIMO = '19:30';
+const MINUTOS_MINIMO = 8 * 60;
+const MINUTOS_MAXIMO = 19 * 60 + 30;
+
 function validarFechasTurno(body, res) {
     const { fechaHoraInicio } = body;
     if (!fechaHoraInicio) {
@@ -14,8 +22,18 @@ function validarFechasTurno(body, res) {
         return null;
     }
 
+    // El mensaje no dice "crear" porque esta función la usan altas y modificaciones.
     if (inicio < new Date()) {
-        res.status(400).json({ mensaje: "No se puede crear turno en el pasado" });
+        res.status(400).json({ mensaje: "No se puede agendar un turno en el pasado" });
+        return null;
+    }
+
+    // La hora se lee del Date ya parseado: los getters locales devuelven los
+    // mismos componentes del string original, así que no depende de la zona
+    // horaria del servidor.
+    const minutosDelDia = inicio.getHours() * 60 + inicio.getMinutes();
+    if (minutosDelDia < MINUTOS_MINIMO || minutosDelDia > MINUTOS_MAXIMO) {
+        res.status(400).json({ mensaje: `El horario debe estar entre las ${HORARIO_MINIMO} y las ${HORARIO_MAXIMO}` });
         return null;
     }
 
@@ -371,22 +389,8 @@ export function actualizarTurno(db) {
                     return res.status(400).json({ mensaje: "ID usuario o servicio inválido" });
                 }
                 
-                // Validar fechas
-                if (!fechaHoraInicio) {
-                    return res.status(400).json({ mensaje: "Fechas requeridas" });
-                }
-                
-                const inicio = new Date(fechaHoraInicio);
-                
-                if (isNaN(inicio.getTime())) {
-                    return res.status(400).json({ mensaje: "Formato de fecha inválido" });
-                }
-                
-                if (inicio < new Date()) {
-                    return res.status(400).json({ 
-                        mensaje: "No se puede actualizar a turno en el pasado" 
-                    });
-                }
+                // Validar fechas (mismo helper que las altas, para que no puedan divergir)
+                if (!validarFechasTurno(req.body, res)) return;
                 
                 // Validar que el usuario no supere un turno por día y que el horario no este ocupado (excluyendo este turno)
                 verificarUnTurnoPorDia(db, idUsuario, fechaHoraInicio, res, id, () => {

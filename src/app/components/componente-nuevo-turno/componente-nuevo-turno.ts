@@ -10,6 +10,7 @@ import { formatearFechaSQL } from '../../shared/utils/dateHelpers';
 import { ToastService } from '../../shared/services/toast-service';
 import { AuthService } from '../../auth/services/auth-service';
 import { UsuarioService } from '../../usuario/services/usuario-service';
+import { horarioValidator, HORARIO_MINIMO, HORARIO_MAXIMO, MENSAJE_HORARIO_FUERA_DE_RANGO } from '../../shared/utils/validators';
 import { AvisoCambiosSinGuardar } from '../../shared/components/aviso-cambios-sin-guardar/aviso-cambios-sin-guardar';
 
 @Component({
@@ -19,12 +20,14 @@ import { AvisoCambiosSinGuardar } from '../../shared/components/aviso-cambios-si
   styleUrl: './componente-nuevo-turno.css',
 })
 export class ComponenteNuevoTurno implements OnInit {
+  /** Ayuda visible junto al input: el rango sale de los mismos constantes que usa el validator. */
+  readonly rangoHorario = `Turnos disponibles de ${HORARIO_MINIMO} a ${HORARIO_MAXIMO}.`;
   ss: ServicioService = inject(ServicioService);
   servicios = this.ss.getServiciosSignal();
   fb: FormBuilder = inject(FormBuilder);
   formulario = this.fb.nonNullable.group({
     servicio: [null, [Validators.required]],
-    fechaHoraInicio: ['', [Validators.required]],
+    fechaHoraInicio: ['', [Validators.required, horarioValidator]],
   });
   ts: TurnoService = inject(TurnoService);
   r: Router = inject(Router);
@@ -99,6 +102,12 @@ export class ComponenteNuevoTurno implements OnInit {
     console.log(this.formulario.invalid);
 
     if (this.formulario.invalid) {
+      // El campo puede estar completo y aun así ser inválido por la franja horaria,
+      // así que el mensaje específico tiene prioridad sobre "Seleccioná un horario".
+      if (this.formulario.controls.fechaHoraInicio.hasError('horarioFueraDeRango')) {
+        this.toasts.mostrarMensaje(MENSAJE_HORARIO_FUERA_DE_RANGO, true);
+        return;
+      }
       const faltantes: string[] = [];
       if (this.formulario.controls.servicio.invalid) faltantes.push('un servicio');
       if (this.formulario.controls.fechaHoraInicio.invalid) faltantes.push('un horario');

@@ -104,3 +104,15 @@ button[type="submit"]:disabled {
         width: 100%;
     }
 }
+
+.field-error {
+    color: #c02626;
+    font-size: 13px;
+    margin-top: -6px;
+}
+
+.field-hint {
+    color: #5a6b85;
+    font-size: 13px;
+    margin-top: -6px;
+}

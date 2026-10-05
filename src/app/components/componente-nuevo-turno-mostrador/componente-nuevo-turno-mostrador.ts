@@ -9,7 +9,7 @@ import { formatearServicio } from '../../servicio/utils/utils';
 import { formatearFechaSQL } from '../../shared/utils/dateHelpers';
 import { ToastService } from '../../shared/services/toast-service';
 import { AuthService } from '../../auth/services/auth-service';
-import { telefonoValidator } from '../../shared/utils/validators';
+import { telefonoValidator, horarioValidator, HORARIO_MINIMO, HORARIO_MAXIMO, MENSAJE_HORARIO_FUERA_DE_RANGO } from '../../shared/utils/validators';
 import { AvisoCambiosSinGuardar } from '../../shared/components/aviso-cambios-sin-guardar/aviso-cambios-sin-guardar';
 
 @Component({
@@ -19,12 +19,14 @@ import { AvisoCambiosSinGuardar } from '../../shared/components/aviso-cambios-si
   styleUrl: './componente-nuevo-turno-mostrador.css',
 })
 export class ComponenteNuevoTurnoMostrador implements OnInit {
+  /** Ayuda visible junto al input: el rango sale de los mismos constantes que usa el validator. */
+  readonly rangoHorario = `Turnos disponibles de ${HORARIO_MINIMO} a ${HORARIO_MAXIMO}.`;
   ss: ServicioService = inject(ServicioService);
   servicios = this.ss.getServiciosSignal();
   fb: FormBuilder = inject(FormBuilder);
   formulario = this.fb.nonNullable.group({
     servicio: [null as Servicio | null, [Validators.required]],
-    fechaHoraInicio: ['', [Validators.required]],
+    fechaHoraInicio: ['', [Validators.required, horarioValidator]],
     nombre: ['', [Validators.required]],
     telefono: ['', [Validators.required, telefonoValidator]],
   });
@@ -93,6 +95,12 @@ export class ComponenteNuevoTurnoMostrador implements OnInit {
   generarTurno() {
     if (this.formulario.invalid) {
       this.enviado.set(true);
+      // El campo puede estar completo y aun así ser inválido por la franja horaria,
+      // así que el mensaje específico tiene prioridad sobre "Completá un horario".
+      if (this.formulario.controls.fechaHoraInicio.hasError('horarioFueraDeRango')) {
+        this.toasts.mostrarMensaje(MENSAJE_HORARIO_FUERA_DE_RANGO, true);
+        return;
+      }
       const faltantes: string[] = [];
       if (this.formulario.controls.servicio.invalid) faltantes.push('un servicio');
       if (this.formulario.controls.fechaHoraInicio.invalid) faltantes.push('un horario');
@@ -148,6 +156,7 @@ export class ComponenteNuevoTurnoMostrador implements OnInit {
       }
     }
     if (c.invalid && c.hasError('telefono')) return 'El teléfono no es válido';
+    if (c.invalid && c.hasError('horarioFueraDeRango')) return MENSAJE_HORARIO_FUERA_DE_RANGO;
     return '';
   }
 }

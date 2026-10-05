@@ -10,6 +10,7 @@ import { UsuarioService } from '../../usuario/services/usuario-service';
 import { Turno } from '../../turno/interface/turno.interface';
 import { formatearFechaSQL } from '../../shared/utils/dateHelpers';
 import { ToastService } from '../../shared/services/toast-service';
+import { horarioValidator, HORARIO_MINIMO, HORARIO_MAXIMO, MENSAJE_HORARIO_FUERA_DE_RANGO } from '../../shared/utils/validators';
 import { AvisoCambiosSinGuardar } from '../../shared/components/aviso-cambios-sin-guardar/aviso-cambios-sin-guardar';
 
 @Component({
@@ -19,12 +20,14 @@ import { AvisoCambiosSinGuardar } from '../../shared/components/aviso-cambios-si
   styleUrl: './componente-modificar-turno-administrador.css',
 })
 export class ComponenteModificarTurnoAdministrador implements OnInit {
+  /** Ayuda visible junto al input: el rango sale de los mismos constantes que usa el validator. */
+  readonly rangoHorario = `Turnos disponibles de ${HORARIO_MINIMO} a ${HORARIO_MAXIMO}.`;
   ss: ServicioService = inject(ServicioService);
   servicios = this.ss.getServiciosSignal();
   fb: FormBuilder = inject(FormBuilder);
   formulario = this.fb.nonNullable.group({
     servicio: [null as Servicio | null, [Validators.required]],
-    fechaHoraInicio: ['', [Validators.required]],
+    fechaHoraInicio: ['', [Validators.required, horarioValidator]],
     motivo: ['', [Validators.required]],
   });
   ar: ActivatedRoute = inject(ActivatedRoute);
@@ -54,20 +57,22 @@ export class ComponenteModificarTurnoAdministrador implements OnInit {
     return this.formulario.valid && this.hayModificaciones();
   }
   /**
-   * Error en vivo del campo motivo: se marca apenas hay modificaciones con motivo vacío,
-   * sin esperar a que se presione "Guardar".
+   * Error en vivo de motivo y fecha: se marca apenas hay modificaciones con motivo vacío
+   * o con la fecha fuera de la franja horaria, sin esperar a que se presione "Guardar".
    */
-  hayError(campo: 'motivo'): boolean {
+  hayError(campo: 'motivo' | 'fechaHoraInicio'): boolean {
     this.formVersion();
     return this.hayModificaciones() && this.formulario.controls[campo].invalid;
   }
   /**
    * Mensaje mostrado bajo el campo que esté faltante.
    */
-  mensajeCampo(campo: 'motivo'): string {
-    if (this.formulario.controls[campo].invalid && this.formulario.controls[campo].hasError('required')) {
-      return 'Completá el motivo de la modificación';
+  mensajeCampo(campo: 'motivo' | 'fechaHoraInicio'): string {
+    const control = this.formulario.controls[campo];
+    if (control.invalid && control.hasError('required')) {
+      return campo === 'motivo' ? 'Completá el motivo de la modificación' : 'Seleccioná un horario';
     }
+    if (control.invalid && control.hasError('horarioFueraDeRango')) return MENSAJE_HORARIO_FUERA_DE_RANGO;
     return '';
   }
   /**
@@ -148,6 +153,12 @@ export class ComponenteModificarTurnoAdministrador implements OnInit {
     }
     if (this.formulario.invalid) {
       this.enviado.set(true);
+      // La fecha puede estar completa y aun así ser inválida por la franja horaria,
+      // así que el mensaje específico tiene prioridad sobre el del motivo.
+      if (this.formulario.controls.fechaHoraInicio.hasError('horarioFueraDeRango')) {
+        this.toastService.mostrarMensaje(MENSAJE_HORARIO_FUERA_DE_RANGO, true);
+        return;
+      }
       this.toastService.mostrarMensaje('Completá el motivo de la modificación', true);
       return;
     }
