@@ -27,6 +27,14 @@ form {
     padding: 18px;
     border-radius: 10px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    animation: entrada-form 350ms ease;
+}
+
+@keyframes entrada-form {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
 }
 
 label {
@@ -102,4 +110,10 @@ button[type="submit"]:hover {
     color: rgba(247, 234, 215, 0.5);
     font-size: 13px;
     margin-top: -6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    form {
+        animation: none;
+    }
 }

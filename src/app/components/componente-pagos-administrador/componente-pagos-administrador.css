@@ -29,6 +29,8 @@ h2 {
 }
 
 .filtros {
+    position: relative;
+    z-index: 2;
     display: flex;
     flex-wrap: wrap;
     gap: 10px 16px;
@@ -43,6 +45,7 @@ h2 {
     border-radius: 12px;
     padding: 16px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    animation: entrada-pagos 350ms ease backwards;
 }
 
 .filtros label {
@@ -92,6 +95,150 @@ h2 {
     cursor: pointer;
 }
 
+.error-rango {
+    width: 100%;
+    margin: 0;
+    text-align: center;
+    color: #fca5a5;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Selector de fecha propio: input de solo lectura + popup de calendario. */
+.fecha-picker {
+    position: relative;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.fecha-picker input[readonly] {
+    cursor: pointer;
+    min-width: 110px;
+}
+
+.filtros .fecha-clear {
+    padding: 6px 10px;
+    border: 1px solid rgba(245, 185, 66, 0.35);
+    border-radius: 8px;
+    background: transparent;
+    box-shadow: none;
+    color: #f0b45a;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.filtros .fecha-clear:hover {
+    background: rgba(245, 185, 66, 0.12);
+    box-shadow: none;
+    transform: none;
+}
+
+.cal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+}
+
+.cal-popup {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 61;
+    width: 280px;
+    background: rgba(26, 20, 13, 0.97);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(245, 185, 66, 0.25);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+    animation: entrada-cal 200ms ease both;
+}
+
+@keyframes entrada-cal {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+}
+
+.cal-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.cal-nav button {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #eaa93e, #b45309);
+    color: #1d1206;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cal-mes {
+    font-weight: 700;
+    color: #f7ead7;
+    text-transform: capitalize;
+}
+
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    text-align: center;
+}
+
+.cal-dow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: rgba(247, 234, 215, 0.5);
+    padding: 4px 0;
+}
+
+.cal-grid .cal-dia {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    color: rgba(247, 234, 215, 0.85);
+    border-radius: 8px;
+    padding: 6px 0;
+    font-size: 0.85rem;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.cal-grid .cal-dia:hover {
+    background: rgba(245, 185, 66, 0.12);
+    box-shadow: none;
+    transform: none;
+}
+
+.cal-grid .cal-dia.vacio {
+    visibility: hidden;
+}
+
+.cal-grid .cal-dia.hoy {
+    border: 1px solid #e8a33d;
+}
+
+.cal-grid .cal-dia.seleccionado {
+    background: linear-gradient(135deg, #eaa93e, #b45309);
+    color: #1d1206;
+    font-weight: 700;
+}
+
 table {
     border-collapse: collapse;
     width: 100%;
@@ -104,6 +251,14 @@ table {
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    animation: entrada-pagos 400ms ease backwards;
+}
+
+@keyframes entrada-pagos {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
 }
 
 td {
@@ -212,5 +367,13 @@ tbody tr:hover {
 
     td[colspan]::before {
         content: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .filtros,
+    table,
+    .cal-popup {
+        animation: none;
     }
 }

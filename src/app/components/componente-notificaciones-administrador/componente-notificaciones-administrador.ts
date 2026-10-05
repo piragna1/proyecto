@@ -33,6 +33,82 @@ export class ComponenteNotificacionesAdministrador implements OnInit, OnDestroy 
   orden = signal<string>('');
   direccion = signal<'asc' | 'desc'>('desc');
 
+  // Calendario popup propio para Desde/Hasta (día primero, sin depender
+  // del locale del navegador). El backend sigue recibiendo ISO yyyy-mm-dd.
+  calendarioAbierto = signal<'desde' | 'hasta' | null>(null);
+  vistaAnio = signal(new Date().getFullYear());
+  vistaMes = signal(new Date().getMonth());
+  readonly diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+
+  nombreMesVista = computed(() => {
+    const n = new Date(this.vistaAnio(), this.vistaMes(), 1)
+      .toLocaleString('es', { month: 'long' });
+    return n.charAt(0).toUpperCase() + n.slice(1);
+  });
+
+  diasVista = computed(() => {
+    const anio = this.vistaAnio();
+    const mes = this.vistaMes();
+    const offset = (new Date(anio, mes, 1).getDay() + 6) % 7;
+    const ultimoDia = new Date(anio, mes + 1, 0).getDate();
+    const hoyStr = this.aYYYYMMDD(new Date());
+    const celdas: { num: number | null; fecha: string; esHoy: boolean }[] = [];
+    for (let i = 0; i < offset; i++) {
+      celdas.push({ num: null, fecha: '', esHoy: false });
+    }
+    for (let d = 1; d <= ultimoDia; d++) {
+      const fechaStr = this.aYYYYMMDD(new Date(anio, mes, d));
+      celdas.push({ num: d, fecha: fechaStr, esHoy: fechaStr === hoyStr });
+    }
+    while (celdas.length < 42) {
+      celdas.push({ num: null, fecha: '', esHoy: false });
+    }
+    return celdas;
+  });
+
+  private aYYYYMMDD(f: Date): string {
+    const m = String(f.getMonth() + 1).padStart(2, '0');
+    const d = String(f.getDate()).padStart(2, '0');
+    return `${f.getFullYear()}-${m}-${d}`;
+  }
+
+  /** ISO yyyy-mm-dd → dd/mm/aaaa para mostrar en el input de solo lectura. */
+  mostrarFecha(iso: string): string {
+    if (!iso) return '';
+    const [a, m, d] = iso.split('-');
+    return `${d}/${m}/${a}`;
+  }
+
+  abrirCalendario(cual: 'desde' | 'hasta') {
+    const actual = this.filtros[cual]() || this.aYYYYMMDD(new Date());
+    const base = new Date(actual + 'T12:00:00');
+    this.vistaAnio.set(base.getFullYear());
+    this.vistaMes.set(base.getMonth());
+    this.calendarioAbierto.set(cual);
+  }
+
+  cerrarCalendario() {
+    this.calendarioAbierto.set(null);
+  }
+
+  cambiarMesCalendario(delta: number) {
+    const total = this.vistaAnio() * 12 + this.vistaMes() + delta;
+    this.vistaAnio.set(Math.floor(total / 12));
+    this.vistaMes.set(((total % 12) + 12) % 12);
+  }
+
+  elegirDiaCalendario(fechaISO: string) {
+    const cual = this.calendarioAbierto();
+    if (!cual) return;
+    this.actualizarFiltro(cual, fechaISO);
+    this.cerrarCalendario();
+  }
+
+  limpiarFecha(cual: 'desde' | 'hasta') {
+    this.actualizarFiltro(cual, '');
+    this.cerrarCalendario();
+  }
+
   pagina = signal(1);
   total = signal(0);
   totalPaginas = signal(1);

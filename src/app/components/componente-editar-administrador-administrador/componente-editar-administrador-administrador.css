@@ -20,6 +20,14 @@ form {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    animation: entrada-editar-administrador 350ms ease both;
+}
+
+@keyframes entrada-editar-administrador {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
 }
 
 label {
@@ -94,5 +102,11 @@ button[type="submit"]:hover {
 
     form {
         padding: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    form {
+        animation: none;
     }
 }

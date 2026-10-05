@@ -1,37 +1,66 @@
-<section>
+<section [class.saliendo]="saliendo()">
     <header class="encabezado">
+        <span class="eyebrow">Panel de administración</span>
         <h2>Hola, {{ usuario() }}</h2>
         <p>Elegí qué querés hacer</p>
     </header>
 
     <div class="acciones">
-        <a class="accion" [routerLink]="'/turnos-admin'">
+        <a class="accion" (click)="navegar('/turnos-admin')">
+            <span class="icono" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </span>
             <span class="titulo">Turnos</span>
             <span class="detalle">Mirá el calendario de turnos</span>
+            <span class="flecha" aria-hidden="true">→</span>
         </a>
-        <a class="accion" [routerLink]="'/usuarios-admin'">
+        <a class="accion" (click)="navegar('/usuarios-admin')">
+            <span class="icono" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </span>
             <span class="titulo">Usuarios</span>
             <span class="detalle">Gestioná clientes, peluqueros y administradores</span>
+            <span class="flecha" aria-hidden="true">→</span>
         </a>
-        <a class="accion" [routerLink]="'/nuevo-turno-mostrador'">
+        <a class="accion" (click)="navegar('/nuevo-turno-mostrador')">
+            <span class="icono" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+            </span>
             <span class="titulo">Nuevo turno</span>
             <span class="detalle">Cargá un turno desde el mostrador</span>
+            <span class="flecha" aria-hidden="true">→</span>
         </a>
-        <a class="accion" [routerLink]="'/servicios-admin'">
+        <a class="accion" (click)="navegar('/servicios-admin')">
+            <span class="icono" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/></svg>
+            </span>
             <span class="titulo">Servicios</span>
             <span class="detalle">Alta, edición y precios de servicios</span>
+            <span class="flecha" aria-hidden="true">→</span>
         </a>
-        <a class="accion" [routerLink]="'/pagos-admin'">
+        <a class="accion" (click)="navegar('/pagos-admin')">
+            <span class="icono" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg>
+            </span>
             <span class="titulo">Pagos</span>
             <span class="detalle">Historial por método o monto</span>
+            <span class="flecha" aria-hidden="true">→</span>
         </a>
-        <a class="accion" [routerLink]="'/notificaciones-admin'">
+        <a class="accion" (click)="navegar('/notificaciones-admin')">
+            <span class="icono" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            </span>
             <span class="titulo">Notificaciones</span>
             <span class="detalle">Revisá el historial y los estados</span>
+            <span class="flecha" aria-hidden="true">→</span>
         </a>
         <button type="button" class="accion" (click)="irAPerfil()">
+            <span class="icono" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
             <span class="titulo">Mi perfil</span>
             <span class="detalle">Actualizá tus datos y tu clave</span>
+            <span class="flecha" aria-hidden="true">→</span>
         </button>
     </div>
 </section>

@@ -1,11 +1,11 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../auth/services/auth-service';
 import { UsuarioService } from '../../usuario/services/usuario-service';
 
 @Component({
   selector: 'app-componente-inicial-administrador',
-  imports: [RouterLink],
+  imports: [],
   templateUrl: './componente-inicial-administrador.html',
   styleUrl: './componente-inicial-administrador.css',
 })
@@ -15,10 +15,27 @@ export class ComponenteInicialAdministrador implements OnInit {
   us: UsuarioService = inject(UsuarioService);
   usuario = signal<string>('Usuario');
 
+  // En true mientras el dashboard se funde antes de navegar.
+  saliendo = signal(false);
+
   irAPerfil() {
     const payload = this.as.obtenerPayload();
     if (!payload?.id) return;
-    this.r.navigateByUrl(`/editar-perfil-administrador/${payload.id}`);
+    this.navegar(`/editar-perfil-administrador/${payload.id}`);
+  }
+
+  /**
+   * Funde el dashboard y despues navega a la ruta indicada. El retardo
+   * coincide con la transicion CSS de salida (.saliendo).
+   * @param ruta destino de la navegacion
+   * @returns void
+   */
+  navegar(ruta: string) {
+    if (this.saliendo()) return;
+    this.saliendo.set(true);
+    setTimeout(() => {
+      this.r.navigateByUrl(ruta);
+    }, 300);
   }
 
   ngOnInit(): void {

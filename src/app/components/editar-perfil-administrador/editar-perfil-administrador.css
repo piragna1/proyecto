@@ -30,6 +30,20 @@ section {
     padding: 26px;
     border-radius: 12px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    animation: entrada-perfil 350ms ease;
+}
+
+@keyframes entrada-perfil {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .perfil-card {
+        animation: none;
+    }
 }
 
 .card-title {

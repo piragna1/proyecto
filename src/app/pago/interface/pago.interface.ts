@@ -18,6 +18,8 @@ export interface PagosResponse {
 
 export interface PagosFiltros {
   fecha?: string;
+  desde?: string;
+  hasta?: string;
   cliente?: string;
   telefono?: string;
   servicio?: string;

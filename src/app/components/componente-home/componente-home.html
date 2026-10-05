@@ -1,21 +1,34 @@
-<section>
+<section [class.saliendo]="saliendo()">
     <header class="encabezado">
+        <span class="eyebrow">Tu peluquería</span>
         <h2>Hola, {{ usuario() }}</h2>
         <p>Elegí qué querés hacer</p>
     </header>
 
     <div class="acciones">
-        <a class="accion" [routerLink]="'/nuevo-turno'">
+        <a class="accion" (click)="navegar('/nuevo-turno')">
+            <span class="icono" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+            </span>
             <span class="titulo">Nuevo turno</span>
             <span class="detalle">Reservá tu horario en la peluquería</span>
+            <span class="flecha" aria-hidden="true">→</span>
         </a>
-        <a class="accion" [routerLink]="'/mis-turnos'">
+        <a class="accion" (click)="navegar('/mis-turnos')">
+            <span class="icono" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </span>
             <span class="titulo">Mis turnos</span>
             <span class="detalle">Consultá y modificá tus reservas</span>
+            <span class="flecha" aria-hidden="true">→</span>
         </a>
         <button type="button" class="accion" (click)="editarPerfil()">
+            <span class="icono" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
             <span class="titulo">Mi perfil</span>
             <span class="detalle">Actualizá tus datos y tu clave</span>
+            <span class="flecha" aria-hidden="true">→</span>
         </button>
     </div>
 </section>

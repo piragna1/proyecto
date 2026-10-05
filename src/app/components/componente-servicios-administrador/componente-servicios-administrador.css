@@ -28,19 +28,20 @@ section {
     border: 1px solid rgba(245, 185, 66, 0.16);
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    animation: entrada-servicios-admin 400ms ease both;
+}
+
+@keyframes entrada-servicios-admin {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     min-width: 620px;
-    background: rgba(26, 20, 13, 0.82);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(245, 185, 66, 0.16);
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-    overflow: hidden;
 }
 
 thead {
@@ -121,5 +122,11 @@ button:not([routerLink]):not([ng-reflect-router-link]) {
     .table-action-link {
         width: 100%;
         justify-content: center;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .table-wrapper {
+        animation: none;
     }
 }

@@ -71,7 +71,7 @@ export function registrarPago(db) {
 
 export function obtenerPagos(db) {
     return (req, res) => {
-        const { fecha, cliente, telefono, servicio, horario, metodo, montoMin, montoMax } = req.query;
+        const { fecha, desde, hasta, cliente, telefono, servicio, horario, metodo, montoMin, montoMax } = req.query;
 
         const condiciones = [];
         const params = [];
@@ -80,8 +80,31 @@ export function obtenerPagos(db) {
             if (typeof fecha !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
                 return res.status(400).json({ mensaje: "Formato de fecha inválido. Use YYYY-MM-DD" });
             }
+            if (desde !== undefined || hasta !== undefined) {
+                return res.status(400).json({ mensaje: "No se puede combinar 'fecha' con el rango de fechas" });
+            }
             condiciones.push('date(fecha_pago) = ?');
             params.push(fecha);
+        }
+
+        if (desde !== undefined) {
+            if (typeof desde !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(desde)) {
+                return res.status(400).json({ mensaje: "Formato de 'desde' inválido. Use YYYY-MM-DD" });
+            }
+            condiciones.push('date(fecha_pago) >= ?');
+            params.push(desde);
+        }
+
+        if (hasta !== undefined) {
+            if (typeof hasta !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(hasta)) {
+                return res.status(400).json({ mensaje: "Formato de 'hasta' inválido. Use YYYY-MM-DD" });
+            }
+            condiciones.push('date(fecha_pago) <= ?');
+            params.push(hasta);
+        }
+
+        if (desde !== undefined && hasta !== undefined && desde > hasta) {
+            return res.status(400).json({ mensaje: "El rango de fechas está invertido" });
         }
 
         if (cliente !== undefined && cliente !== '') {

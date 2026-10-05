@@ -37,10 +37,29 @@ section {
     font-weight: 700;
     box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
     transition: transform 120ms ease, box-shadow 120ms ease;
+    animation: entrada-seccion 350ms ease both;
+}
+
+/* Entrada escalonada de los botones (el Volver es el primer <a>). */
+section > .btn-seccion:nth-of-type(2) { animation-delay: 0.05s; }
+section > .btn-seccion:nth-of-type(3) { animation-delay: 0.1s; }
+section > .btn-seccion:nth-of-type(4) { animation-delay: 0.15s; }
+
+@keyframes entrada-seccion {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
 }
 
 .btn-seccion:hover,
 .btn-seccion:focus {
     transform: translateY(-2px);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .btn-seccion {
+        animation: none;
+    }
 }

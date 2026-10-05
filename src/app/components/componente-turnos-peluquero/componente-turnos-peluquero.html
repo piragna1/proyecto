@@ -45,7 +45,7 @@
 </section>
 
 @if (cobrarTurno) {
-<div class="modal-overlay" (click)="cerrarCobro()">
+<div class="modal-overlay" [class.cerrando]="cerrandoCobro" (click)="cerrarCobro()">
     <div class="modal" (click)="$event.stopPropagation()">
         <h3>Cobrar turno</h3>
         <p class="modal-datos">{{ cobrarTurno.usuario?.nombre }} - {{ cobrarTurno.servicio.tipo }}</p>

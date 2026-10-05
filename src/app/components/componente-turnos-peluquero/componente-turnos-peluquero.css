@@ -15,6 +15,7 @@ section > div {
     justify-content: center;
     width: 100%;
     max-width: 1100px;
+    animation: entrada-turnos 350ms ease both;
 }
 
 section > div label {
@@ -62,6 +63,14 @@ section > div button:hover {
     border: 1px solid rgba(245, 185, 66, 0.16);
     border-radius: 14px;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+    animation: entrada-turnos 400ms ease both;
+}
+
+@keyframes entrada-turnos {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
 }
 
 table {
@@ -151,6 +160,11 @@ button.cobrar:hover {
     align-items: center;
     justify-content: center;
     z-index: 50;
+    transition: opacity 200ms ease;
+}
+
+.modal-overlay.cerrando {
+    opacity: 0;
 }
 
 .modal {
@@ -165,6 +179,20 @@ button.cobrar:hover {
     flex-direction: column;
     gap: 14px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    animation: entrada-modal 250ms ease both;
+    transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.cerrando .modal {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+}
+
+@keyframes entrada-modal {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
 }
 
 .modal h3 {
@@ -239,6 +267,16 @@ button.cancelar {
 
     table {
         min-width: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    section > div,
+    .table-wrapper,
+    .modal,
+    .modal-overlay {
+        animation: none;
+        transition: none;
     }
 }
 

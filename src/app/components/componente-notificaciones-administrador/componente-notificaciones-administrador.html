@@ -2,8 +2,67 @@
     <a class="volver" [routerLink]="'/home-admin'">Volver</a>
     <h2>Historial de notificaciones</h2>
     <div class="filtros">
-        <label>Desde: <input type="date" [value]="filtros.desde()" (change)="actualizarFiltro('desde', $event)"></label>
-        <label>Hasta: <input type="date" [value]="filtros.hasta()" (change)="actualizarFiltro('hasta', $event)"></label>
+        <label>Desde:
+            <span class="fecha-picker">
+                <input type="text" readonly [value]="mostrarFecha(filtros.desde())" placeholder="dd/mm/aaaa" (click)="abrirCalendario('desde')" aria-label="Fecha desde" />
+                @if (filtros.desde()) {
+                    <button type="button" class="fecha-clear" (click)="limpiarFecha('desde')" aria-label="Limpiar fecha desde">✕</button>
+                }
+                @if (calendarioAbierto() === 'desde') {
+                    <span class="cal-popup" role="dialog" aria-label="Elegir fecha desde">
+                        <span class="cal-nav">
+                            <button type="button" (click)="cambiarMesCalendario(-1)" aria-label="Mes anterior">‹</button>
+                            <span class="cal-mes">{{ nombreMesVista() }} {{ vistaAnio() }}</span>
+                            <button type="button" (click)="cambiarMesCalendario(1)" aria-label="Mes siguiente">›</button>
+                        </span>
+                        <span class="cal-grid">
+                            @for (letra of diasSemana; track $index) {
+                                <span class="cal-dow">{{ letra }}</span>
+                            }
+                            @for (celda of diasVista(); track $index) {
+                                @if (celda.num) {
+                                    <button type="button" class="cal-dia" (click)="elegirDiaCalendario(celda.fecha)" [class.seleccionado]="celda.fecha === filtros.desde()" [class.hoy]="celda.esHoy">{{ celda.num }}</button>
+                                } @else {
+                                    <span class="cal-dia vacio"></span>
+                                }
+                            }
+                        </span>
+                    </span>
+                }
+            </span>
+        </label>
+        <label>Hasta:
+            <span class="fecha-picker">
+                <input type="text" readonly [value]="mostrarFecha(filtros.hasta())" placeholder="dd/mm/aaaa" (click)="abrirCalendario('hasta')" aria-label="Fecha hasta" />
+                @if (filtros.hasta()) {
+                    <button type="button" class="fecha-clear" (click)="limpiarFecha('hasta')" aria-label="Limpiar fecha hasta">✕</button>
+                }
+                @if (calendarioAbierto() === 'hasta') {
+                    <span class="cal-popup" role="dialog" aria-label="Elegir fecha hasta">
+                        <span class="cal-nav">
+                            <button type="button" (click)="cambiarMesCalendario(-1)" aria-label="Mes anterior">‹</button>
+                            <span class="cal-mes">{{ nombreMesVista() }} {{ vistaAnio() }}</span>
+                            <button type="button" (click)="cambiarMesCalendario(1)" aria-label="Mes siguiente">›</button>
+                        </span>
+                        <span class="cal-grid">
+                            @for (letra of diasSemana; track $index) {
+                                <span class="cal-dow">{{ letra }}</span>
+                            }
+                            @for (celda of diasVista(); track $index) {
+                                @if (celda.num) {
+                                    <button type="button" class="cal-dia" (click)="elegirDiaCalendario(celda.fecha)" [class.seleccionado]="celda.fecha === filtros.hasta()" [class.hoy]="celda.esHoy">{{ celda.num }}</button>
+                                } @else {
+                                    <span class="cal-dia vacio"></span>
+                                }
+                            }
+                        </span>
+                    </span>
+                }
+            </span>
+        </label>
+        @if (calendarioAbierto()) {
+            <span class="cal-overlay" (click)="cerrarCalendario()"></span>
+        }
         <label>Usuario: <input type="text" [value]="filtros.usuario()" (input)="actualizarFiltro('usuario', $event)" placeholder="Buscar usuario"></label>
         <label>Tipo:
             <select [value]="filtros.tipo()" (change)="actualizarFiltro('tipo', $event)">

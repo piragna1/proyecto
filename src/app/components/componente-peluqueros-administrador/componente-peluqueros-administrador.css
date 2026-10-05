@@ -17,6 +17,14 @@ section {
     border: 1px solid rgba(245, 185, 66, 0.16);
     border-radius: 14px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    animation: entrada-peluqueros-admin 400ms ease both;
+}
+
+@keyframes entrada-peluqueros-admin {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
 }
 
 table {
@@ -102,5 +110,11 @@ button:not([routerLink]):not([ng-reflect-router-link]) {
     .table-action-link {
         width: 100%;
         justify-content: center;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .table-wrapper {
+        animation: none;
     }
 }

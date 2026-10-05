@@ -24,6 +24,8 @@ export class ComponenteTurnosAdministrador implements OnInit {
   turnos = this.ts.getTurnosSignal();
   fecha = signal<string>('');
   cobrarTurno: Turno | null = null;
+  // En true mientras el modal de cobro se funde antes de cerrarse.
+  cerrandoCobro = false;
   metodo: string = 'efectivo';
   monto: number | null = null;
   diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
@@ -198,7 +200,12 @@ export class ComponenteTurnosAdministrador implements OnInit {
   };
 
   cerrarCobro() {
-    this.cobrarTurno = null;
+    if (!this.cobrarTurno || this.cerrandoCobro) return;
+    this.cerrandoCobro = true;
+    setTimeout(() => {
+      this.cobrarTurno = null;
+      this.cerrandoCobro = false;
+    }, 200);
   };
 
   confirmarCobro() {

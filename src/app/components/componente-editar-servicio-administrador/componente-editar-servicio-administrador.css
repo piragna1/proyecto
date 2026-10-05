@@ -20,6 +20,14 @@ form {
     padding: 26px;
     border-radius: 14px;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+    animation: entrada-editar-servicio 350ms ease both;
+}
+
+@keyframes entrada-editar-servicio {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
 }
 
 label {
@@ -79,5 +87,11 @@ button[type="submit"]:hover {
 
     button[type="submit"] {
         width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    form {
+        animation: none;
     }
 }

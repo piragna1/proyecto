@@ -1,7 +1,9 @@
 <section>
     <a class="volver" [routerLink]="'/home-admin'">Volver</a>
     <div class="filtro-dia">
-        <button type="button" class="flecha-dia" (click)="cambiarDia(-1)" aria-label="Día anterior">◀</button>
+        <button type="button" class="flecha-dia" (click)="cambiarDia(-1)" aria-label="Día anterior">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
         <div class="calendario">
             <div class="cal-cabecera">{{ nombreMes() }} {{ anioVisible() }}</div>
             <div class="cal-grid">
@@ -17,7 +19,9 @@
                 }
             </div>
         </div>
-        <button type="button" class="flecha-dia" (click)="cambiarDia(1)" aria-label="Día siguiente">▶</button>
+        <button type="button" class="flecha-dia" (click)="cambiarDia(1)" aria-label="Día siguiente">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
     </div>
     <div class="filtro-pie">
         @if (fecha()) {
@@ -30,6 +34,7 @@
         <button type="button" class="ver-todos" (click)="verTodos()">Ver todos</button>
         }
     </div>
+    <div class="table-wrapper">
     <table>
         <thead>
             <th class="sortable" (click)="accionOrdenar('cliente')">Cliente <span class="arrow">{{ (orden() === 'cliente' && direccion() === 'asc') ? '▲' : (orden() === 'cliente') ? '▼' : '' }}</span></th>
@@ -70,10 +75,11 @@
             }
         </tbody>
     </table>
+    </div>
 </section>
 
 @if (cobrarTurno) {
-<div class="modal-overlay" (click)="cerrarCobro()">
+<div class="modal-overlay" [class.cerrando]="cerrandoCobro" (click)="cerrarCobro()">
     <div class="modal" (click)="$event.stopPropagation()">
         <h3>Cobrar turno</h3>
         <p class="modal-datos">{{ cobrarTurno.usuario?.nombre }} - {{ cobrarTurno.servicio.tipo }}</p>
