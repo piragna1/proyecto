@@ -1,10 +1,11 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Notificacion } from '../interface/notificacion.interface';
+import { Notificacion, NotificacionPagina } from '../interface/notificacion.interface';
 import { Observable } from 'rxjs';
 
 export interface NotificacionFiltros {
-  fecha?: string;
+  desde?: string;
+  hasta?: string;
   usuario?: string;
   tipo?: string;
   motivo?: string;
@@ -13,6 +14,7 @@ export interface NotificacionFiltros {
   estado?: string;
   orden?: string;
   direccion?: string;
+  pagina?: number;
 }
 
 @Injectable({
@@ -37,15 +39,16 @@ export class NotificacionService {
   limpiarNotificacionesSignal() {
     this.notificaciones.set([]);
   };
-  getNotificaciones(filtros?: NotificacionFiltros): Observable<Notificacion[]> {
+  getNotificaciones(filtros?: NotificacionFiltros): Observable<NotificacionPagina> {
     let params = new HttpParams();
     if (filtros) {
-      (Object.entries(filtros) as [keyof NotificacionFiltros, string | undefined][]).forEach(([clave, valor]) => {
+      const entradas = Object.entries(filtros) as [keyof NotificacionFiltros, NotificacionFiltros[keyof NotificacionFiltros]][];
+      entradas.forEach(([clave, valor]) => {
         if (valor !== undefined && valor !== '') {
           params = params.set(clave, valor);
         }
       });
     }
-    return this.http.get<Notificacion[]>(this.url, params.keys().length ? { params } : undefined);
+    return this.http.get<NotificacionPagina>(this.url, params.keys().length ? { params } : undefined);
   };
 }

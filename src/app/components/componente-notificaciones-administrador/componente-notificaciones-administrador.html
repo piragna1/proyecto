@@ -2,7 +2,8 @@
     <a class="volver" [routerLink]="'/home-admin'">Volver</a>
     <h2>Historial de notificaciones</h2>
     <div class="filtros">
-        <label>Fecha: <input type="date" [value]="filtros.fecha()" (change)="actualizarFiltro('fecha', $event)"></label>
+        <label>Desde: <input type="date" [value]="filtros.desde()" (change)="actualizarFiltro('desde', $event)"></label>
+        <label>Hasta: <input type="date" [value]="filtros.hasta()" (change)="actualizarFiltro('hasta', $event)"></label>
         <label>Usuario: <input type="text" [value]="filtros.usuario()" (input)="actualizarFiltro('usuario', $event)" placeholder="Buscar usuario"></label>
         <label>Tipo:
             <select [value]="filtros.tipo()" (change)="actualizarFiltro('tipo', $event)">
@@ -25,6 +26,9 @@
             </select>
         </label>
         <button (click)="verTodos()">Ver todos</button>
+        @if (errorRango()) {
+        <p class="error-rango">{{ errorRango() }}</p>
+        }
     </div>
     <table>
         <thead>
@@ -51,9 +55,15 @@
             </tr>
             } @empty {
             <tr>
-                <td colspan="7">Sin notificaciones registradas</td>
+                <td colspan="7">Sin notificaciones registradas para los filtros aplicados</td>
             </tr>
             }
         </tbody>
     </table>
+    <div class="paginacion">
+        <button type="button" (click)="irAPagina(pagina() - 1)" [disabled]="pagina() <= 1">Anterior</button>
+        <span>Página {{ pagina() }} de {{ totalPaginas() }}</span>
+        <button type="button" (click)="irAPagina(pagina() + 1)" [disabled]="pagina() >= totalPaginas()">Siguiente</button>
+        <span class="total">{{ total() }} notificación{{ total() === 1 ? '' : 'es' }}</span>
+    </div>
 </section>

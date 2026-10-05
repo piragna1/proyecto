@@ -9,3 +9,9 @@ export interface Notificacion {
   fecha_envio?: string | null;
   usuario_nombre: string;
 }
+
+export interface NotificacionPagina {
+  notificaciones: Notificacion[];
+  total: number;
+  pagina: number;
+}
