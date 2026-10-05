@@ -4,12 +4,13 @@ section {
     gap: 16px;
     padding: 24px 16px;
     align-items: center;
+    color: rgba(247, 234, 215, 0.85);
 }
 
 h2 {
     margin: 0;
     font-size: 22px;
-    color: #0b2447;
+    color: #f7ead7;
     font-weight: 700;
 }
 
@@ -22,10 +23,13 @@ h2 {
 }
 
 .card {
-    background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+    background: rgba(26, 20, 13, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(245, 185, 66, 0.16);
     padding: 16px;
     border-radius: 10px;
-    box-shadow: 0 6px 18px rgba(18, 38, 84, 0.06);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -34,18 +38,18 @@ h2 {
 .card h3 {
     margin: 0;
     font-size: 18px;
-    color: #0b2447;
+    color: #f7ead7;
 }
 
 .card p {
     margin: 0;
-    color: #334155;
+    color: rgba(247, 234, 215, 0.7);
     font-size: 14px;
 }
 
 .card h5 {
     margin: 0;
-    color: #18305a;
+    color: #f0b45a;
     font-weight: 700;
 }
 
@@ -64,20 +68,21 @@ h2 {
     cursor: pointer;
 }
 
-.card button.modify {
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #fff;
+.card button[routerLink],
+.card button[ng-reflect-router-link] {
+    background: linear-gradient(135deg, #eaa93e 0%, #b45309 100%);
+    color: #1d1206;
 }
 
-.card button.cancel {
+.card button:not([routerLink]):not([ng-reflect-router-link]) {
     background: transparent;
-    border: 1px solid rgba(220, 38, 38, 0.12);
-    color: #c02626;
+    border: 1px solid rgba(220, 38, 38, 0.4);
+    color: #fca5a5;
 }
 
 .card button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 26px rgba(24, 40, 72, 0.12);
+    box-shadow: 0 10px 26px rgba(232, 163, 61, 0.25);
 }
 
 .empty-state {
@@ -93,13 +98,14 @@ h2 {
 .empty-state svg {
     width: 160px;
     height: 160px;
+    opacity: 0.85;
 }
 
 .empty-state p {
     margin: 0;
     font-size: 18px;
     font-weight: 600;
-    color: #94a3b8;
+    color: rgba(247, 234, 215, 0.6);
 }
 
 .loader-wrapper {
@@ -111,7 +117,7 @@ h2 {
 }
 
 .loader {
-    --color-1: #4b6cb7;
+    --color-1: #e8a33d;
     --size: 2.4px;
 
     color: var(--color-1);

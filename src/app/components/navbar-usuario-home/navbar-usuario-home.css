@@ -5,6 +5,29 @@ nav {
     position: relative;
 }
 
+/* Barra minima transparente con solo LogOut, para paginas full-screen. */
+nav.minimal {
+    background: transparent;
+    box-shadow: none;
+    display: flex;
+    justify-content: flex-end;
+}
+
+nav.minimal a {
+    color: rgba(247, 234, 215, 0.85);
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    border: 1px solid rgba(245, 185, 66, 0.25);
+    transition: background-color 160ms ease, color 160ms ease;
+}
+
+nav.minimal a:hover {
+    background-color: rgba(245, 185, 66, 0.12);
+    color: #f8d9a0;
+}
+
 nav ul {
     list-style: none;
     margin: 0;

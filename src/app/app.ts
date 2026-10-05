@@ -19,7 +19,14 @@ export class App {
   // (ej. /editar-perfil-administrador/:id).
   private esRutaSinFooter(url: string): boolean {
     const ruta = url.split('?')[0].split('#')[0];
-    if (ruta === '/' || ruta === '/login' || ruta === '/registro') return true;
+    if (ruta === '/' || ruta === '/login' || ruta === '/registro' || ruta === '/home' || ruta === '/nuevo-turno' || ruta === '/mis-turnos') return true;
+    if (ruta.startsWith('/editar-perfil/')) return true;
+    if (ruta.startsWith('/modificar-turno-usuario/')) return true;
+    if (ruta.startsWith('/editar-perfil-peluquero/')) return true;
+    if (ruta === '/home-peluquero') return true;
+    if (ruta === '/turnos-peluquero') return true;
+    if (ruta === '/clientes-peluquero') return true;
+    if (ruta === '/servicios-peluquero') return true;
     if (ruta === '/nuevo-turno-mostrador' || ruta === '/alta-peluquero' || ruta === '/alta-servicio') return true;
     return ruta
       .split('/')

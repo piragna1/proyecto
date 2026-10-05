@@ -4,12 +4,13 @@ section {
     align-items: center;
     gap: 16px;
     padding: 24px 16px;
+    color: rgba(247, 234, 215, 0.85);
 }
 
 h2 {
     margin: 0;
     font-size: 22px;
-    color: #0b2447;
+    color: #f7ead7;
     font-weight: 700;
 }
 
@@ -19,34 +20,51 @@ form {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+    background: rgba(26, 20, 13, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(245, 185, 66, 0.16);
     padding: 18px;
     border-radius: 10px;
-    box-shadow: 0 6px 18px rgba(18, 38, 84, 0.06);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+label {
+    font-size: 14px;
+    color: rgba(247, 234, 215, 0.9);
+    font-weight: 600;
 }
 
 select {
     width: 100%;
     padding: 10px 12px;
     border-radius: 8px;
-    border: 1px solid rgba(16, 44, 91, 0.12);
-    background: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
     font-size: 14px;
+}
+
+select option {
+    background: #1d150c;
+    color: #f7ead7;
 }
 
 input[type="datetime-local"] {
     width: 100%;
     padding: 10px 12px;
     border-radius: 8px;
-    border: 1px solid rgba(16, 44, 91, 0.12);
-    background: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    color-scheme: dark;
     font-size: 14px;
 }
 
 button[type="submit"] {
     align-self: flex-end;
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #fff;
+    background: linear-gradient(135deg, #eaa93e 0%, #b45309 100%);
+    color: #1d1206;
     border: none;
     padding: 10px 14px;
     border-radius: 8px;
@@ -57,7 +75,7 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 26px rgba(24, 40, 72, 0.14);
+    box-shadow: 0 10px 26px rgba(232, 163, 61, 0.35);
 }
 
 @media (max-width: 520px) {
@@ -75,13 +93,13 @@ button[type="submit"]:hover {
 }
 
 .field-error {
-    color: #c02626;
+    color: #fca5a5;
     font-size: 13px;
     margin-top: -6px;
 }
 
 .field-hint {
-    color: #5a6b85;
+    color: rgba(247, 234, 215, 0.5);
     font-size: 13px;
     margin-top: -6px;
 }

@@ -4,6 +4,7 @@ section {
     align-items: center;
     gap: 18px;
     padding: 24px 16px;
+    color: rgba(247, 234, 215, 0.85);
 }
 
 form {
@@ -12,15 +13,18 @@ form {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+    background: rgba(26, 20, 13, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(245, 185, 66, 0.16);
     padding: 26px;
     border-radius: 14px;
-    box-shadow: 0 10px 28px rgba(18, 38, 84, 0.08);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
 }
 
 label {
     font-size: 14px;
-    color: #16325c;
+    color: rgba(247, 234, 215, 0.9);
     font-weight: 700;
 }
 
@@ -31,23 +35,46 @@ input[type="password"] {
     width: 100%;
     padding: 12px 14px;
     border-radius: 10px;
-    border: 1px solid rgba(16, 44, 91, 0.14);
-    background: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
     font-size: 14px;
-    color: #1f3458;
+    color: #fff;
     transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.45);
 }
 
 input:focus {
     outline: none;
-    border-color: #4b6cb7;
-    box-shadow: 0 6px 16px rgba(75, 108, 183, 0.14);
+    border-color: #e8a33d;
+    box-shadow: 0 0 0 3px rgba(232, 163, 61, 0.25);
+}
+
+input.invalid {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.field-error {
+    color: #fca5a5;
+}
+
+/* Requisitos de clave legibles sobre el fondo oscuro (sin tocar el
+   componente global, que se usa en formularios de tema claro). */
+app-requisitos-clave .cumple {
+    color: #a5d6a7;
+}
+
+app-requisitos-clave .falta {
+    color: #ef9a9a;
 }
 
 button[type="submit"] {
     align-self: flex-end;
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #fff;
+    background: linear-gradient(135deg, #eaa93e 0%, #b45309 100%);
+    color: #1d1206;
     border: none;
     padding: 12px 18px;
     border-radius: 10px;
@@ -59,7 +86,7 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 24px rgba(24, 40, 72, 0.18);
+    box-shadow: 0 10px 24px rgba(232, 163, 61, 0.35);
 }
 
 @media (max-width: 540px) {

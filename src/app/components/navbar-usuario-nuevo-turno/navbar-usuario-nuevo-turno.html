@@ -1,13 +1,19 @@
-<nav>
-    <button class="menu-btn" (click)="alternar()" [attr.aria-expanded]="abierto()" aria-label="Abrir menú">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
-    <ul [class.menu-abierto]="abierto()">
-        <li><a [routerLink]="'/home'" (click)="cerrar()">Inicio</a></li>
-        <li><a [routerLink]="'/mis-turnos'" (click)="cerrar()">Mis Turnos</a></li>
-        <li><a (click)="onEditarPerfil()">Perfil</a></li>
-        <li><a [routerLink]="''" (click)="onLogOut()">LogOut</a></li>
-    </ul>
-</nav>
+@if (minimal) {
+  <nav class="minimal">
+    <a (click)="onLogOut()">LogOut</a>
+  </nav>
+} @else {
+  <nav>
+      <button class="menu-btn" (click)="alternar()" [attr.aria-expanded]="abierto()" aria-label="Abrir menú">
+          <span></span>
+          <span></span>
+          <span></span>
+      </button>
+      <ul [class.menu-abierto]="abierto()">
+          <li><a [routerLink]="'/home'" (click)="cerrar()">Inicio</a></li>
+          <li><a [routerLink]="'/mis-turnos'" (click)="cerrar()">Mis Turnos</a></li>
+          <li><a (click)="onEditarPerfil()">Perfil</a></li>
+          <li><a [routerLink]="''" (click)="onLogOut()">LogOut</a></li>
+      </ul>
+  </nav>
+}

@@ -1,7 +1,7 @@
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.55);
+    background: rgba(12, 8, 4, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -9,7 +9,10 @@
 }
 
 .modal {
-    background: #ffffff;
+    background: rgba(26, 20, 13, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(245, 185, 66, 0.2);
     border-radius: 14px;
     padding: 24px;
     min-width: 320px;
@@ -17,17 +20,17 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
-    box-shadow: 0 20px 50px rgba(18, 38, 84, 0.25);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
 .modal h3 {
     margin: 0;
-    color: #182848;
+    color: #f7ead7;
 }
 
 .modal-texto {
     margin: 0;
-    color: #475569;
+    color: rgba(247, 234, 215, 0.75);
     font-weight: 600;
 }
 
@@ -39,9 +42,9 @@
 }
 
 .btn-quedarse {
-    background: rgba(100, 116, 139, 0.15);
-    color: #475569;
-    border: none;
+    background: transparent;
+    color: #f0b45a;
+    border: 1px solid rgba(245, 185, 66, 0.35);
     padding: 8px 14px;
     border-radius: 8px;
     font-weight: 700;
@@ -50,8 +53,8 @@
 }
 
 .btn-descartar {
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #eaa93e 0%, #b45309 100%);
+    color: #1d1206;
     border: none;
     padding: 8px 14px;
     border-radius: 8px;
@@ -63,5 +66,5 @@
 .btn-quedarse:hover,
 .btn-descartar:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(24, 40, 72, 0.15);
+    box-shadow: 0 6px 14px rgba(232, 163, 61, 0.25);
 }

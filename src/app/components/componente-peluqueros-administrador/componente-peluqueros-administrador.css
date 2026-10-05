@@ -4,15 +4,19 @@ section {
     align-items: center;
     gap: 18px;
     padding: 24px 16px;
+    color: rgba(247, 234, 215, 0.85);
 }
 
 .table-wrapper {
     width: 100%;
     max-width: 1100px;
     overflow-x: auto;
-    background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+    background: rgba(26, 20, 13, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(245, 185, 66, 0.16);
     border-radius: 14px;
-    box-shadow: 0 8px 24px rgba(18, 38, 84, 0.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
 table {
@@ -22,19 +26,27 @@ table {
 }
 
 thead {
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #ffffff;
+    background: rgba(245, 185, 66, 0.08);
+    color: #f0b45a;
 }
 
 th,
 td {
     padding: 14px 16px;
     text-align: left;
-    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+    border-bottom: 1px solid rgba(245, 185, 66, 0.08);
+}
+
+th {
+    color: #f0b45a;
+}
+
+td {
+    color: rgba(247, 234, 215, 0.85);
 }
 
 tbody tr:hover {
-    background: rgba(75, 108, 183, 0.08);
+    background: rgba(245, 185, 66, 0.07);
 }
 
 button {
@@ -52,13 +64,13 @@ button:hover {
 
 button[routerLink],
 button[ng-reflect-router-link] {
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #eaa93e 0%, #b45309 100%);
+    color: #1d1206;
 }
 
 button:not([routerLink]):not([ng-reflect-router-link]) {
-    background: rgba(220, 38, 38, 0.12);
-    color: #c02626;
+    background: rgba(220, 38, 38, 0.2);
+    color: #fca5a5;
 }
 
 .table-action-link {
@@ -66,8 +78,8 @@ button:not([routerLink]):not([ng-reflect-router-link]) {
     align-items: center;
     justify-content: center;
     padding: 10px 14px;
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #eaa93e 0%, #b45309 100%);
+    color: #1d1206;
     text-decoration: none;
     border-radius: 10px;
     font-weight: 700;

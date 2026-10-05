@@ -1,12 +1,11 @@
 section {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    /* Igual que la home de administrador: sin esto el contenido queda pegado
-       arriba y en pantallas altas queda un vacio enorme abajo. */
-    min-height: calc(100vh - 140px);
-    padding: 30px 16px;
+    width: 100%;
+    padding: 30px 16px 40px;
     gap: 26px;
 }
 
@@ -17,14 +16,15 @@ section {
 .encabezado h2 {
     margin: 0;
     font-size: 28px;
-    color: #0b2447;
+    color: #f7ead7;
     font-weight: 700;
+    letter-spacing: -0.02em;
 }
 
 .encabezado p {
     margin: 8px 0 0 0;
     font-size: 15px;
-    color: #485785;
+    color: rgba(247, 234, 215, 0.65);
 }
 
 .acciones {
@@ -35,45 +35,48 @@ section {
     max-width: 800px;
 }
 
-/* Tarjeta de accion. Es la misma clase para los <a> y para el <button> de perfil,
-   asi que hay que resetear los estilos por defecto del button. */
+/* Tarjeta de accion en vidrio oscuro calido. Es la misma clase para los <a>
+   y para el <button> de perfil, asi que hay que resetear los estilos por
+   defecto del button. */
 .accion {
     display: flex;
     flex-direction: column;
     gap: 6px;
     padding: 22px 20px;
-    background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
-    border: 1px solid rgba(16, 44, 91, 0.08);
+    background: rgba(26, 20, 13, 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(245, 185, 66, 0.16);
     border-radius: 12px;
     text-align: left;
     text-decoration: none;
     font-family: inherit;
     cursor: pointer;
-    box-shadow: 0 6px 18px rgba(18, 38, 84, 0.08);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
     transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
 }
 
 .accion:hover,
 .accion:focus-visible {
     transform: translateY(-3px);
-    border-color: rgba(75, 108, 184, 0.35);
-    box-shadow: 0 14px 32px rgba(24, 40, 72, 0.16);
+    border-color: rgba(245, 185, 66, 0.45);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45), 0 0 24px rgba(232, 163, 61, 0.12);
 }
 
 .accion:focus-visible {
-    outline: 3px solid rgba(75, 108, 184, 0.35);
+    outline: 3px solid rgba(234, 169, 62, 0.5);
     outline-offset: 2px;
 }
 
 .accion .titulo {
     font-size: 17px;
     font-weight: 700;
-    color: #16325c;
+    color: #f7ead7;
 }
 
 .accion .detalle {
     font-size: 13px;
-    color: #475569;
+    color: rgba(247, 234, 215, 0.6);
     line-height: 1.45;
 }
 

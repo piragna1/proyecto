@@ -4,6 +4,7 @@
         <label>Filtrar por día: <input type="date" [value]="fecha" (change)="filtrarPorDia($event)"></label>
         <button (click)="verTodos()">Ver todos</button>
     </div>
+    <div class="table-wrapper">
     <table>
         <thead>
             <th class="sortable" (click)="accionOrdenar('cliente')">Cliente <span class="arrow">{{ (orden() === 'cliente' && direccion() === 'asc') ? '▲' : (orden() === 'cliente') ? '▼' : '' }}</span></th>
@@ -40,6 +41,7 @@
             }
         </tbody>
     </table>
+    </div>
 </section>
 
 @if (cobrarTurno) {

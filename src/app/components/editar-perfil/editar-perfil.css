@@ -4,6 +4,7 @@ section {
     gap: 16px;
     padding: 24px 16px;
     align-items: center;
+    color: rgba(247, 234, 215, 0.85);
 }
 
 .perfil-card {
@@ -12,16 +13,19 @@ section {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+    background: rgba(26, 20, 13, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(245, 185, 66, 0.16);
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 6px 18px rgba(18, 38, 84, 0.06);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
 }
 
 .card-title {
     margin: 0;
     font-size: 18px;
-    color: #16325c;
+    color: #f7ead7;
 }
 
 .field-row {
@@ -40,33 +44,39 @@ section {
 
 .field-label {
     font-size: 14px;
-    color: #16325c;
+    color: rgba(247, 234, 215, 0.9);
     font-weight: 600;
 }
 
 .field-value {
     font-size: 14px;
-    color: #1f3458;
+    color: rgba(247, 234, 215, 0.85);
     padding: 10px 12px;
     border-radius: 8px;
-    background: #fff;
-    border: 1px solid rgba(16, 44, 91, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .field-input {
     width: 100%;
     padding: 10px 12px;
     border-radius: 8px;
-    border: 1px solid rgba(16, 44, 91, 0.12);
-    background: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
     font-size: 14px;
     transition: box-shadow 150ms ease, border-color 150ms ease;
 }
 
 .field-input:focus {
     outline: none;
-    border-color: #4b6cb7;
-    box-shadow: 0 4px 12px rgba(75, 108, 183, 0.12);
+    border-color: #e8a33d;
+    box-shadow: 0 0 0 3px rgba(232, 163, 61, 0.25);
+}
+
+.field-error {
+    color: #fca5a5;
+    font-size: 13px;
 }
 
 .btn-edit {
@@ -75,7 +85,7 @@ section {
     justify-content: center;
     background: transparent;
     border: none;
-    color: #4b6cb7;
+    color: #f0b45a;
     cursor: pointer;
     padding: 4px;
     border-radius: 6px;
@@ -83,7 +93,7 @@ section {
 }
 
 .btn-edit:hover {
-    background: rgba(75, 108, 183, 0.1);
+    background: rgba(245, 185, 66, 0.12);
     transform: translateY(-1px);
 }
 
@@ -96,9 +106,9 @@ section {
 }
 
 .btn-cancel {
-    background: #fff;
-    color: #4b6cb7;
-    border: 1px solid rgba(75, 108, 183, 0.4);
+    background: transparent;
+    color: #f0b45a;
+    border: 1px solid rgba(245, 185, 66, 0.35);
     padding: 10px 14px;
     border-radius: 8px;
     font-weight: 700;
@@ -108,12 +118,12 @@ section {
 }
 
 .btn-cancel:hover {
-    background: rgba(75, 108, 183, 0.08);
+    background: rgba(245, 185, 66, 0.12);
 }
 
 .btn-save {
-    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    color: #fff;
+    background: linear-gradient(135deg, #eaa93e 0%, #b45309 100%);
+    color: #1d1206;
     border: none;
     padding: 10px 14px;
     border-radius: 8px;
@@ -125,7 +135,7 @@ section {
 
 .btn-save:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 22px rgba(24, 40, 72, 0.14);
+    box-shadow: 0 8px 22px rgba(232, 163, 61, 0.35);
 }
 
 .btn-save:disabled,
@@ -141,9 +151,9 @@ section {
 }
 
 .btn-change-pw {
-    background: rgba(75, 108, 183, 0.1);
-    color: #4b6cb7;
-    border: 1px solid rgba(75, 108, 183, 0.3);
+    background: rgba(245, 185, 66, 0.1);
+    color: #f0b45a;
+    border: 1px solid rgba(245, 185, 66, 0.3);
     padding: 10px 14px;
     border-radius: 8px;
     font-weight: 700;
@@ -154,7 +164,7 @@ section {
 }
 
 .btn-change-pw:hover {
-    background: rgba(75, 108, 183, 0.16);
+    background: rgba(245, 185, 66, 0.16);
 }
 
 .clave-panel {
@@ -172,7 +182,7 @@ section {
 .clave-inner {
     padding-top: 14px;
     margin-top: 14px;
-    border-top: 1px solid rgba(16, 44, 91, 0.1);
+    border-top: 1px solid rgba(245, 185, 66, 0.12);
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -180,7 +190,7 @@ section {
 
 .clave-inner label {
     font-size: 14px;
-    color: #16325c;
+    color: rgba(247, 234, 215, 0.9);
     font-weight: 600;
 }
 
@@ -188,16 +198,27 @@ section {
     width: 100%;
     padding: 10px 12px;
     border-radius: 8px;
-    border: 1px solid rgba(16, 44, 91, 0.12);
-    background: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
     font-size: 14px;
     transition: box-shadow 150ms ease, border-color 150ms ease;
 }
 
 .clave-inner input[type="password"]:focus {
     outline: none;
-    border-color: #4b6cb7;
-    box-shadow: 0 4px 12px rgba(75, 108, 183, 0.12);
+    border-color: #e8a33d;
+    box-shadow: 0 0 0 3px rgba(232, 163, 61, 0.25);
+}
+
+/* Requisitos de clave legibles sobre el fondo oscuro (sin tocar el
+   componente global, que se usa en formularios de tema claro). */
+app-requisitos-clave .cumple {
+    color: #a5d6a7;
+}
+
+app-requisitos-clave .falta {
+    color: #ef9a9a;
 }
 
 @media (max-width: 520px) {

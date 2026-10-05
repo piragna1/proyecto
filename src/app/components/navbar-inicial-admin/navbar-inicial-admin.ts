@@ -24,6 +24,9 @@ export class NavbarInicialAdmin {
   }
   onLogout() {
     this.as.cerrarSesion();
+    // Navega al login: cerrarSesion solo limpia la sesion, sin navegacion
+    // los guards no se re-ejecutan y la pagina quedaria pintada.
+    this.r.navigateByUrl('/');
   };
   onEditarPefilAdmin() {
     const payload = this.as.obtenerPayload();

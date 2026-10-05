@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, Input, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../auth/services/auth-service';
 
@@ -9,6 +9,9 @@ import { AuthService } from '../../auth/services/auth-service';
   styleUrl: './navbar-usuario-home.css',
 })
 export class NavbarUsuarioHome {
+  // En true renderiza una barra minima transparente con solo LogOut
+  // (para paginas full-screen como la home del cliente).
+  @Input() minimal = false;
   as: AuthService = inject(AuthService);
   r: Router = inject(Router);
   mostrarInicio = signal(this.r.url !== '/home');
@@ -21,6 +24,9 @@ export class NavbarUsuarioHome {
   }
   onLogOut() {
     this.as.cerrarSesion();
+    // Navega al login: cerrarSesion solo limpia la sesion, sin navegacion
+    // los guards no se re-ejecutan y la pagina quedaria pintada.
+    this.r.navigateByUrl('/');
   }
   onEditarPerfil() {
     const payload = this.as.obtenerPayload();
