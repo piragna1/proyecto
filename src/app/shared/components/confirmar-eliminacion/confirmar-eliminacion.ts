@@ -27,6 +27,7 @@ export class ConfirmarEliminacion {
   titulo = input('Confirmar eliminación');
   mensaje = input('¿Eliminar este elemento? Esta acción no se puede deshacer.');
   nombreElemento = input('');
+  textoAccion = input('Eliminar');
 
   confirmar = output<void>();
   cancelar = output<void>();

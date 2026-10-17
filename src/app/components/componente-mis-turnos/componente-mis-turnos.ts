@@ -6,10 +6,11 @@ import { ServicioService } from '../../servicio/services/servicio-service';
 import { UsuarioService } from '../../usuario/services/usuario-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { AuthService } from '../../auth/services/auth-service';
+import { ConfirmarEliminacion } from '../../shared/components/confirmar-eliminacion/confirmar-eliminacion';
 
 @Component({
   selector: 'app-componente-mis-turnos',
-  imports: [RouterLink],
+  imports: [RouterLink, ConfirmarEliminacion],
   templateUrl: './componente-mis-turnos.html',
   styleUrl: './componente-mis-turnos.css',
 })
@@ -23,6 +24,35 @@ export class ComponenteMisTurnos implements OnInit {
   private inicioCarga = Date.now();
   toastService: ToastService = inject(ToastService);
   as:AuthService = inject(AuthService);
+
+  // Confirmación de cancelación
+  itemACancelar = signal<Turno | null>(null);
+
+  confirmarCancelacion(turno: Turno) {
+    this.itemACancelar.set(turno);
+  }
+
+  cancelarCancelacion() {
+    this.itemACancelar.set(null);
+  }
+
+  ejecutarCancelacion() {
+    const item = this.itemACancelar();
+    if (!item) return;
+    this.cancelarTurno(item.id);
+    this.itemACancelar.set(null);
+  }
+
+  get mensajeCancelacion(): string {
+    const turno = this.itemACancelar();
+    if (!turno) return '';
+    const partes = turno.fechaHoraInicio.split(', ');
+    if (partes.length === 2 && /^\d{1,2}:\d{2}/.test(partes[1])) {
+      const horas = partes[1].split(':').slice(0, 2).join(':');
+      return `¿Cancelar el turno de ${turno.servicio.tipo} del ${partes[0]} a las ${horas}? Esta acción no se puede deshacer.`;
+    }
+    return `¿Cancelar el turno de ${turno.servicio.tipo} (${turno.fechaHoraInicio})? Esta acción no se puede deshacer.`;
+  }
   ngOnInit(): void {
     this.ts.limpiarTurnosSignal();
     this.ts.getTurnos().subscribe({
@@ -77,7 +107,7 @@ export class ComponenteMisTurnos implements OnInit {
     this.ts.deleteTurno(id).subscribe({
       next: () => {
         this.ts.removerTurno(id);
-        this.toastService.mostrarMensaje('Turno eliminado correctamente.')
+        this.toastService.mostrarMensaje('Turno cancelado correctamente.')
       }, error: (err) => {
         console.log(err);
       }

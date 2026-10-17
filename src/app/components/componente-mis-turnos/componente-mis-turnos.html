@@ -30,9 +30,18 @@
             <p>{{ item.fechaHoraInicio }}</p>
             <h5>${{item.servicio.precio}}</h5>
             <button [routerLink]="['/modificar-turno-usuario',item.id]">Modificar</button>
-            <button (click)="cancelarTurno(item.id)">Cancelar</button>
+            <button (click)="confirmarCancelacion(item)">Cancelar</button>
         </div>
         }
     </div>
     }
 </section>
+
+<app-confirmar-eliminacion
+    [visible]="!!itemACancelar()"
+    [titulo]="'Confirmar cancelación'"
+    [mensaje]="mensajeCancelacion"
+    [textoAccion]="'Sí, cancelar'"
+    (confirmar)="ejecutarCancelacion()"
+    (cancelar)="cancelarCancelacion()">
+</app-confirmar-eliminacion>

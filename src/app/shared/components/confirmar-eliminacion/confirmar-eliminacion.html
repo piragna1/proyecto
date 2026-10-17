@@ -5,7 +5,7 @@
       <p class="modal-texto">{{ mensajeCompleto }}</p>
       <div class="modal-acciones">
         <button class="btn-cancelar" (click)="cancelar.emit()">Cancelar</button>
-        <button class="btn-eliminar" (click)="confirmar.emit()">Eliminar</button>
+        <button class="btn-eliminar" (click)="confirmar.emit()">{{ textoAccion() }}</button>
       </div>
     </div>
   </div>
