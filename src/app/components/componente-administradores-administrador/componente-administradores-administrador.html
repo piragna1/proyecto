@@ -12,7 +12,7 @@
                 <td>{{item.email}}</td>
                 <td>{{item.clave}}</td>
                 <td><button [routerLink]="['/editar-administrador',item.id]">Editar</button></td>
-                <td><button (click)="eliminarAdministrador(item.id)">Eliminar</button></td>
+                <td><button (click)="confirmarEliminacion(item.id, item.email)">Eliminar</button></td>
             </tr>
             }
         </tbody>
@@ -20,3 +20,11 @@
     </div>
     <a class="action-link" [routerLink]="'/alta-administrador'">Agregar administrador</a>
 </section>
+
+<app-confirmar-eliminacion
+  [visible]="!!itemAEliminar()"
+  [nombreElemento]="itemAEliminar()?.nombre ?? ''"
+  [mensaje]="'¿Eliminar administrador? Esta acción no se puede deshacer.'"
+  (confirmar)="ejecutarEliminacion()"
+  (cancelar)="cancelarEliminacion()">
+</app-confirmar-eliminacion>

@@ -20,10 +20,18 @@
         </td>
         <td>{{ item.telefono }}</td>
         <td><button [routerLink]="['/editar-cliente-administrador', item.id]">Editar</button></td>
-        <td><button (click)="eliminarUsuario(item.id)">Eliminar</button></td>
+        <td><button (click)="confirmarEliminacion(item.id, item.nombre)">Eliminar</button></td>
       </tr>
       }
     </tbody>
   </table>
-  </div>
-</section>
+</div>
+  </section>
+
+<app-confirmar-eliminacion
+  [visible]="!!itemAEliminar()"
+  [nombreElemento]="itemAEliminar()?.nombre ?? ''"
+  [mensaje]="'¿Eliminar cliente? Esta acción no se puede deshacer.'"
+  (confirmar)="ejecutarEliminacion()"
+  (cancelar)="cancelarEliminacion()">
+</app-confirmar-eliminacion>

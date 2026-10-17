@@ -12,7 +12,7 @@
         <td>{{ item.tipo }}</td>
         <td>${{ item.precio }}</td>
         <td><button [routerLink]="['/editar-servicio-administrador', item.id]">Editar</button></td>
-        <td><button (click)="eliminarServicio(item.id)">Eliminar</button></td>
+        <td><button (click)="confirmarEliminacion(item.id, item.tipo)">Eliminar</button></td>
       </tr>
       }
     </tbody>
@@ -20,3 +20,11 @@
     </div>
     <a class="table-action-link" [routerLink]="'/alta-servicio'">Agregar servicio</a>
 </section>
+
+<app-confirmar-eliminacion
+  [visible]="!!itemAEliminar()"
+  [nombreElemento]="itemAEliminar()?.nombre ?? ''"
+  [mensaje]="'¿Eliminar servicio? Esta acción no se puede deshacer.'"
+  (confirmar)="ejecutarEliminacion()"
+  (cancelar)="cancelarEliminacion()">
+</app-confirmar-eliminacion>

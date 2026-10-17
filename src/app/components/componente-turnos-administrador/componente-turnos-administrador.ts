@@ -8,10 +8,11 @@ import { Turno } from '../../turno/interface/turno.interface';
 import { PagoService } from '../../pago/services/pago-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { mensajeDeError } from '../../shared/utils/errorMessages';
+import { ConfirmarEliminacion } from '../../shared/components/confirmar-eliminacion/confirmar-eliminacion';
 
 @Component({
   selector: 'app-componente-turnos-administrador',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, ConfirmarEliminacion],
   templateUrl: './componente-turnos-administrador.html',
   styleUrl: './componente-turnos-administrador.css',
 })
@@ -26,6 +27,25 @@ export class ComponenteTurnosAdministrador implements OnInit {
   cobrarTurno: Turno | null = null;
   // En true mientras el modal de cobro se funde antes de cerrarse.
   cerrandoCobro = false;
+  // Confirmación de eliminación
+  itemAEliminar = signal<{ id: string; nombre: string } | null>(null);
+
+  confirmarEliminacion(id: string | undefined, nombre: string | undefined) {
+    if (!id) return;
+    this.itemAEliminar.set({ id, nombre: nombre ?? '' });
+  }
+
+  cancelarEliminacion() {
+    this.itemAEliminar.set(null);
+  }
+
+  ejecutarEliminacion() {
+    const item = this.itemAEliminar();
+    if (!item) return;
+    this.eliminarTurno(item.id);
+    this.itemAEliminar.set(null);
+  }
+
   metodo: string = 'efectivo';
   monto: number | null = null;
   diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];

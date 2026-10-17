@@ -64,7 +64,7 @@
                     }
                     @if (!item.pagado) {
                     <button [routerLink]="['/modificar-turno-administrador',item.id]">Editar</button>
-                    <button class="eliminar" (click)="eliminarTurno(item.id!)">Eliminar</button>
+                    <button class="eliminar" (click)="confirmarEliminacion(item.id, item.usuario?.nombre ?? item.servicio.tipo)">Eliminar</button>
                     }
                 </td>
             </tr>
@@ -96,6 +96,14 @@
             <button class="confirmar" (click)="confirmarCobro()">Confirmar pago</button>
             <button class="cancelar" (click)="cerrarCobro()">Cancelar</button>
         </div>
-    </div>
 </div>
+  </div>
 }
+
+<app-confirmar-eliminacion
+  [visible]="!!itemAEliminar()"
+  [nombreElemento]="itemAEliminar()?.nombre ?? ''"
+  [mensaje]="'¿Eliminar turno? Esta acción no se puede deshacer.'"
+  (confirmar)="ejecutarEliminacion()"
+  (cancelar)="cancelarEliminacion()">
+</app-confirmar-eliminacion>

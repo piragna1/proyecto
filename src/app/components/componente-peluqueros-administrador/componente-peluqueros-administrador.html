@@ -16,7 +16,7 @@
                 <td>{{item.telefono}}</td>
                 <td>{{item.direccion}}</td>
                 <td><button [routerLink]="['/editar-peluquero-administrador', item.id]">Editar</button></td>
-                <td><button (click)="eliminarPeluquero(item.id)">Eliminar</button></td>
+                <td><button (click)="confirmarEliminacion(item.id, item.nombre)">Eliminar</button></td>
             </tr>
             }
         </tbody>
@@ -24,3 +24,11 @@
     </div>
     <a class="table-action-link" [routerLink]="'/alta-peluquero'">Agregar peluquero</a>
 </section>
+
+<app-confirmar-eliminacion
+  [visible]="!!itemAEliminar()"
+  [nombreElemento]="itemAEliminar()?.nombre ?? ''"
+  [mensaje]="'¿Eliminar peluquero? Esta acción no se puede deshacer.'"
+  (confirmar)="ejecutarEliminacion()"
+  (cancelar)="cancelarEliminacion()">
+</app-confirmar-eliminacion>

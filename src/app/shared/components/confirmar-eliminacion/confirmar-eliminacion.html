@@ -1,0 +1,12 @@
+@if (visible()) {
+  <div class="modal-overlay" [@fondo] (click)="cancelar.emit()">
+    <div class="modal" [@aparecer] (click)="$event.stopPropagation()">
+      <h3>{{ titulo() }}</h3>
+      <p class="modal-texto">{{ mensajeCompleto }}</p>
+      <div class="modal-acciones">
+        <button class="btn-cancelar" (click)="cancelar.emit()">Cancelar</button>
+        <button class="btn-eliminar" (click)="confirmar.emit()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+}
