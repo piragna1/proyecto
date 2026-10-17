@@ -28,11 +28,14 @@ export class ComponenteTurnosAdministrador implements OnInit {
   // En true mientras el modal de cobro se funde antes de cerrarse.
   cerrandoCobro = false;
   // Confirmación de eliminación
-  itemAEliminar = signal<{ id: string; nombre: string } | null>(null);
+  itemAEliminar = signal<{ id: string; mensaje: string } | null>(null);
 
   confirmarEliminacion(id: string | undefined, nombre: string | undefined) {
     if (!id) return;
-    this.itemAEliminar.set({ id, nombre: nombre ?? '' });
+    const mensaje = nombre
+      ? `¿Eliminar turno de ${nombre}? Esta acción no se puede deshacer.`
+      : '¿Eliminar este turno? Esta acción no se puede deshacer.';
+    this.itemAEliminar.set({ id, mensaje });
   }
 
   cancelarEliminacion() {
