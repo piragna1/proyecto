@@ -1,7 +1,11 @@
 //notificacionesService.js
-// Avisos de turno: registra el intento en la tabla `notificaciones` con el mensaje
-// armado y el teléfono normalizado. El envío efectivo lo implementa un proveedor
-// externo (se quita el gateway Whapi.Cloud); mientras no exista, queda 'omitida'.
+// Avisos de turno: arma el mensaje, lo envía por WhatsApp vía Green API
+// (ver whatsappService.js) y registra el intento en la tabla `notificaciones`.
+// Estados posibles: 'enviada', 'error' (falló el envío) u 'omitida'
+// (notificaciones desactivadas, teléfono inválido/fuera de la lista blanca
+// o Green API sin configurar).
+import { enviarWhatsapp, gatewayConfigurado } from './whatsappService.js';
+
 function formatearFecha(valor) {
     if (!valor) return null;
     const fecha = new Date(valor);
@@ -27,12 +31,18 @@ export function normalizarTelefono(telefono) {
     return num.length >= 11 && num.length <= 15 ? num : null;
 }
 
-export function armarMensaje(tipo, { servicio, motivo, anterior, actual }) {
+export function armarMensaje(tipo, { servicio, motivo, anterior, actual, monto, metodo }) {
     const ubicacion = process.env.UBICACION_NEGOCIO || 'Consultar ubicación';
     const servicioTexto = servicio ? `${servicio.tipo} - $${servicio.precio}` : 'Servicio no disponible';
     const lineas = [];
 
-    if (tipo === 'modificacion') {
+    if (tipo === 'pago') {
+        lineas.push('TURNO COBRADO');
+        lineas.push(`Servicio: ${servicioTexto}`);
+        if (actual) lineas.push(`Fecha: ${formatearFecha(actual)}`);
+        if (monto !== undefined && monto !== null) lineas.push(`Monto: $${monto}`);
+        if (metodo) lineas.push(`Método: ${metodo}`);
+    } else if (tipo === 'modificacion') {
         lineas.push('TURNO MODIFICADO');
         lineas.push(`Servicio: ${servicioTexto}`);
         if (anterior) lineas.push(`Fecha anterior: ${formatearFecha(anterior)}`);
@@ -62,11 +72,11 @@ function registrar(db, { idUsuario, tipo, motivo, telefonoDestino, mensaje, esta
     );
 }
 
-// Fire-and-forget: arma el aviso de turno y lo registra en `notificaciones`.
-// TODO: reimplementar el envío efectivo (WhatsApp/otro proveedor) al resolverse.
-// Mientras no exista proveedor de envío, el aviso queda registrado como 'omitida'.
+// Fire-and-forget: arma el aviso de turno, lo envía por WhatsApp a través de
+// Green API y lo registra en `notificaciones` con el estado resultante. Un fallo
+// del envío nunca bloquea la operación del turno.
 export function enviarNotificacionTurno(db, datos) {
-    const { idUsuario, idServicio, tipo, motivo, anterior, actual } = datos;
+    const { idUsuario, idServicio, tipo, motivo, anterior, actual, monto, metodo } = datos;
 
     db.query('select nombre, telefono from usuarios where id = ?', [idUsuario], (errUsr, usuarios) => {
         if (errUsr || !usuarios || usuarios.length === 0) {
@@ -77,16 +87,43 @@ export function enviarNotificacionTurno(db, datos) {
 
         db.query('select tipo, precio from servicios where id = ?', [idServicio], (errServ, servicios) => {
             const servicio = (!errServ && servicios && servicios.length > 0) ? servicios[0] : null;
-            const mensaje = armarMensaje(tipo, { usuario, servicio, motivo, anterior, actual });
+            const mensaje = armarMensaje(tipo, { usuario, servicio, motivo, anterior, actual, monto, metodo });
             const telefonoDestino = normalizarTelefono(usuario.telefono);
+            const base = { idUsuario, tipo, motivo, telefonoDestino, mensaje, fechaEnvio: new Date() };
 
             if (process.env.NOTIFICACIONES_ACTIVO !== 'true') {
                 console.log('[notificaciones] Aviso omitido (notificaciones desactivadas):\n' + mensaje);
-                return registrar(db, { idUsuario, tipo, motivo, telefonoDestino, mensaje, estado: 'omitida', fechaEnvio: new Date() });
+                return registrar(db, { ...base, estado: 'omitida' });
             }
 
-            console.log(`[notificaciones] Aviso registrado para ${telefonoDestino} (sin envío configurado):\n${mensaje}`);
-            return registrar(db, { idUsuario, tipo, motivo, telefonoDestino, mensaje, estado: 'omitida', fechaEnvio: new Date() });
+            if (!telefonoDestino) {
+                console.log('[notificaciones] Aviso omitido (teléfono inválido):\n' + mensaje);
+                return registrar(db, { ...base, estado: 'omitida' });
+            }
+
+            // Lista blanca demo (WHATSAPP_WHITELIST): si está definida, solo se
+            // envía a los números listados (separados por coma, normalizados).
+            // Vacía o inexistente = sin restricción (comportamiento de producción).
+            const listaBruta = process.env.WHATSAPP_WHITELIST;
+            if (listaBruta && listaBruta.trim() && !listaBruta.split(',').map((tel) => normalizarTelefono(tel)).includes(telefonoDestino)) {
+                console.log('[notificaciones] Aviso omitido (teléfono fuera de la lista blanca):\n' + mensaje);
+                return registrar(db, { ...base, estado: 'omitida' });
+            }
+
+            if (!gatewayConfigurado()) {
+                console.log('[notificaciones] Aviso omitido (Green API sin configurar):\n' + mensaje);
+                return registrar(db, { ...base, estado: 'omitida' });
+            }
+
+            return enviarWhatsapp(telefonoDestino, mensaje)
+                .then((sid) => {
+                    console.log(`[notificaciones] WhatsApp enviado a +${telefonoDestino} (sid: ${sid}):\n${mensaje}`);
+                    registrar(db, { ...base, estado: 'enviada' });
+                })
+                .catch((err) => {
+                    console.error('[notificaciones] Error enviando WhatsApp:', err.message);
+                    registrar(db, { ...base, estado: 'error' });
+                });
         });
     });
 }

@@ -2,6 +2,8 @@
 // Gestión de pagos en mostrador: registra el cobro de un turno (efectivo/transferencia)
 // y expone el historial con total recaudado. El pago guarda un snapshot del cliente,
 // servicio y horario para conservar el historial aunque el turno luego se elimine.
+import { enviarNotificacionTurno } from '../services/notificacionesService.js';
+
 const METODOS_VALIDOS = ['efectivo', 'transferencia'];
 
 export function registrarPago(db) {
@@ -17,7 +19,7 @@ export function registrarPago(db) {
         }
 
         db.query(
-            `select t.id as id_turno, t.id_usuario, t.fecha_hora_inicio as horario,
+            `select t.id as id_turno, t.id_usuario, t.id_servicio, t.fecha_hora_inicio as horario,
                     s.tipo as servicio_tipo, s.precio, u.nombre as nombre_cliente, u.telefono as telefono_cliente
              from turnos t
              join servicios s on s.id = t.id_servicio
@@ -60,6 +62,18 @@ export function registrarPago(db) {
                                 console.error('Error al registrar pago:', errInsert.message);
                                 return res.status(500).json({ mensaje: "Error al registrar pago" });
                             }
+
+                            // Aviso al cliente del turno cobrado (fire-and-forget;
+                            // un fallo del envío no bloquea la respuesta).
+                            enviarNotificacionTurno(db, {
+                                idUsuario: turno.id_usuario,
+                                idServicio: turno.id_servicio,
+                                tipo: 'pago',
+                                monto: montoFinal,
+                                metodo,
+                                actual: turno.horario,
+                            });
+
                             return res.status(201).json({ id: result.insertId, idTurno, monto: montoFinal, metodo });
                         }
                     );
