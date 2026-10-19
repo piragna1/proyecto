@@ -1,11 +1,30 @@
 //whatsappService.js
-// Envío de WhatsApp vía Green API (gateway del número personal vinculado por QR
-// en el panel; plan Developer gratuito). Sin plantillas ni aprobaciones: texto
-// libre directo. Sin SDK: fetch nativo con la REST API de sendMessage.
-// El chatId destino se compone con el número normalizado (549XXXXXXXXXX) + @c.us.
+// Dispatcher de envíos de WhatsApp: reparte según WHATSAPP_PROVEEDOR.
+//  - 'greenapi': REST de Green API (número vinculado por QR en el panel;
+//                cuota de chats por plan) — ver enviarWhatsappGreenApi.
+//  - 'baileys' : conexión directa sin límites de chats (librería Baileys,
+//                sesión local) — ver servicios/baileysService.js.
+// En ambos casos el chatId destino se compone con el número normalizado
+// (549XXXXXXXXXX) y el envío devuelve el id del mensaje o rechaza con error.
+import { enviarWhatsappBaileys, gatewayBaileysConfigurado } from './baileysService.js';
+
 const LIMITE_MS = 8000;
 
+export function enviarWhatsapp(destino, mensaje) {
+    if (process.env.WHATSAPP_PROVEEDOR === 'baileys') {
+        return enviarWhatsappBaileys(destino, mensaje);
+    }
+    return enviarWhatsappGreenApi(destino, mensaje);
+}
+
 export function gatewayConfigurado() {
+    if (process.env.WHATSAPP_PROVEEDOR === 'baileys') {
+        return gatewayBaileysConfigurado();
+    }
+    return greenApiConfigurada();
+}
+
+function greenApiConfigurada() {
     return Boolean(
         process.env.GREEN_API_URL &&
         process.env.GREEN_API_ID &&
@@ -13,8 +32,8 @@ export function gatewayConfigurado() {
     );
 }
 
-export function enviarWhatsapp(destino, mensaje) {
-    if (!gatewayConfigurado()) {
+function enviarWhatsappGreenApi(destino, mensaje) {
+    if (!greenApiConfigurada()) {
         return Promise.reject(new Error('Green API sin configurar (GREEN_API_URL / GREEN_API_ID / GREEN_API_TOKEN)'));
     }
     const base = String(process.env.GREEN_API_URL).replace(/\/+$/, '');

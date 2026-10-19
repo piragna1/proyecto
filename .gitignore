@@ -46,5 +46,8 @@ Thumbs.db
 .env
 .wwebjs_cache
 
+# Credenciales de la sesión Baileys (WhatsApp vinculado), nunca versionar
+/backend/.baileys-sesion/
+
 # Notas personales, nunca versionar
 todo.txt

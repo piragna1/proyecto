@@ -9,6 +9,7 @@ import usuariosRoutes from './routes/usuarios.js'
 import registroRoutes from './routes/registro.js'
 import notificacionesRoutes from './routes/notificaciones.js'
 import pagosRoutes from './routes/pagos.js'
+import { inicializarBaileys } from './services/baileysService.js'
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -16,6 +17,10 @@ if (!process.env.JWT_SECRET) {
     console.error('Missing JWT_SECRET in environment. Create a .env file with JWT_SECRET=your_secret');
     process.exit(1);
 }
+
+// Arranca el gateway de WhatsApp (solo si WHATSAPP_PROVEEDOR=baileys): con la
+// sesión sin vincular, el QR aparece en esta consola apenas inicia el servidor.
+inicializarBaileys();
 
 const app = express();
 app.use(cors());
