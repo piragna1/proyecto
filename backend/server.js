@@ -10,6 +10,7 @@ import registroRoutes from './routes/registro.js'
 import notificacionesRoutes from './routes/notificaciones.js'
 import pagosRoutes from './routes/pagos.js'
 import { inicializarBaileys } from './services/baileysService.js'
+import { inicializarWebjs } from './services/webjsService.js'
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -18,9 +19,11 @@ if (!process.env.JWT_SECRET) {
     process.exit(1);
 }
 
-// Arranca el gateway de WhatsApp (solo si WHATSAPP_PROVEEDOR=baileys): con la
-// sesión sin vincular, el QR aparece en esta consola apenas inicia el servidor.
+// Arranca el gateway de WhatsApp activo (solo uno de baileys/webjs/greenapi
+// según WHATSAPP_PROVEEDOR): con la sesión sin vincular, el QR aparece en esta
+// consola apenas inicia el servidor.
 inicializarBaileys();
+inicializarWebjs();
 
 const app = express();
 app.use(cors());
